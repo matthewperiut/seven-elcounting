@@ -49,7 +49,7 @@ function App() {
       {user ? (
         <>
           <p>Welcome, {user.email}</p>
-          {user.role >= 1 && <RoleManagement currentUser={user} />}
+          {user.role >= 2 && <RoleManagement currentUser={user} />}
         </>
       ) : (
         <Auth onUserChange={(user) => setUser(user)} />

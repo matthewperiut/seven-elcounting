@@ -6,7 +6,7 @@ export const RoleManagement = ({ currentUser }) => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    if (currentUser && currentUser.role >= 1) {
+    if (currentUser && currentUser.role >= 2) {
       fetchAllUsers();
     }
   }, [currentUser]);

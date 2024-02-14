@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { db, auth } from './firebase-config';
+import { doc, setDoc } from 'firebase/firestore';
 import "./App.css";
 
 export const Auth = ({ onUserChange }) => {
@@ -44,6 +45,7 @@ export const Auth = ({ onUserChange }) => {
         userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await setDoc(doc(db, "users", userCredential.user.uid), {
           email: userCredential.user.email,
+          displayName: "test",
           role: 0
         });
       } else if (operation === 'login') {
