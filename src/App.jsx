@@ -4,6 +4,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from './firebase-config';
 import { Auth } from './Auth';
 import { RoleManagement } from './RoleManagement';
+import { Banner } from './Banner'; // Import the Banner component
 
 function App() {
   const [user, setUser] = useState(null);
@@ -18,10 +19,11 @@ function App() {
           setUser({
             uid: authUser.uid,
             email: authUser.email,
+            displayName: userData.displayName,
+            photoURL: userData.photoURL,
             role: userData.role
           });
         } else {
-          // Handle the case where the user is authenticated but does not have a Firestore document
           console.log("No user document!");
           setUser({
             uid: authUser.uid,
@@ -38,16 +40,15 @@ function App() {
 
   const logout = async () => {
     await signOut(auth);
-    setUser(null); // Make sure to clear the user state
+    setUser(null);
   };
 
   return (
     <div>
-      <h1>Seven-Elcounting</h1>
+      <Banner user={user} logout={logout} /> {/* Integrate the Banner component */}
       {user ? (
         <>
           <p>Welcome, {user.email}</p>
-          <button onClick={logout}>Logout</button>
           {user.role >= 1 && <RoleManagement currentUser={user} />}
         </>
       ) : (
