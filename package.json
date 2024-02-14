@@ -13,7 +13,8 @@
     "dotenv-webpack": "^8.0.1",
     "firebase": "^10.8.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-password-checklist": "^1.5.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.55",
