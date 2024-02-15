@@ -12,6 +12,8 @@ export const Auth = ({ onUserChange }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [address, setAddress] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [failedAttempts, setFailedAttempts] = useState(0);
   const [validationResults, setValidationResults] = useState({
     minLength: false,
     specialChar: false,
@@ -42,7 +44,8 @@ export const Auth = ({ onUserChange }) => {
 
   const handleAuthOperation = async (operation) => {
     if (operation === 'register' && !isPasswordValid) return; // Prevents registration if password is not valid
-
+    if (operation === 'login' && failedAttempts >= 3) return; //Prevents login after 3 failed attempts
+    
     try {
       let userCredential;
       if (operation === 'register') {
@@ -68,6 +71,10 @@ export const Auth = ({ onUserChange }) => {
       onUserChange(userCredential.user);
     } catch (error) {
       console.error(error.message);
+      setErrorMessage(error.message);
+      if (error.message.includes("invalid-credential")) {
+        setFailedAttempts(failedAttempts + 1);
+      }
     }
   };
 
@@ -128,6 +135,7 @@ export const Auth = ({ onUserChange }) => {
               value={address}
               onChange={(e) => setAddress(e.target.value)}
             />
+            <p style={{ color: '#d94f00' }}>{errorMessage}</p>
             <button type="submit">Register</button>
             <ul style={{ padding: "0" }}>
               {renderValidationMessage(validationResults.minLength, "Password must contain at least 8 characters")}
@@ -152,6 +160,11 @@ export const Auth = ({ onUserChange }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <p style={{ color: '#d94f00' }}>{errorMessage}</p>
+            {failedAttempts > 0 && 
+              ((failedAttempts >= 3 && (<p style={{ color: 'red' }}>Attempted too many wrong passwords! Please try again later.</p>)) ||
+              (failedAttempts < 3 && (<p>Failed Attempts: {failedAttempts}</p>)))
+            }
             <button type="submit">Login</button>
           </>
         )}
