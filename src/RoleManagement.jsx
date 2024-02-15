@@ -20,6 +20,14 @@ const Modal = ({ isOpen, onClose, user, updateUser }) => {
     setLocalUser({ ...localUser, [field]: parsedValue });
   };
 
+  const toggleActivation = async () => {
+    const updatedStatus = !localUser.isActivated;
+    const userDocRef = doc(db, "users", localUser.id);
+    await updateDoc(userDocRef, { isActivated: updatedStatus });
+    setLocalUser({ ...localUser, isActivated: updatedStatus }); // Update local state
+    updateUser({ ...localUser, isActivated: updatedStatus }); // Update parent component state
+  };
+
   const saveChanges = async () => {
     const userDocRef = doc(db, "users", localUser.id);
     await updateDoc(userDocRef, localUser);
@@ -52,6 +60,12 @@ const Modal = ({ isOpen, onClose, user, updateUser }) => {
         </div>
       ))}
       <button onClick={saveChanges}>Save Changes</button>
+      <button
+        onClick={toggleActivation}
+        style={{ backgroundColor: localUser.isActivated ? 'red' : 'green', color: 'white', marginLeft: '10px' }}
+      >
+        {localUser.isActivated ? 'Deactivate' : 'Activate'}
+      </button>
       <button onClick={onClose}>Close</button>
     </div>
   );

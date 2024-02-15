@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { db, auth } from './firebase-config';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import "./App.css";
 
 export const Auth = ({ onUserChange }) => {
@@ -61,11 +61,20 @@ export const Auth = ({ onUserChange }) => {
           lastName: lastName,
           DOB: DOB,
           approved: false,
+          isActivated: true,
           address: address,
           role: 0
         });
       } else if (operation === 'login') {
         userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const userDocRef = doc(db, "users", userCredential.user.uid);
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists() && docSnap.data().isActivated === false) {
+          // If user is deactivated, sign them out and prevent login
+          await signOut(auth);
+          alert("Your account is deactivated. Please contact support.");
+          return; // Exit the function to prevent further execution
+        }
         console.log(userCredential.user)
       }
       onUserChange(userCredential.user);
