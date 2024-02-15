@@ -1,0 +1,15 @@
+.user-list {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .user-item {
+    display: contents;
+  }
+  
+  .button-edit {
+    justify-self: start; /* Aligns the button to the start of its grid cell */
+  }
+  
