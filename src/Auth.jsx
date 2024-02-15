@@ -8,6 +8,10 @@ export const Auth = ({ onUserChange }) => {
   const [isRegistering, setIsRegistering] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [DOB, setDOB] = useState(new Date());
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [address, setAddress] = useState("");
   const [validationResults, setValidationResults] = useState({
     minLength: false,
     specialChar: false,
@@ -43,13 +47,23 @@ export const Auth = ({ onUserChange }) => {
       let userCredential;
       if (operation === 'register') {
         userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const date = new Date(); // Current date
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear().toString().slice(-2);
+
         await setDoc(doc(db, "users", userCredential.user.uid), {
           email: userCredential.user.email,
-          displayName: "test",
+          displayName: firstName.charAt(0) + lastName + month.toString() + year.toString(),
+          firstName: firstName,
+          lastName: lastName,
+          DOB: DOB,
+          approved: false,
+          address: address,
           role: 0
         });
       } else if (operation === 'login') {
         userCredential = await signInWithEmailAndPassword(auth, email, password);
+        console.log(userCredential.user)
       }
       onUserChange(userCredential.user);
     } catch (error) {
@@ -89,6 +103,30 @@ export const Auth = ({ onUserChange }) => {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+            />
+            <input
+              type="date"
+              placeholder="date of birth"
+              value={DOB}
+              onChange={(e) => setDOB(e.target.value)}
+            />
+            <input
+              type="firstName"
+              placeholder="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+            <input
+              type="lastName"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+            <input
+              type="address"
+              placeholder="Address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
             />
             <button type="submit">Register</button>
             <ul style={{ padding: "0" }}>
