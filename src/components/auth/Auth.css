@@ -1,0 +1,54 @@
+/* This is not even close to complete, just starting basic login/register form */
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+
+h1 {
+    display: flex;
+    justify-content: center;
+}
+
+input {
+    width: 90%;
+    padding: 15px;
+    margin: 10px;
+    
+}
+
+button {
+  background-color: hsl(257, 65%, 72%);
+  border: none;
+  padding: 20px;
+  margin: 20px;
+  cursor: pointer;
+  width: 50%;
+  opacity: 95%;
+  border-radius: 15px;
+}
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.passList {
+    display: block;
+    right: 100px;
+}
+
+.buttons {
+    display: inline;
+    width: 50%;
+    align-items: center;
+    justify-content: center;
+}
+
+
+

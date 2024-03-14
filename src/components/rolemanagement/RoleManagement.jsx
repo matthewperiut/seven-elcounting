@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { doc, getDocs, collection, updateDoc } from 'firebase/firestore';
-import { db } from './firebase-config';
+import { db } from '../../firebase-config';
 import './RoleManagement.css'; 
+import { Context } from '../UserContext';
 
 const Modal = ({ isOpen, onClose, user, updateUser }) => {
   const [localUser, setLocalUser] = useState(user);
@@ -71,21 +72,23 @@ const Modal = ({ isOpen, onClose, user, updateUser }) => {
   );
 };
 
-export const RoleManagement = ({ currentUser }) => {
+export const RoleManagement = () => {
   const [users, setUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const { user } = Context();
+
 
   useEffect(() => {
     const fetchAllUsers = async () => {
       const querySnapshot = await getDocs(collection(db, "users"));
       setUsers(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     };
-
-    if (currentUser && currentUser.role >= 2) {
+    
+    if (user && user.role >= 2) {
       fetchAllUsers();
     }
-  }, [currentUser]);
+  }, [user]);
 
   const handleOpenModal = (user) => {
     setSelectedUser(user);
@@ -99,6 +102,7 @@ export const RoleManagement = ({ currentUser }) => {
   return (
     <div>
       <h2>User Role Management</h2>
+      <p>Welcome, {user && user.email}</p>
       <div className="user-list">
         {users.map((user) => (
           <div key={user.id} className="user-item">
@@ -111,3 +115,5 @@ export const RoleManagement = ({ currentUser }) => {
     </div>
   );
 };
+
+export default RoleManagement
