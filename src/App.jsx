@@ -1,5 +1,5 @@
 import { Login, Registration,ForgotPassword, 
-RequireAuth, Banner, PageNotFound, 
+RequireAccount, RequireUser, RequireManager, RequireAdmin, Banner, PageNotFound, 
 Dashboard, AddAccounts, ViewAccounts, EditAccounts, 
 DeactivateAccounts } from "./components"
 
@@ -17,11 +17,11 @@ function App() {
         <Route path="registration" element={<Registration />} />
         <Route path="forgotpassword" element={<ForgotPassword />} />
         {/* private routes */}
-        <Route path="/" element={<RequireAuth><Dashboard/></RequireAuth>} />
-        <Route path="addaccounts" element={<RequireAuth><AddAccounts /></RequireAuth>} />
-        <Route path="viewaccounts" element={<RequireAuth><ViewAccounts/></RequireAuth>} />
-        <Route path="editaccounts" element={<RequireAuth><EditAccounts/></RequireAuth>} />
-        <Route path="deactivateaccounts" element={<RequireAuth><DeactivateAccounts/></RequireAuth>} />
+        <Route path="/" element={<RequireAccount><Dashboard/></RequireAccount>} />
+        <Route path="addaccounts" element={<RequireAdmin><AddAccounts /></RequireAdmin>} />
+        <Route path="viewaccounts" element={<RequireUser><ViewAccounts/></RequireUser>} />
+        <Route path="editaccounts" element={<RequireAdmin><EditAccounts/></RequireAdmin>} />
+        <Route path="deactivateaccounts" element={<RequireAdmin><DeactivateAccounts/></RequireAdmin>} />
         {/* page not found */}
         <Route path="*" element={<PageNotFound />} />
         </Route>

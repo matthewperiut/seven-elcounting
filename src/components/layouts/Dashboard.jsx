@@ -15,10 +15,6 @@ const Dashboard = () => {
     <div>Welcome, {user && user.email}</div>
     {user.role == 3 
     ? <div>
-      <Link to="addaccounts"><button>Add Accounts</button></Link>
-      <Link to="viewaccounts"><button>View Accounts</button></Link>
-      <Link to="editaccounts"><button>Edit Accounts</button></Link>
-      <Link to="deactivateaccounts"><button>Deactivate Accounts</button></Link>
       <RoleManagement/>
       </div>
     : user.role == 2

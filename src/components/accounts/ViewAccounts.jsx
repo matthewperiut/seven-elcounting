@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase-config';
 
 const ViewAccounts = () => {
@@ -13,7 +13,6 @@ const ViewAccounts = () => {
     };
       fetchAllUsers();
   }, []);
-
   
 
   
@@ -21,16 +20,15 @@ const ViewAccounts = () => {
   return (
     <div>
       <h1>View Accounts</h1>
-      <div className="account-list">
-        <ul>
-          {accounts.map((account, index) => (
-              <li key={index}>  
-                {account.accountName}
-              </li>
+      <div className="user-list">
+          {accounts.map((account) => (
+              <div key={account.accountName} className="user-item"> 
+                <span>{account.accountName}</span>
+                <button className="button-edit">View</button>
+              </div>
           ))}
-        </ul>
+          <Link to="/">Dashboard</Link>
       </div>
-      <Link to="/">Dashboard</Link>
     </div>
   );
 }

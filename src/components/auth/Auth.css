@@ -3,52 +3,44 @@
 
 * {
     margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-
 }
 
 h1 {
     display: flex;
     justify-content: center;
+    margin: 10px;
+}
+
+span {
+    font-size: large;
+    margin: 10px;
+}
+
+.wrapper {
+    align-items: center;
+    text-align: center;
+    padding: 15px;
+    margin: 10px;
 }
 
 input {
     width: 90%;
-    padding: 15px;
-    margin: 10px;
-    
+    padding: 10px;
+    margin: 5px;
 }
 
 button {
-  background-color: hsl(257, 65%, 72%);
-  border: none;
-  padding: 20px;
-  margin: 20px;
-  cursor: pointer;
-  width: 50%;
-  opacity: 95%;
-  border-radius: 15px;
-}
+    background-color: hsl(257, 65%, 72%);
+    border: none;
+    font-size: 20px;
+    padding: 20px;
+    margin: 20px;
+    opacity: 95%;
+    border-radius: 15px;
+    cursor: pointer;
+  }
 
-.wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
 
-.passList {
-    display: block;
-    right: 100px;
-}
-
-.buttons {
-    display: inline;
-    width: 50%;
-    align-items: center;
-    justify-content: center;
-}
 
 
 

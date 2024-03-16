@@ -44,7 +44,8 @@ export const AddAccounts = () => {
         accountNumber: accountInfo.accountNumber,
         dateAccountAdded: new Date(),
         initialBalance: accountInfo.initialBalance,
-        normalSide: accountInfo.normalSide
+        normalSide: accountInfo.normalSide,
+        isActivated: true
       });
       console.log(accountInfo);
       setSuccess(true);
@@ -65,8 +66,8 @@ const handleAccountInfo = (e) => {
 
   return (
     <div>
-      <h1>AddAccounts</h1>
-    <form onSubmit={handleSubmit}>
+      <h1>Add an Account</h1>
+    <form onSubmit={handleSubmit} className='wrapper'>
             <input
               name="accountName"
               placeholder="Account Name"

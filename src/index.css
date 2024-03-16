@@ -1,0 +1,52 @@
+.navbar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-item {
+    float: left;
+}
+
+.navbar-link {
+    margin-left: 5px;
+    padding: 14px;
+    text-decoration: none;
+}
+
+.navbar-link:hover {
+    background-color: #7f87f7;
+}
+
+button {
+    cursor: pointer;
+}
+
+.banner {
+    margin: 0;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #878ffa;
+}
+
+.user-list {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 10px;
+    align-items: center;
+  }
+  
+.user-item {
+    display: contents;
+  }
+  
+.button-edit {
+    justify-self: start; /* Aligns the button to the start of its grid cell */
+  }
+
+table, th, td {
+    border: 1px solid;
+    border-collapse: collapse;
+}

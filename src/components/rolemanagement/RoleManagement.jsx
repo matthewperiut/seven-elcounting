@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { doc, getDocs, collection, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase-config';
-import './RoleManagement.css'; 
 import { Context } from '../UserContext';
 
 const Modal = ({ isOpen, onClose, user, updateUser }) => {
