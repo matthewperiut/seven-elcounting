@@ -5,5 +5,10 @@ export { default as Banner } from "./layouts/Banner"
 export { default as ForgotPassword } from "./auth/ForgotPassword"
 export { default as RequireAuth } from "./RequireAuth"
 export { default as PageNotFound } from "./layouts/PageNotFound"
+export { default as Dashboard } from "./layouts/Dashboard"
+export { default as AddAccounts } from "./accounts/AddAccounts"
+export { default as ViewAccounts } from "./accounts/ViewAccounts"
+export { default as EditAccounts } from "./accounts/EditAccounts"
+export { default as DeactivateAccounts } from "./accounts/DeactivateAccounts"
 
 {/* File for easily exporting all components */}

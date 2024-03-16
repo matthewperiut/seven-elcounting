@@ -54,12 +54,12 @@ const Registration = () => {
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent the form from causing a page reload
     createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
+    .then(async (userCredential) => {
         const date = new Date(); // Current date
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const year = date.getFullYear().toString().slice(-2);
 
-        setDoc(doc(db, "users", userCredential.user.uid), {
+          await setDoc(doc(db, "users", userCredential.user.uid), {
           email: userCredential.user.email,
           displayName: firstName.charAt(0) + lastName + month.toString() + year.toString(),
           firstName: firstName,
@@ -71,11 +71,8 @@ const Registration = () => {
           role: 0
         });
         console.log(userCredential.user)
-        var millisecondsToWait = 1000;
-        setTimeout(function() {
-          navigate("/rolemanagement", { replace: true});
-        } , millisecondsToWait);
-        
+        confirm('Access request submitted, please wait and check your email for approval!');
+        navigate("/", { replace: true })
     })
     .catch((error) => {
       console.error(error.message);

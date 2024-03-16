@@ -5,7 +5,7 @@ import { Context } from "./UserContext";
 const RequireAuth = ({ children }) => {
     const { user } = Context(); //access imported user context
     if(!user) {
-        return <Navigate to="/"/> //user not signed in, nav to login
+        return <Navigate to="login"/> //user not signed in, nav to login
     }
     return children //else return children components
 }

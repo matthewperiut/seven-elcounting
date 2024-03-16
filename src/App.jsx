@@ -1,4 +1,8 @@
-import { Login, Registration, RoleManagement, ForgotPassword, RequireAuth, Banner, PageNotFound } from "./components"
+import { Login, Registration,ForgotPassword, 
+RequireAuth, Banner, PageNotFound, 
+Dashboard, AddAccounts, ViewAccounts, EditAccounts, 
+DeactivateAccounts } from "./components"
+
 import { Route, Routes } from 'react-router-dom';
 import { UserContextProvider } from './components/UserContext';
 
@@ -9,12 +13,15 @@ function App() {
         <Route path="/" element={<Banner />} >
           
         {/* public routes */}
-        <Route path="/" element={<Login />} />
+        <Route path="login" element={<Login />} />
         <Route path="registration" element={<Registration />} />
         <Route path="forgotpassword" element={<ForgotPassword />} />
         {/* private routes */}
-        <Route path="rolemanagement" element={<RequireAuth><RoleManagement/></RequireAuth>} />
-
+        <Route path="/" element={<RequireAuth><Dashboard/></RequireAuth>} />
+        <Route path="addaccounts" element={<RequireAuth><AddAccounts /></RequireAuth>} />
+        <Route path="viewaccounts" element={<RequireAuth><ViewAccounts/></RequireAuth>} />
+        <Route path="editaccounts" element={<RequireAuth><EditAccounts/></RequireAuth>} />
+        <Route path="deactivateaccounts" element={<RequireAuth><DeactivateAccounts/></RequireAuth>} />
         {/* page not found */}
         <Route path="*" element={<PageNotFound />} />
         </Route>

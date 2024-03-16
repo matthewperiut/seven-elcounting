@@ -25,7 +25,7 @@ const Login = () => {
           return; // Exit the function to prevent further execution
         }
         console.log(userCredential.user);
-        navigate("/rolemanagement", { replace: true});
+        navigate("/", { replace: true});
     })
     .catch((error) => {
       console.error(error.message);

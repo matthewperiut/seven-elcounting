@@ -45,9 +45,9 @@ const Modal = ({ isOpen, onClose, user, updateUser }) => {
           value={localUser.role}
           onChange={(e) => handleValueChange('role', e.target.value)}
         >
-          <option value="0">User</option>
-          <option value="1">Management</option>
-          <option value="2">Administrator</option>
+          <option value="1">User</option>
+          <option value="2">Management</option>
+          <option value="3">Administrator</option>
         </select>
       </div>
       {Object.keys(localUser).filter(key => key !== 'id' && key !== 'email' && key !== 'role').map((key) => (
@@ -102,7 +102,6 @@ export const RoleManagement = () => {
   return (
     <div>
       <h2>User Role Management</h2>
-      <p>Welcome, {user && user.email}</p>
       <div className="user-list">
         {users.map((user) => (
           <div key={user.id} className="user-item">
