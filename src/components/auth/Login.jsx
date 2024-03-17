@@ -14,6 +14,7 @@ const Login = () => {
   
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent the form from causing a page reload
+    if (failedAttempts > 2) return; //prevents login after 3 failed attempts
     signInWithEmailAndPassword(auth, email, password)
     .then(async (userCredential) => {
         const userDocRef = doc(db, "users", userCredential.user.uid);

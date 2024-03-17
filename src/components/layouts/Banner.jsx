@@ -10,7 +10,7 @@ export const Banner = () => {
     <>
     <div className="banner">
       <img src={logo} alt="Logo" style={{ height: '50px' }} />
-      {user.role === 3 && (
+      {(user && user.role === 3) && (
       <ul className='navbar'>
       <li className='navbar-item'><Link className='navbar-link' to="addaccounts">Add Accounts</Link></li>
       <li className='navbar-item'><Link className='navbar-link' to="viewaccounts">View Accounts</Link></li>
@@ -18,7 +18,7 @@ export const Banner = () => {
       <li className='navbar-item'><Link className='navbar-link' to="deactivateaccounts">Deactivate Accounts</Link></li>
       </ul>
       )}
-      {(user.role === 1 || user.role == 2) && (
+      {(user && (user.role === 1 || user.role == 2)) && (
       <ul className='navbar'>
       <li className='navbar-item'><Link className='navbar-link' to="viewaccounts">View Accounts</Link></li>
       </ul>

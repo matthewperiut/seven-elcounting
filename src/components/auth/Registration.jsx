@@ -1,13 +1,19 @@
 import { useState, useEffect } from 'react';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
-import { db, auth } from './firebase-config';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { db, auth } from '../../firebase-config';
 import { doc, setDoc } from 'firebase/firestore';
-import "./App.css";
+import { Link, useNavigate } from 'react-router-dom';
 
-export const Auth = ({ onUserChange }) => {
-  const [isRegistering, setIsRegistering] = useState(false);
+
+const Registration = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [DOB, setDOB] = useState(new Date());
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [address, setAddress] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [validationResults, setValidationResults] = useState({
     minLength: false,
     specialChar: false,
@@ -28,40 +34,13 @@ export const Auth = ({ onUserChange }) => {
     setValidationResults(results);
   };
 
-  // Call validatePassword every time the password changes
-  useEffect(() => {
-    validatePassword(password);
-  }, [password]);
+    // Call validatePassword every time the password changes
+    useEffect(() => {
+      validatePassword(password);
+    }, [password]);
 
   // Check if all validation results are true
   const isPasswordValid = Object.values(validationResults).every(Boolean);
-
-  const handleAuthOperation = async (operation) => {
-    if (operation === 'register' && !isPasswordValid) return; // Prevents registration if password is not valid
-
-    try {
-      let userCredential;
-      if (operation === 'register') {
-        userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await setDoc(doc(db, "users", userCredential.user.uid), {
-          email: userCredential.user.email,
-          displayName: "test",
-          role: 0
-        });
-      } else if (operation === 'login') {
-        userCredential = await signInWithEmailAndPassword(auth, email, password);
-      }
-      onUserChange(userCredential.user);
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Prevent the form from causing a page reload
-    const operation = isRegistering ? 'register' : 'login';
-    handleAuthOperation(operation);
-  };
 
   const renderValidationMessage = (isValid, message) => (
     <li className={isValid ? "valid" : "invalid"} style={{ listStyleType: "none", display: "flex", alignItems: "flex-start", margin: "2px 0px" }}>
@@ -72,12 +51,70 @@ export const Auth = ({ onUserChange }) => {
     </li>
   );
 
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent the form from causing a page reload
+    setErrorMessage('');
+    if (!isPasswordValid) {
+      setErrorMessage('Invalid Password');
+      return; //prevents login if password is not valid
+    }
+    createUserWithEmailAndPassword(auth, email, password)
+    .then(async (userCredential) => {
+        const date = new Date(); // Current date
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear().toString().slice(-2);
+
+          await setDoc(doc(db, "users", userCredential.user.uid), {
+          email: userCredential.user.email,
+          displayName: firstName.charAt(0) + lastName + month.toString() + year.toString(),
+          firstName: firstName,
+          lastName: lastName,
+          DOB: DOB,
+          approved: false,
+          isActivated: true,
+          address: address,
+          role: 0
+        });
+        console.log(userCredential.user)
+        confirm('Access request submitted, please wait and check your email for approval!');
+        navigate("/", { replace: true })
+    })
+    .catch((error) => {
+      console.error(error.message);
+      setErrorMessage(error.message);
+    });
+  };
+
+
+
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        {isRegistering ? (
-          <>
-            <h2>Register</h2>
+    <div className="wrapper">
+    <form onSubmit={handleSubmit}>
+            <h1>Register</h1>
+            <input
+              type="firstName"
+              placeholder="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+            <input
+              type="lastName"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+            <input
+              type="date"
+              placeholder="date of birth"
+              value={DOB}
+              onChange={(e) => setDOB(e.target.value)}
+            />
+            <input
+              type="address"
+              placeholder="Address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
             <input
               type="email"
               placeholder="Email"
@@ -90,42 +127,23 @@ export const Auth = ({ onUserChange }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <button type="submit">Register</button>
-            <ul style={{ padding: "0" }}>
+            
+            <p style={{ color: '#d94f00' }}>{errorMessage}</p>
+          
+            <ul className="passList" style={{ padding: "0" }}>
               {renderValidationMessage(validationResults.minLength, "Password must contain at least 8 characters")}
               {renderValidationMessage(validationResults.letter, "Password must begin with a letter")}
               {renderValidationMessage(validationResults.number, "Password must contain a number")}
               {renderValidationMessage(validationResults.specialChar, "Password must contain a special character")}
               {renderValidationMessage(validationResults.startsWithLetter, "Password must start with a letter")}
             </ul>
-          </>
-        ) : (
-          <>
-            <h2>Login</h2>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <button type="submit">Login</button>
-          </>
-        )}
-      </form>
-      <button onClick={() => setIsRegistering(!isRegistering)}>
-        {isRegistering ? "Already have an account? Login" : "Create an account"}
-      </button>
-      {!isRegistering && (
-        <button onClick={() => sendPasswordResetEmail(auth, email).then(() => alert("Password reset email sent!")).catch((error) => console.error(error.message))}>
-          Forgot Password?
-        </button>
-      )}
-    </div>
-  );
-};
+            <div className='buttons'>
+            <button type="submit">Register</button>
+            <Link to="/"><button> Already have an account? Login </button></Link>
+            </div>
+            </form>
+          </div>
+  )
+}
+
+export default Registration
