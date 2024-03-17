@@ -1,0 +1,46 @@
+/* This is not even close to complete, just starting basic login/register form */
+
+
+* {
+    margin: 0;
+}
+
+h1 {
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+}
+
+span {
+    font-size: large;
+    margin: 10px;
+}
+
+.wrapper {
+    align-items: center;
+    text-align: center;
+    padding: 15px;
+    margin: 10px;
+}
+
+input {
+    width: 90%;
+    padding: 10px;
+    margin: 5px;
+}
+
+button {
+    background-color: hsl(257, 65%, 72%);
+    border: none;
+    font-size: 20px;
+    padding: 20px;
+    margin: 20px;
+    opacity: 95%;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+
+
+
+
+
