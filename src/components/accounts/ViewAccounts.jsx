@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase-config';
 
 const ViewAccounts = () => {
   const [accounts, setAccounts] = useState([]);
 
+  const fetchAllAccounts = async () => {
+    const querySnapshot = await getDocs(collection(db, 'accounts')); //gets snapshot of all accounts
+    setAccounts(querySnapshot.docs.map(doc => doc.data())); //maps snapshot elements into state array of objects
+  };
+
   useEffect(() => {
-    const fetchAllUsers = async () => {
-      const querySnapshot = await getDocs(collection(db, 'accounts'));
-      setAccounts(querySnapshot.docs.map(doc => doc.data()));
-    };
-      fetchAllUsers();
+      fetchAllAccounts(); //fetches all accounts
   }, []);
   
 
@@ -20,14 +20,13 @@ const ViewAccounts = () => {
   return (
     <div>
       <h1>View Accounts</h1>
-      <div className="user-list">
+      <div className="database-list">
           {accounts.map((account) => (
-              <div key={account.accountName} className="user-item"> 
-                <span>{account.accountName}</span>
+              <div key={account.AccountName} className="database-item"> 
+                <p>{account.AccountName}</p>
                 <button className="button-edit">View</button>
               </div>
           ))}
-          <Link to="/">Dashboard</Link>
       </div>
     </div>
   );

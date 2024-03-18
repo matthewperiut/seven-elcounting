@@ -1,15 +1,21 @@
 import React from 'react';
 import logo from '../../assets/logo.png'
 import default_pfp from '../../assets/default_pfp.png'
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { Context } from '../UserContext';
 
 export const Banner = () => {
-  const { user, logout } = Context();
+  const { user, logout } = Context(); //pull user context and logout function
+  const navigate = useNavigate();
+
+  const backToHome = () => {
+    navigate("/", { replace: true })
+  }
+
   return (
     <>
     <div className="banner">
-      <img src={logo} alt="Logo" style={{ height: '50px' }} />
+      <img className='logo' onClick={backToHome} src={logo} alt="Logo" style={{ height: '50px' }} />
       {(user && user.role === 3) && (
       <ul className='navbar'>
       <li className='navbar-item'><Link className='navbar-link' to="addaccounts">Add Accounts</Link></li>

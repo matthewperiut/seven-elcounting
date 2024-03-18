@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { db } from '../../firebase-config';
 import { setDoc, doc, getDoc, query, collection, where, getDocs } from 'firebase/firestore';
 
@@ -15,12 +14,12 @@ export const AddAccounts = () => {
 
   try {
       //checks if account name matches a collection that already exists
-      const nameCheck = await getDoc(doc(db, 'accounts', accountInfo.accountName)); 
+      const nameCheck = await getDocs(query(collection(db, 'accounts'), where('AccountName', '==', accountInfo.accountName))); 
 
       //checks if provided account number already exists in a collection
-      const numCheck = await getDocs(query(collection(db, 'accounts'), where('accountNumber', '==', accountInfo.accountNumber)));
+      const numCheck = await getDocs(query(collection(db, 'accounts'), where('AccountNumber', '==', accountInfo.accountNumber)));
 
-      if (nameCheck.exists()) {
+      if (!nameCheck.empty) {
         setErrorMessage('Account name already exists.');
         return;
       } else if (!numCheck.empty) {
@@ -29,29 +28,31 @@ export const AddAccounts = () => {
       } 
 
       //creates collection that stores account info(names collection as account name)
-      await setDoc(doc(db, "accounts", accountInfo.accountName), { 
+      await setDoc(doc(db, "accounts", accountInfo.UID), { 
         Balance: accountInfo.balance, 
         Category: accountInfo.accountCatagory,
-        Comment: accountInfo.comment,
+        Comment: accountInfo.comment || null,
         Credit: accountInfo.credit,
         Debit: accountInfo.debit,
         Order: accountInfo.order,
         Statement: accountInfo.statement,
         Subcategory: accountInfo.accountSubcatagory,
-        UID: accountInfo.UID,
-        accountDescription: accountInfo.accountDescription,
-        accountName: accountInfo.accountName,
-        accountNumber: accountInfo.accountNumber,
-        dateAccountAdded: new Date(),
-        initialBalance: accountInfo.initialBalance,
-        normalSide: accountInfo.normalSide,
+        UserID: accountInfo.UID,
+        AccountDescription: accountInfo.accountDescription,
+        AccountName: accountInfo.accountName,
+        AccountNumber: accountInfo.accountNumber,
+        DateAccountAdded: new Date(),
+        InitialBalance: accountInfo.initialBalance,
+        NormalSide: accountInfo.normalSide,
         isActivated: true
       });
       console.log(accountInfo);
       setSuccess(true);
+      setAccountInfo(null);
     }catch(error) {
-      console.log(error);
+      console.log(error.message);
       setErrorMessage(error.message);
+      if (error.message.includes('Cannot read properties of undefined')){ setErrorMessage('Missing critical field!') }
     }
 
 };
@@ -65,84 +66,97 @@ const handleAccountInfo = (e) => {
 
 
   return (
-    <div>
+    <div className='wrapper'>
       <h1>Add an Account</h1>
-    <form onSubmit={handleSubmit} className='wrapper'>
-            <input
-              name="accountName"
-              placeholder="Account Name"
-              onChange={(e) => handleAccountInfo(e)}
-            />
-            <input
-              name="accountNumber"
-              placeholder="Account Number"
-              onChange={(e) => handleAccountInfo(e)}
-            />
-            <input
-              name="accountDescription" 
-              placeholder="Account Description"
-              onChange={(e) => handleAccountInfo(e)}
-            />
-            <input
-              name="normalSide"
-              placeholder="Normal Side"
-              onChange={(e) => handleAccountInfo(e)}
-            />
-            <input
-              name="accountCatagory"
-              placeholder="Account Category (e.g. current assets)"
-              onChange={(e) => handleAccountInfo(e)}
-            />
-            <input
-              name="accountSubcatagory"
-              placeholder="Account Subcategory (e.g. current assets)"
-              onChange={(e) => handleAccountInfo(e)}
-            />
-             <input
-              name="initialBalance"
-              placeholder="Initial Balance"
-              onChange={(e) => handleAccountInfo(e)}
-            />
-            <input
-              name="debit"
-              placeholder="Debit"
-              onChange={(e) => handleAccountInfo(e)}
-            />
-            <input
-              name="credit"
-              placeholder="Credit"
-              onChange={(e) => handleAccountInfo(e)}
-            />
-            <input
-              name="balance"
-              placeholder="Balance"
-              onChange={(e) => handleAccountInfo(e)}
-            />
-            <input
-              name="UID"
-              placeholder="User ID"
-              onChange={(e) => handleAccountInfo(e)}
-            />
-            <input
-              name="order"
-              placeholder="Order"
-              onChange={(e) => handleAccountInfo(e)}
-            />
-            <input
-              name="statement"
-              placeholder="Statement (e.g. IS (income statement), BS (balance sheet), RE (Retained Earnings statement)"
-              onChange={(e) => handleAccountInfo(e)}
-            />
-             <input
-              name="comment"
-              placeholder="Comment"
-              onChange={(e) => handleAccountInfo(e)}
-            /><br />
+      <form onSubmit={handleSubmit} className='account-form'>
+          <label htmlFor="accountName">Account Name: </label>
+          <input
+            id="accountName"
+            name="accountName"
+            onChange={(e) => handleAccountInfo(e)}
+          /> 
+          <label htmlFor="accountNumber">Account Number: </label>
+          <input
+            id="accountNumber"
+            name="accountNumber"
+            onChange={(e) => handleAccountInfo(e)}
+          />
+          <label htmlFor="accountDescription">Account Description: </label>
+          <input
+            id="accountDescription" 
+            name="accountDescription" 
+            onChange={(e) => handleAccountInfo(e)}
+          />
+          <label htmlFor="normalSide">Normal Side: </label>
+          <input
+            id="normalSide"
+            name="normalSide"
+            onChange={(e) => handleAccountInfo(e)}
+          />
+          <label htmlFor="accountCategory">Account Category: </label>
+          <input
+            id="accountCatagory"
+            name="accountCatagory"
+            onChange={(e) => handleAccountInfo(e)}
+          />
+          <label htmlFor="accountSubcategory">Account Subcategory: </label>
+          <input
+            id="accountSubcatagory"
+            name="accountSubcatagory"
+            onChange={(e) => handleAccountInfo(e)}
+          />
+          <label htmlFor="initialBalance">Initial Balance: </label>
+          <input
+            id="initialBalance"
+            name="initialBalance"
+            onChange={(e) => handleAccountInfo(e)}
+          />
+          <label htmlFor="debit">Debit: </label>
+          <input
+            id="debit"
+            name="debit"
+            onChange={(e) => handleAccountInfo(e)}
+          />
+          <label htmlFor="credit">Credit: </label>
+          <input
+            id="credit"
+            name="credit"
+            onChange={(e) => handleAccountInfo(e)}
+          />
+          <label htmlFor="balance">Balance: </label>
+          <input
+            id="balance"
+            name="balance"
+            onChange={(e) => handleAccountInfo(e)}
+          />
+          <label htmlFor="UID">User ID: </label>
+          <input
+            id="UID"
+            name="UID"
+            onChange={(e) => handleAccountInfo(e)}
+          />
+          <label htmlFor="order">Order: </label>
+          <input
+            id="order"
+            name="order"
+            onChange={(e) => handleAccountInfo(e)}
+          />
+          <label htmlFor="statement">Statement: </label>
+          <input
+            id="statement"
+            name="statement"
+            onChange={(e) => handleAccountInfo(e)}
+          />
+          <label htmlFor="comment">Comment: </label>
+          <input
+            id="comment"
+            name="comment"
+            onChange={(e) => handleAccountInfo(e)}
+          />
             <p style={{color: "red"}}>{errorMessage}</p>
             <p style={{color: "green"}}>{success ? "Account Added!" : ""}</p>
-            <button type="submit">Add Account</button>
+            <div className='center-button'><button type="submit">Add Account</button></div>
             </form>
-            <Link to="/">Dashboard</Link>
           </div>
   )
 }

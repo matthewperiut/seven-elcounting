@@ -40,31 +40,36 @@ const Login = () => {
   
   
   return (
-    <>
+    <div className='wrapper'>
     <form onSubmit={handleSubmit}>
         <h2>Login</h2>
+        <label htmlFor="email">Email: </label>
         <input
+          required
           type="email"
-          placeholder="myemail@gmail.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+        <label htmlFor="password">Password: </label>
         <input
+          required
           type="password"
-          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-        /> <br />
-        <Link to="/forgotpassword">Forgot Password?</Link>
-        <p style={{ color: '#d94f00' }}>{errorMessage}</p>
+        />
+        <div className='forgot-password-link'><Link to="/forgotpassword">Forgot Password?</Link></div>
+        
+        <span style={{ color: '#d94f00' }}>{errorMessage}</span>
         {failedAttempts > 0 && 
-          ((failedAttempts >= 3 && (<p style={{ color: 'red' }}>Attempted too many wrong passwords! Please try again later.</p>)) ||
-          (failedAttempts < 3 && (<p>Failed Attempts: {failedAttempts}</p>)))
+          ((failedAttempts < 3 && (<span>Failed Attempts: {failedAttempts}</span>))
+          || (failedAttempts > 2 && (<span style={{color: 'red'}}>Attempted too many wrong passwords! Please try again later.</span>)))
         }
-        <button type="submit">Login</button>
+        <div>
+        <button className={failedAttempts > 2 ? "disabled-button" : undefined} disabled= {failedAttempts > 2} type="submit">Login</button>
         <Link to="/registration"><button> Create an account </button></Link>
+        </div>
         </form>
-    </>
+    </div>
   )
 }
 

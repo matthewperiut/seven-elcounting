@@ -101,10 +101,10 @@ export const RoleManagement = () => {
   return (
     <div>
       <h2>User Role Management</h2>
-      <div className="user-list">
+      <div className="database-list">
         {users.map((user) => (
-          <div key={user.id} className="user-item">
-            <span>{user.email}</span>
+          <div key={user.id} className="database-item">
+            <p>{user.email}</p>
             <button onClick={() => handleOpenModal(user)} className="button-edit">Edit</button>
           </div>
         ))}
