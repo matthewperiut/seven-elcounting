@@ -35,8 +35,8 @@ return (
               <h1>{account.AccountName}</h1>
               <div>
               {Object.keys(account).filter(key => key !== 'DateAccountAdded' && key !== 'UserID' && key !== 'isActivated').map((key) => (
-                <div className='edit-account-form' key={key}>
-                  <label className='edit-account-label'>{key}: </label>
+                <div className='editDB-form' key={key}>
+                  <label className='editDB-label'>{key}: </label>
                   <input
                       type="text"
                       value={currentAccount[key]}
@@ -80,7 +80,7 @@ const EditAccounts = () => {
   
 
   return (
-    <div className='edit-accounts'>
+    <div className='editDBs'>
       <h1>Edit Accounts</h1>
       <div className="database-list">
           {accounts.map((account) => (

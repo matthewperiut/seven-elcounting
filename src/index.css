@@ -174,13 +174,19 @@ form {
     cursor: pointer;
 }
 
-.edit-account-label {
+.editDB-label {
     display: inline-block;
     text-align: left;
     width: 150px;
 }
 
-.edit-account-form {
+.editDB-form {
     max-width: 80%; /* centers input boxes */
+}
+
+.editDB-selection {
+    width: 143px;
+    padding: 10px;
+    margin: 5px;
 }
 /* Modal */

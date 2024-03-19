@@ -20,7 +20,7 @@ export const UserContextProvider = ({ children }) => {
               setUser({
                 uid: authUser.uid,
                 email: authUser.email,
-                displayName: userData.displayName,
+                displayName: userData.DisplayName,
                 photoURL: userData.photoURL,
                 role: userData.role
               });

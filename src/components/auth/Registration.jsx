@@ -66,13 +66,13 @@ const Registration = () => {
 
           await setDoc(doc(db, "users", userCredential.user.uid), {
           email: userCredential.user.email,
-          displayName: firstName.charAt(0) + lastName + month.toString() + year.toString(),
-          firstName: firstName,
-          lastName: lastName,
+          DisplayName: firstName.charAt(0) + lastName + month.toString() + year.toString(),
+          FirstName: firstName,
+          LastName: lastName,
           DOB: DOB,
-          approved: false,
+          Approved: false,
           isActivated: true,
-          address: address,
+          Address: address,
           role: 0
         });
         console.log(userCredential.user)

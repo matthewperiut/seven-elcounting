@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { db } from '../../firebase-config';
-import { setDoc, doc, getDoc, query, collection, where, getDocs } from 'firebase/firestore';
+import { query, collection, where, getDocs, setDoc, doc } from 'firebase/firestore';
 
 export const AddAccounts = () => {
   const [accountInfo, setAccountInfo] = useState({});
@@ -48,11 +48,12 @@ export const AddAccounts = () => {
       });
       console.log(accountInfo);
       setSuccess(true);
-      setAccountInfo(null);
+      e.target.reset();
+      setAccountInfo({});
     }catch(error) {
       console.log(error.message);
       setErrorMessage(error.message);
-      if (error.message.includes('Cannot read properties of undefined')){ setErrorMessage('Missing critical field!') }
+      if (error.message.includes('undefined')){ setErrorMessage('Missing critical field!') }
     }
 
 };
@@ -61,9 +62,6 @@ export const AddAccounts = () => {
 const handleAccountInfo = (e) => {
       setAccountInfo({...accountInfo, [e.target.name]: e.target.value});
 }
-
-
-
 
   return (
     <div className='wrapper'>
