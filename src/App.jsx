@@ -1,7 +1,7 @@
 import { Login, Registration,ForgotPassword, 
 RequireAccount, RequireUser, RequireManager, RequireAdmin, Banner, PageNotFound, 
 Dashboard, AddAccounts, ViewAccounts, EditAccounts, 
-DeactivateAccounts } from "./components"
+DeactivateAccounts, Help } from "./components"
 
 import { Route, Routes } from 'react-router-dom';
 import { UserContextProvider } from './components/UserContext';
@@ -16,6 +16,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="registration" element={<Registration />} />
         <Route path="forgotpassword" element={<ForgotPassword />} />
+        <Route path="Help" element={<Help />} />
         {/* private routes */}
         <Route path="/" element={<RequireAccount><Dashboard/></RequireAccount>} />
         <Route path="addaccounts" element={<RequireAdmin><AddAccounts /></RequireAdmin>} />

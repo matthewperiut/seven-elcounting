@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from '../../assets/logo.png'
 import default_pfp from '../../assets/default_pfp.png'
+import helpImage from '../../assets/helpImage.png'
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { Context } from '../UserContext';
 
@@ -13,7 +14,7 @@ export const Banner = () => {
   }
 
   return (
-    <>
+    <>  
     <div className="banner">
       <img className='logo' onClick={backToHome} src={logo} alt="Logo" style={{ height: '50px' }} />
       {(user && user.role === 3) && (
@@ -36,6 +37,9 @@ export const Banner = () => {
           <button onClick={logout}>Logout</button>
         </div>
       )}
+      <div>
+        <img onClick={() => navigate("/Help")} src={helpImage} className= "Help"></img>
+      </div>
     </div>
     <div><Outlet /></div>
     

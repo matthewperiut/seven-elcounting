@@ -10,5 +10,7 @@ export { default as AddAccounts } from "./accounts/AddAccounts"
 export { default as ViewAccounts } from "./accounts/ViewAccounts"
 export { default as EditAccounts } from "./accounts/EditAccounts"
 export { default as DeactivateAccounts } from "./accounts/DeactivateAccounts"
+export { default as Help } from "./layouts/Help"
+
 
 {/* File for easily exporting all components */}
