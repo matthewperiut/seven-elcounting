@@ -1,201 +1,170 @@
 * {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
-h1,
-h2,
-h3 {
-  margin: 15px;
-  text-align: center;
+h1, h2, h3 {
+    margin: 15px;
+    text-align: center;
 }
 
 p {
-  margin: 10px;
-  margin-left: 25px;
-  font-size: 25px;
+    margin: 10px;
+    margin-left: 25px;
+    font-size: 25px;
 }
 
-/* Buttons */
+
+/* Buttons */ 
 button {
-  cursor: pointer; /* pointer on hover */
-  justify-self: start; /* Aligns the button to the start of its grid cell */
-  border-radius: 5px; /* rounded edges */
-  padding: 10px 20px;
-  margin: 5px;
-  background-color: #878ffa;
+    cursor: pointer; /* pointer on hover */
+    justify-self: start; /* Aligns the button to the start of its grid cell */
+    border-radius: 5px; /* rounded edges */
+    padding: 10px 20px;
+    margin: 5px;
+    background-color: #878ffa;
 }
 
 button:hover {
-  background-color: #6972f7;
+    background-color: #6972f7;
 }
 
 .disabled-button:hover {
-  cursor: not-allowed; /* disables cursor on hover */
-  background-color: #878ffa; /* resets to base background color */
+    cursor: not-allowed; /* disables cursor on hover */ 
+    background-color: #878ffa; /* resets to base background color */
 }
-/* Buttons */
+/* Buttons */ 
+
 
 /* Input fields */
 .wrapper {
-  position: relative;
-  padding: 15px;
-  margin: 10px;
-  text-align: center;
+    position: relative;
+    padding: 15px;
+    margin: 10px;
+    text-align: center;
 }
 
 label {
-  padding: 10px;
-}
+    padding: 10px;
+} 
 
 input {
-  width: 20%;
-  padding: 10px;
-  margin: 5px;
-}
+    width: 20%;
+    padding: 10px;
+    margin: 5px;
+} 
 
 form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 /* Input fields */
 
+
 /* Dashboard/Banner */
 .welcome-div {
-  text-align: center;
+    text-align: center;
 }
 
 .banner {
-  margin: 0;
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #878ffa;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #878ffa;
 }
 
 .navbar {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 
 .navbar-item {
-  float: left; /* turn navbar items into row */
+    float: left; /* turn navbar items into row */ 
 }
 
 .navbar-link {
-  margin-left: 5px;
-  padding: 14px;
-  text-decoration: none; /* remove link underline and color */
+    margin-left: 5px;
+    padding: 8px;
+    text-decoration: none; /* remove link underline and color */ 
 }
 
 .navbar-link:hover {
-  background-color: #6972f7;
+    background-color: #6972f7;
 }
 
 .logo:hover {
-  cursor: pointer; /* pointer on hover */
-}
-
-.Help {
-  cursor: pointer;
+    cursor: pointer; /* pointer on hover */
 }
 /* Dashboard/Banner */
 
+
 /* password checklist */
-.valid-list,
-.invalid-list {
-  list-style-type: none;
-  display: flex;
-  margin-bottom: 8px;
+.valid-list, .invalid-list {
+    list-style-type: none;
+    display: flex;
+    margin-bottom: 8px;
 }
 
 .checklist-icon {
-  padding-right: 8px;
+    padding-right: 8px;
 }
 
 .invalid-message {
-  opacity: 0.5;
+    opacity: 0.5;
 }
 /* password checklist */
 
+
 /* Database list(users/accounts) */
 .database-list {
-  display: grid;
-  grid-template-columns: 400px auto;
-  justify-content: center;
-  gap: 5px;
-  align-items: center;
-}
-
+    display: grid;
+    grid-template-columns: 400px auto;
+    justify-content: center;
+    gap: 5px;
+    align-items: center;
+  }
+  
 .database-item {
-  display: contents;
-}
+    display: contents;
+  }
 /* Database list(users/accounts) */
 
-/* Help Page */
-.page-info {
-  color: black;
-  font-family: Montserrat, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-bottom: 30px;
-  height: 150px; /* Set a fixed height */
-}
-
-.page-info p {
-  font-size: 1em;
-  font-weight: 400;
-  margin-top: 10px; /* Add some margin */
-}
-
-.page-info h1 {
-  font-size: 2em;
-  font-weight: 700;
-  margin-top: 10px; /* Add some margin */
-}
-
-.page-info h3 {
-  font-size: 2em;
-  font-weight: 400;
-  margin-top: 10px; /* Add some margin */
-}
-/* Help Page */
 
 /* Modal */
 .modal-background {
-  position: fixed; /* Stay in place */
-  text-align: center;
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  background-color: rgba(0, 0, 0, 0.5);
+    position: fixed; /* Stay in place */
+    text-align: center;
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0,0,0,0.5);
 }
 
 .modal {
-  background-color: white;
-  margin: 80px auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 50%;
-  border-radius: 25px;
+    background-color: white;
+    margin: 80px auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    border-radius: 25px;
 }
 
-.closeButton {
-  float: right;
-  font-size: 30px;
-  color: #888;
-  margin: 0 15px;
+.closeButton{
+    float: right;
+    font-size: 30px;
+    color: #888;
+    margin: 0 15px;
 }
 
 .closeButton:hover {
-  color: black;
-  cursor: pointer;
+    color: black;
+    cursor: pointer;
 }
 
 .editDB-label {

@@ -1,6 +1,8 @@
 import { Context } from "../UserContext";
 import { useNavigate } from "react-router-dom";
 import { RoleManagement } from "../rolemanagement/RoleManagement";
+import React from 'react';
+import SearchBar from './SearchBar';
 
 const Dashboard = () => {
   const { user } = Context(); //pull user context
@@ -12,6 +14,7 @@ const Dashboard = () => {
       <div className="welcome-div">Welcome, {user && user.email}</div>
       {user.role == 3 ? (
         <div>
+           <SearchBar />
           <RoleManagement />
         </div>
       ) : user.role == 2 ? (
@@ -29,3 +32,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
