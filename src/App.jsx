@@ -6,6 +6,7 @@ import ViewOnlyAccounts from "./components/accounts/ViewOnlyAccounts";
 
 import { Route, Routes } from 'react-router-dom';
 import { UserContextProvider } from './components/UserContext';
+import Journalizing from "./components/journalizing/Journalizing";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="viewaccounts" element={<RequireUser><ViewOnlyAccounts/></RequireUser>} />
         <Route path="editaccounts" element={<RequireAdmin><EditAccounts/></RequireAdmin>} />
         <Route path="deactivateaccounts" element={<RequireAdmin><DeactivateAccounts/></RequireAdmin>} />
+        <Route path="journalizing" element={<Journalizing/>} />
         {/* page not found */}
         <Route path="*" element={<PageNotFound />} />
         </Route>

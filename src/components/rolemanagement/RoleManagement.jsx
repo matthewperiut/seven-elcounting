@@ -50,6 +50,7 @@ const Modal = ({ isOpen, onClose, user, updateUser }) => {
             value={localUser.role}
             onChange={(e) => handleValueChange("role", e.target.value)}
           >
+            <option value="0">Non-User</option>
             <option value="1">User</option>
             <option value="2">Management</option>
             <option value="3">Administrator</option>

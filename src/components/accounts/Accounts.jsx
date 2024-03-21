@@ -19,7 +19,7 @@ const Modal = ({ isOpen, account, closeModal, updateAccount }) => {
   };
 
   const saveChanges = async () => {
-    const currentAccountDoc = doc(db, "accounts", account.UserID);
+    const currentAccountDoc = doc(db, "accounts", account.UID);
     await updateDoc(currentAccountDoc, currentAccount);
     updateAccount(currentAccount); // Update account in the parent component state
     closeModal(); // Close modal after saving changes
