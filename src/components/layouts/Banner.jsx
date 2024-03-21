@@ -32,6 +32,7 @@ export const Banner = () => {
               <li className='navbar-item'><Link className='navbar-link' to="editusers">Edit Users</Link></li>
               <li className='navbar-item'><Link className='navbar-link' to="editaccounts">Edit Accounts</Link></li>
               <li className='navbar-item'><Link className='navbar-link' to="deactivateaccounts">Deactivate Accounts</Link></li>
+              <li className='navbar-item'><Link className='navbar-link' to="journalizing">Journalizing</Link></li>
             </ul>
           )}
           {(user && (user.role === 1 || user.role == 2)) && (

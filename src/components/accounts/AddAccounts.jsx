@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../../firebase-config';
 import { query, collection, where, getDocs, setDoc, doc } from 'firebase/firestore';
 import CustomCalendar from '../layouts/CustomCalendar';
+import CurrencyInput from 'react-currency-input-field';
 
 export const AddAccounts = () => {
   const [accountInfo, setAccountInfo] = useState({ credit: false, debit: false });
@@ -69,6 +70,12 @@ export const AddAccounts = () => {
       setAccountInfo(prev => ({ ...prev, [e.target.name]: e.target.value }));
     }
   };
+  const handleBalChange = (value) => {
+    if (!isNaN(value)) {
+      setAccountInfo(prev => ({ ...prev, balance: value }));
+      setDisplayedbalance(`$${value}`);
+    }
+  };
 
   const inputFields = [
     { id: 'accountName', label: 'Account Name', type: 'text' },
@@ -101,14 +108,12 @@ export const AddAccounts = () => {
                 <div key={id} style={{ marginBottom: '20px', display: 'flex', alignItems: 'center' }}>
                   <label htmlFor={id} style={{ marginRight: '10px' }}>{label}: </label>
                   <span style={{ marginRight: '8px' }}>$</span>
-                  <input
-                    id={id}
-                    name={id}
-                    type="text" // Changed to text to allow for formatted input
-                    onChange={handleChange}
-                    value={displayedbalance.replace(/^\$/, '')} // Remove $ for the actual input value
-                    style={{ ...inputStyle, paddingLeft: '25px' }} // Adjust padding to accommodate the dollar sign if needed
-                  />
+                  <CurrencyInput
+                  id="balance"
+                  name="balance"
+                  decimalsLimit={2}
+                  onValueChange={(value, name, values) => handleBalChange(value)}
+                  style={{ ...inputStyle, paddingLeft: '25px' }} />
                 </div>
               );
             } else {

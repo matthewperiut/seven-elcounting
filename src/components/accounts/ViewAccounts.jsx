@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase-config';
 import CustomCalendar from '../layouts/CustomCalendar';
+import CurrencyInput from 'react-currency-input-field';
 
 /**
  * Formats a Firestore timestamp to a readable date string.
@@ -24,9 +25,9 @@ const Modal = ({ isOpen, account, closeModal, isEdit, updateAccount }) => {
     setCurrentAccount(account);
   }, [account]);
 
-  const handleValueChange = (e, field) => {
+  const handleValueChange = (value, field) => {
     if (isEdit) {
-      setCurrentAccount({ ...currentAccount, [field]: e.target.value });
+      setCurrentAccount({ ...currentAccount, [field]: value });
     }
   };
 
@@ -39,6 +40,34 @@ const Modal = ({ isOpen, account, closeModal, isEdit, updateAccount }) => {
 
   if (!isOpen || !currentAccount) return null;
 
+  const customInput = (key, placeholder) => {
+    if (key === "balance") {
+      return (<CurrencyInput decimalsLimit={2}
+        placeholder={placeholder}
+        value={placeholder}
+        prefix="$"
+        onValueChange={(value, name, values) => handleValueChange(value, key)}/>)
+    }
+
+    if (key === "accountNumber") {
+      return (<input
+      type="number"
+      value={placeholder}
+      onChange={(e) => handleValueChange(e.target.value, key)} />);
+    }
+
+    if (key === "DateAccountAdded") {
+      return (
+        formatDate(currentAccount[key])
+      )
+    }
+    
+    return (<input
+      type="text"
+      value={placeholder}
+      onChange={(e) => handleValueChange(e.target.value, key)} />);
+  }
+
   return (
     <div onClick={closeModal} className='modal-background'>
       <div onClick={(e) => e.stopPropagation()} className='modal'>
@@ -48,13 +77,8 @@ const Modal = ({ isOpen, account, closeModal, isEdit, updateAccount }) => {
           {Object.keys(currentAccount).map(key => (
             <div className='editDB-form' key={key}>
               <label className='editDB-label'>{key}: </label>
-              {isEdit ? (
-                <input
-                  type="text"
-                  value={currentAccount[key]}
-                  onChange={(e) => handleValueChange(e, key)}
-                />
-              ) : (
+              {isEdit ? (customInput(key, currentAccount[key]))
+               : (
                 <span>{typeof currentAccount[key]?.toDate === 'function' ? formatDate(currentAccount[key]) : currentAccount[key]}</span>
               )}
             </div>
@@ -100,10 +124,25 @@ const ViewAccounts = ( showEdit ) => {
   };
 
   const updateAccountInfo = async (updatedAccount) => {
-    // Assuming this function updates the account in Firestore and then fetches all accounts again
-    setAccounts(accounts.map(account => account.id === updatedAccount.id ? updatedAccount : account));
-    fetchAllAccounts();
+    // Use the account's id to get a reference to its document in Firestore
+    const accountRef = doc(db, 'accounts', updatedAccount.id);
+  
+    // Prepare the update object by omitting the 'id' field
+    // Firestore document references should not include the 'id' field as part of the document data
+    const { id, ...updateData } = updatedAccount;
+  
+    try {
+      // Update the document in Firestore
+      await updateDoc(accountRef, updateData);
+  
+      // Optimistically update the local state without refetching all accounts
+      // This approach assumes the update operation succeeds, making the UI more responsive
+      setAccounts(accounts.map(account => account.id === updatedAccount.id ? updatedAccount : account));
+    } catch (error) {
+      console.error("Error updating document: ", error);
+    }
   };
+  
 
   return (
     <div>
