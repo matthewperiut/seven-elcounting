@@ -1,15 +1,11 @@
 import { useEffect, useState } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase-config';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css'; 
+import CustomCalendar from '../layouts/CustomCalendar';
 
 const ViewAccounts = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [accounts, setAccounts] = useState([]);
-  const [showCalendar, setShowCalendar] = useState(false); 
-
-  const toggleCalendar = () => setShowCalendar(!showCalendar); 
 
   // Initially fetch all accounts
   const fetchAllAccounts = async () => {
@@ -39,14 +35,9 @@ const ViewAccounts = () => {
 
   return (
     <div>
-      <button onClick={toggleCalendar} style={{ position: 'absolute', top: 120, left: 10, zIndex: 100 }}>
-        {showCalendar ? 'Hide Calendar' : 'Show Calendar'}
-      </button>
-      {showCalendar && (
-        <div style={{ position: 'fixed', top: '180px', left: '20px', zIndex: 100 }}>
-          <Calendar />
-        </div>
-      )}
+      <div style={{ position: 'fixed', top: '120px', left: '20px', zIndex: 100 }}>
+        <CustomCalendar />
+      </div>
       <h1>View Accounts</h1>
       <form onSubmit={handleSearch}>
         <input

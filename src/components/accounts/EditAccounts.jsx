@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase-config';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-
+import CustomCalendar from '../layouts/CustomCalendar';
 
 const Modal = ( {isOpen, account, closeModal, updateAccount } ) => {
   const [currentAccount, setCurrentAccount] = useState(account);
@@ -55,8 +53,6 @@ const EditAccounts = () => {
   const [accounts, setAccounts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentAccount, setCurrentAccount] = useState(null);
-  const [showCalendar, setShowCalendar] = useState(false); // Moved here
-  const toggleCalendar = () => setShowCalendar(!showCalendar); // Moved here
 
   const fetchAllAccounts = async () => {
     const querySnapshot = await getDocs(collection(db, 'accounts'));
@@ -79,15 +75,10 @@ const EditAccounts = () => {
 
   return (
     <div className='editDBs'>
+      <div style={{ position: 'fixed', top: '120px', left: '20px', zIndex: 100 }}>
+        <CustomCalendar />
+      </div>
       <h1>Edit Accounts</h1>
-      <button onClick={toggleCalendar} style={{ position: 'absolute', top: 120, left: 10, zIndex: 100 }}>
-        {showCalendar ? 'Hide Calendar' : 'Show Calendar'}
-      </button>
-      {showCalendar && (
-        <div style={{ position: 'fixed', top: '180px', left: '20px', zIndex: 100 }}>
-          <Calendar />
-        </div>
-      )}
       <div className="database-list">
           {accounts.map((account) => (
               <div key={account.AccountName} className="database-item">  

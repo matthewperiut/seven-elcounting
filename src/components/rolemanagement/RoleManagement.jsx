@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { doc, getDocs, collection, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import { Context } from "../UserContext";
+import CustomCalendar from "../layouts/CustomCalendar";
 
 const Modal = ({ isOpen, onClose, user, updateUser }) => {
   const [localUser, setLocalUser] = useState(user);
@@ -117,6 +118,9 @@ export const RoleManagement = () => {
 
   return (
     <div>
+      <div style={{ position: 'fixed', top: '120px', left: '20px', zIndex: 100 }}>
+        <CustomCalendar />
+      </div>
       <h2>User Role Management</h2>
       <div className="database-list">
         {users.map((user) => (

@@ -1,16 +1,12 @@
 import { useState } from 'react'
 import { db } from '../../firebase-config';
 import { query, collection, where, getDocs, setDoc, doc } from 'firebase/firestore';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
+import CustomCalendar from '../layouts/CustomCalendar';
 
 export const AddAccounts = () => {
   const [accountInfo, setAccountInfo] = useState({});
   const [errorMessage, setErrorMessage] = useState('');
   const [success, setSuccess] = useState(false);
-
-  const [showCalendar, setShowCalendar] = useState(false); 
-  const toggleCalendar = () => setShowCalendar(!showCalendar); 
 
   const handleSubmit = async (e) => {
   e.preventDefault(); // Prevent the form from causing a page reload
@@ -70,14 +66,9 @@ const handleAccountInfo = (e) => {
 
   return (
     <div className='wrapper'>
-      <button onClick={toggleCalendar} style={{ position: 'absolute', top: 0, left: 0, zIndex: 1000 }}>
-        {showCalendar ? 'Hide Calendar' : 'Show Calendar'}
-      </button>
-      {showCalendar && (
-        <div style={{ position: 'fixed', top: '180px', left: '20px', zIndex: 1000 }}>
-          <Calendar />
-        </div>
-      )}
+      <div style={{ position: 'fixed', top: '120px', left: '20px', zIndex: 100 }}>
+        <CustomCalendar />
+      </div>
       <h1>Add an Account</h1>
       <form onSubmit={handleSubmit} className='account-form'>
           <label htmlFor="accountName">Account Name: </label>
