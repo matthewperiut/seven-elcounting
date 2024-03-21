@@ -156,7 +156,7 @@ const ViewAccounts = ( showEdit ) => {
           placeholder="Search accounts..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          style={{ marginBottom: '20px' }}
+          style={{ marginBottom: '20px' , borderRadius: '30px' }}
         />
       </div>
       
