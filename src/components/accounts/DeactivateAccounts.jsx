@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react'
 import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { db } from '../../firebase-config';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 const DeactivateAccounts = () => {
   const [activeAccounts, setActiveAccounts] = useState([]);
   const [deactivedAccounts, setDeactivedAccounts] = useState([]);
+
+  const [showCalendar, setShowCalendar] = useState(false); 
+  const toggleCalendar = () => setShowCalendar(!showCalendar); 
 
   const fetchAllAccounts = async () => {
     const activeSnapshot = await getDocs(query(collection(db, 'accounts'), where('isActivated', '==', true))); //gets snapshot of all active accounts
@@ -33,6 +38,14 @@ const DeactivateAccounts = () => {
 
   return (
     <div>
+      <button onClick={toggleCalendar} style={{ position: 'absolute', top: 120, left: 10, zIndex: 100 }}>
+      {showCalendar ? 'Hide Calendar' : 'Show Calendar'}
+      </button>
+      {showCalendar && (
+        <div style={{ position: 'fixed', top: '180px', left: '20px', zIndex: 100 }}>
+          <Calendar />
+        </div>
+      )}
       <h1>Deactivate an Account</h1>
       <h3>Active Accounts</h3>
       <div className="database-list">

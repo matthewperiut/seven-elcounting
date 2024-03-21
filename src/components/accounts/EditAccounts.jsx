@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react'
-import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase-config';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 
 const Modal = ( {isOpen, account, closeModal, updateAccount } ) => {
@@ -18,8 +20,6 @@ const Modal = ( {isOpen, account, closeModal, updateAccount } ) => {
   const handleValueChange = (field, value) => {
     setCurrentAccount({ ...currentAccount, [field]: value });
   };
-
-
 
   const saveChanges = async () => {
     const currentAccountDoc = doc(db, "accounts", account.UserID);
@@ -47,25 +47,24 @@ return (
               <button onClick={saveChanges}>Save Changes</button>
               </div>
       </div>
-  </div>
-)
-}
-
+    </div>
+  );
+};
 
 const EditAccounts = () => {
   const [accounts, setAccounts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentAccount, setCurrentAccount] = useState(null);
-
-
+  const [showCalendar, setShowCalendar] = useState(false); // Moved here
+  const toggleCalendar = () => setShowCalendar(!showCalendar); // Moved here
 
   const fetchAllAccounts = async () => {
-    const querySnapshot = await getDocs(collection(db, 'accounts')); //gets snapshot of all accounts
-    setAccounts(querySnapshot.docs.map(doc => doc.data())); //maps snapshot elements into state array of objects
+    const querySnapshot = await getDocs(collection(db, 'accounts'));
+    setAccounts(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
   };
 
   useEffect(() => {
-      fetchAllAccounts(); //fetches all accounts
+    fetchAllAccounts();
   }, []);
 
   const handleEdit = (account) => {
@@ -77,11 +76,18 @@ const EditAccounts = () => {
     setAccounts(accounts.map(account => account.AccountName === updatedAccount.AccountName ? updatedAccount : account));
     fetchAllAccounts();
   };
-  
 
   return (
     <div className='editDBs'>
       <h1>Edit Accounts</h1>
+      <button onClick={toggleCalendar} style={{ position: 'absolute', top: 120, left: 10, zIndex: 100 }}>
+        {showCalendar ? 'Hide Calendar' : 'Show Calendar'}
+      </button>
+      {showCalendar && (
+        <div style={{ position: 'fixed', top: '180px', left: '20px', zIndex: 100 }}>
+          <Calendar />
+        </div>
+      )}
       <div className="database-list">
           {accounts.map((account) => (
               <div key={account.AccountName} className="database-item">  
@@ -93,6 +99,6 @@ const EditAccounts = () => {
       </div>
     </div>
   );
-}
+};
 
-export default EditAccounts
+export default EditAccounts;
