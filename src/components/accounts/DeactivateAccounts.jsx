@@ -41,8 +41,8 @@ const DeactivateAccounts = () => {
       <h3>Active Accounts</h3>
       <div className="database-list">
           {activeAccounts.map((account) => (
-              <div key={account.AccountName} className="database-item">  
-                <p>{account.AccountName}</p>
+              <div key={account.accountName} className="database-item">  
+                <p>{account.accountName}</p>
                 <button className="button-edit" onClick={ () => deactivateAccount(account.UserID, account.Balance)}>Deactivate</button>
               </div>
           ))}
@@ -50,8 +50,8 @@ const DeactivateAccounts = () => {
       <h3>Deactivated Accounts</h3>
       <div className="database-list">
       {deactivedAccounts.map((account) => (
-            <div key={account.AccountName} className="database-item">  
-              <p>{account.AccountName}</p>
+            <div key={account.accountName} className="database-item">  
+              <p>{account.accountName}</p>
               <button className="button-edit" onClick={ () => activateAccount(account.UserID)}>Activate</button>
             </div>
         ))}

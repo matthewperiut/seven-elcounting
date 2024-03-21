@@ -2,6 +2,7 @@ import { Login, Registration,ForgotPassword,
 RequireAccount, RequireUser, RequireManager, RequireAdmin, Banner, PageNotFound, 
 Dashboard, AddAccounts, ViewAccounts, EditAccounts, 
 DeactivateAccounts, Help, RoleManagement } from "./components"
+import ViewOnlyAccounts from "./components/accounts/ViewOnlyAccounts";
 
 import { Route, Routes } from 'react-router-dom';
 import { UserContextProvider } from './components/UserContext';
@@ -21,7 +22,7 @@ function App() {
         <Route path="/" element={<RequireAccount><Dashboard/></RequireAccount>} />
         <Route path="addaccounts" element={<RequireAdmin><AddAccounts /></RequireAdmin>} />
         <Route path="editusers" element={<RequireAdmin>< RoleManagement/></RequireAdmin>} />
-        <Route path="viewaccounts" element={<RequireUser><ViewAccounts/></RequireUser>} />
+        <Route path="viewaccounts" element={<RequireUser><ViewOnlyAccounts/></RequireUser>} />
         <Route path="editaccounts" element={<RequireAdmin><EditAccounts/></RequireAdmin>} />
         <Route path="deactivateaccounts" element={<RequireAdmin><DeactivateAccounts/></RequireAdmin>} />
         {/* page not found */}

@@ -1,68 +1,90 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react';
 import { db } from '../../firebase-config';
 import { query, collection, where, getDocs, setDoc, doc } from 'firebase/firestore';
 import CustomCalendar from '../layouts/CustomCalendar';
 
 export const AddAccounts = () => {
-  const [accountInfo, setAccountInfo] = useState({});
+  const [accountInfo, setAccountInfo] = useState({ credit: false, debit: false });
   const [errorMessage, setErrorMessage] = useState('');
   const [success, setSuccess] = useState(false);
+  const [displayedbalance, setDisplayedbalance] = useState('');
+
+  useEffect(() => {
+    // Automatically generate a random account number when the component mounts
+    setAccountInfo(prev => ({
+      ...prev,
+      accountNumber: Math.floor(100000000 + Math.random() * 900000000).toString(), // Random 9-digit number
+    }));
+  }, []);
+
+  const checkExistingAccount = async (field, value) => {
+    const q = query(collection(db, 'accounts'), where(field, '==', value));
+    const docs = await getDocs(q);
+    return !docs.empty;
+  };
+
+  const createAccount = async () => {
+    await setDoc(doc(db, "accounts", accountInfo.UID), {
+      ...accountInfo,
+      DateAccountAdded: new Date(),
+      isActivated: true,
+      Comment: accountInfo.comment || null,
+    });
+  };
 
   const handleSubmit = async (e) => {
-  e.preventDefault(); // Prevent the form from causing a page reload
-  setSuccess(false); //reset success
-  setErrorMessage(''); //reset error message
+    e.preventDefault();
+    setSuccess(false);
+    setErrorMessage('');
 
-  try {
-      //checks if account name matches a collection that already exists
-      const nameCheck = await getDocs(query(collection(db, 'accounts'), where('AccountName', '==', accountInfo.accountName))); 
-
-      //checks if provided account number already exists in a collection
-      const numCheck = await getDocs(query(collection(db, 'accounts'), where('AccountNumber', '==', accountInfo.accountNumber)));
-
-      if (!nameCheck.empty) {
+    try {
+      if (await checkExistingAccount('accountName', accountInfo.accountName)) {
         setErrorMessage('Account name already exists.');
         return;
-      } else if (!numCheck.empty) {
+      }
+      if (await checkExistingAccount('accountNumber', accountInfo.accountNumber)) {
         setErrorMessage('Account number already exists.');
         return;
-      } 
+      }
 
-      //creates collection that stores account info(names collection as account name)
-      await setDoc(doc(db, "accounts", accountInfo.UID), { 
-        Balance: accountInfo.balance, 
-        Category: accountInfo.accountCatagory,
-        Comment: accountInfo.comment || null,
-        Credit: accountInfo.credit,
-        Debit: accountInfo.debit,
-        Order: accountInfo.order,
-        Statement: accountInfo.statement,
-        Subcategory: accountInfo.accountSubcatagory,
-        UserID: accountInfo.UID,
-        AccountDescription: accountInfo.accountDescription,
-        AccountName: accountInfo.accountName,
-        AccountNumber: accountInfo.accountNumber,
-        DateAccountAdded: new Date(),
-        InitialBalance: accountInfo.initialBalance,
-        NormalSide: accountInfo.normalSide,
-        isActivated: true
-      });
-      console.log(accountInfo);
+      await createAccount();
       setSuccess(true);
       e.target.reset();
-      setAccountInfo({});
-    }catch(error) {
-      console.log(error.message);
-      setErrorMessage(error.message);
-      if (error.message.includes('undefined')){ setErrorMessage('Missing critical field!') }
+      setAccountInfo({ credit: false, debit: false });
+    } catch (error) {
+      console.error(error.message);
+      setErrorMessage(error.message.includes('undefined') ? 'Missing critical field!' : error.message);
     }
+  };
+  const handleChange = (e) => {
+    if (e.target.name === 'balance') {
+      // Force only two decimal places and update displayed value with a dollar sign
+      const value = parseFloat(e.target.value).toFixed(2);
+      if (!isNaN(value)) {
+        setAccountInfo(prev => ({ ...prev, balance: value }));
+        setDisplayedbalance(`$${value}`);
+      }
+    } else {
+      // Handle other inputs normally
+      setAccountInfo(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    }
+  };
 
-};
+  const inputFields = [
+    { id: 'accountName', label: 'Account Name', type: 'text' },
+    { id: 'accountNumber', label: 'Account Number', type: 'number', readOnly: true },
+    { id: 'accountDescription', label: 'Account Description', type: 'text' },
+    { id: 'normalSide', label: 'Normal Side', type: 'text' },
+    { id: 'accountCatagory', label: 'Account Category', type: 'text' },
+    { id: 'accountSubcatagory', label: 'Account Subcategory', type: 'text' },
+    { id: 'balance', label: 'Initial Balance', type: 'number' },
+    { id: 'order', label: 'Order', type: 'number' },
+    { id: 'statement', label: 'Statement', type: 'text' },
+    { id: 'comment', label: 'Comment', type: 'text' },
+    { id: 'UID', label: 'User ID', type: 'text' },
+  ];
 
-//Function adds/replaces information fields in accountInfo state object
-const handleAccountInfo = (e) => {
-      setAccountInfo({...accountInfo, [e.target.name]: e.target.value});
-}
+  const inputStyle = { width: '100%', padding: '10px', marginBottom: '10px' }; // CSS for input boxes
 
   return (
     <div className='wrapper'>
@@ -71,96 +93,57 @@ const handleAccountInfo = (e) => {
       </div>
       <h1>Add an Account</h1>
       <form onSubmit={handleSubmit} className='account-form'>
-          <label htmlFor="accountName">Account Name: </label>
-          <input
-            id="accountName"
-            name="accountName"
-            onChange={(e) => handleAccountInfo(e)}
-          /> 
-          <label htmlFor="accountNumber">Account Number: </label>
-          <input
-            id="accountNumber"
-            name="accountNumber"
-            onChange={(e) => handleAccountInfo(e)}
-          />
-          <label htmlFor="accountDescription">Account Description: </label>
-          <input
-            id="accountDescription" 
-            name="accountDescription" 
-            onChange={(e) => handleAccountInfo(e)}
-          />
-          <label htmlFor="normalSide">Normal Side: </label>
-          <input
-            id="normalSide"
-            name="normalSide"
-            onChange={(e) => handleAccountInfo(e)}
-          />
-          <label htmlFor="accountCategory">Account Category: </label>
-          <input
-            id="accountCatagory"
-            name="accountCatagory"
-            onChange={(e) => handleAccountInfo(e)}
-          />
-          <label htmlFor="accountSubcategory">Account Subcategory: </label>
-          <input
-            id="accountSubcatagory"
-            name="accountSubcatagory"
-            onChange={(e) => handleAccountInfo(e)}
-          />
-          <label htmlFor="initialBalance">Initial Balance: </label>
-          <input
-            id="initialBalance"
-            name="initialBalance"
-            onChange={(e) => handleAccountInfo(e)}
-          />
-          <label htmlFor="debit">Debit: </label>
-          <input
-            id="debit"
-            name="debit"
-            onChange={(e) => handleAccountInfo(e)}
-          />
-          <label htmlFor="credit">Credit: </label>
-          <input
-            id="credit"
-            name="credit"
-            onChange={(e) => handleAccountInfo(e)}
-          />
-          <label htmlFor="balance">Balance: </label>
-          <input
-            id="balance"
-            name="balance"
-            onChange={(e) => handleAccountInfo(e)}
-          />
-          <label htmlFor="UID">User ID: </label>
-          <input
-            id="UID"
-            name="UID"
-            onChange={(e) => handleAccountInfo(e)}
-          />
-          <label htmlFor="order">Order: </label>
-          <input
-            id="order"
-            name="order"
-            onChange={(e) => handleAccountInfo(e)}
-          />
-          <label htmlFor="statement">Statement: </label>
-          <input
-            id="statement"
-            name="statement"
-            onChange={(e) => handleAccountInfo(e)}
-          />
-          <label htmlFor="comment">Comment: </label>
-          <input
-            id="comment"
-            name="comment"
-            onChange={(e) => handleAccountInfo(e)}
-          />
-            <p style={{color: "red"}}>{errorMessage}</p>
-            <p style={{color: "green"}}>{success ? "Account Added!" : ""}</p>
-            <div className='center-button'><button type="submit">Add Account</button></div>
-            </form>
+        <div style={{ display: 'flex', flexDirection: 'column', maxWidth: '500px', margin: 'auto' }}>
+          {inputFields.map(({ id, label, type, readOnly = false }) => {
+            // Special handling for the initial balance field
+            if (id === 'balance') {
+              return (
+                <div key={id} style={{ marginBottom: '20px', display: 'flex', alignItems: 'center' }}>
+                  <label htmlFor={id} style={{ marginRight: '10px' }}>{label}: </label>
+                  <span style={{ marginRight: '8px' }}>$</span>
+                  <input
+                    id={id}
+                    name={id}
+                    type="text" // Changed to text to allow for formatted input
+                    onChange={handleChange}
+                    value={displayedbalance.replace(/^\$/, '')} // Remove $ for the actual input value
+                    style={{ ...inputStyle, paddingLeft: '25px' }} // Adjust padding to accommodate the dollar sign if needed
+                  />
+                </div>
+              );
+            } else {
+              // Default handling for all other input fields
+              return (
+                <div key={id} style={{ marginBottom: '20px' }}>
+                  <label htmlFor={id} style={{ marginRight: '10px' }}>{label}: </label>
+                  <input
+                    id={id}
+                    name={id}
+                    type={type}
+                    onChange={handleChange}
+                    value={accountInfo[id] || ''}
+                    readOnly={readOnly}
+                    style={inputStyle}
+                  />
+                </div>
+              );
+            }
+          })}
+          <div>
+            <label>Account Type: </label>
+            <input type="radio" name="accountType" value="debit" checked={accountInfo.accountType === 'debit'} onChange={handleChange} /> Debit
+            <input type="radio" name="accountType" value="credit" checked={accountInfo.accountType === 'credit'} onChange={handleChange} /> Credit
           </div>
-  )
-}
+          <p style={{ color: "red" }}>{errorMessage}</p>
+          <p style={{ color: "green" }}>{success ? "Account Added!" : ""}</p>
+          <div className='center-button' style={{ marginTop: '20px' }}>
+            <button type="submit" style={{ padding: '10px 20px', fontSize: '16px' }}>Add Account</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+  
+};
 
-export default AddAccounts
+export default AddAccounts;
