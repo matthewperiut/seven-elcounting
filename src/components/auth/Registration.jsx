@@ -4,7 +4,6 @@ import { db, auth } from '../../firebase-config';
 import { doc, setDoc } from 'firebase/firestore';
 import { Link, useNavigate } from 'react-router-dom';
 
-
 const Registration = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
