@@ -41,7 +41,7 @@ const Login = () => {
   
   return (
     <div className='wrapper'>
-    <form onSubmit={handleSubmit}>
+    <form className="input-form" onSubmit={handleSubmit}>
         <h2>Login</h2>
         <label htmlFor="email">Email: </label>
         <input

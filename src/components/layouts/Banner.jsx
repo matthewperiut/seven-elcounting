@@ -2,7 +2,7 @@ import React from 'react';
 import logo from '../../assets/logo.png';
 import default_pfp from '../../assets/default_pfp.png';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { Context } from '../UserContext';
+import { Context } from '../context/UserContext';
 
 export const Banner = () => {
   const { user, logout } = Context(); //pull user context and logout function

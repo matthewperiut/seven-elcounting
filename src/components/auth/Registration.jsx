@@ -88,7 +88,7 @@ const Registration = () => {
 
   return (
     <div className="wrapper">
-    <form onSubmit={handleSubmit}>
+    <form className="input-form" onSubmit={handleSubmit}>
             <h1>Register</h1>
             <label htmlFor="firstName">First Name: </label>
             <input

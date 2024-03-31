@@ -1,12 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../firebase-config';
+import { auth, db } from '../../firebase-config';
 import { useNavigate } from "react-router-dom";
 
 const UserContext = createContext(); //create user context
 
-export const UserContextProvider = ({ children }) => {
+const UserContextProvider = ({ children }) => {
     const [user, setUser] = useState({});
     const navigate = useNavigate();
 
@@ -58,4 +58,5 @@ export const Context = () => {
     return useContext(UserContext);
 }
 
+export default UserContextProvider;
 {/* File for creating context to pass down params without using props */}

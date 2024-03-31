@@ -21,9 +21,9 @@ const ForgotPassword = () => {
 
 
   return (
-    <>
-    <form onSubmit={handleSubmit}>
-      <div>Forgot Password</div>
+    <div className="wrapper">
+    <form className="input-form" onSubmit={handleSubmit}>
+      <h1>Forgot Password</h1>
       <input
           type="email"
           placeholder="myemail@gmail.com"
@@ -35,7 +35,7 @@ const ForgotPassword = () => {
     </form>
     <br />
     <Link to="/">Back To Login</Link>
-    </>
+    </div>
   )
 }
 

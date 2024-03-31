@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase-config';
 import CustomCalendar from '../layouts/CustomCalendar';
 import CurrencyInput from 'react-currency-input-field';

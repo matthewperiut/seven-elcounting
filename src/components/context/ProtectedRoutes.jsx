@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { Context } from "../components/UserContext";
+import { Context } from "./UserContext";
 
 
 export const RequireAccount = ({ children }) => {

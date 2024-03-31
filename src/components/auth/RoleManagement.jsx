@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { doc, getDocs, collection, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
-import { Context } from "../UserContext";
+import { Context } from "../context/UserContext";
 import CustomCalendar from "../layouts/CustomCalendar";
 
 const Modal = ({ isOpen, onClose, user, updateUser }) => {
