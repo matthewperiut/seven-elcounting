@@ -112,7 +112,12 @@ const ViewAccounts = ( showEdit ) => {
   useEffect(() => {
     // Filter accounts whenever the search query changes
     const filtered = accounts.filter(account =>
-      account.accountName && typeof account.accountName === 'string' && account.accountName.toLowerCase().includes(searchQuery.toLowerCase())
+      account.accountName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (account.order && typeof account.order === 'string' && account.order.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (account.accountSubcatagory && typeof account.accountSubcatagory === 'string' && account.accountSubcatagory.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (account.accountCategory && typeof account.accountCategory === 'string' && account.accountCategory.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (account.accountNumber && typeof account.accountNumber === 'string' && account.accountNumber.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (account.balance && typeof account.balance === 'string' && account.balance.toLowerCase().includes(searchQuery.toLowerCase())) 
     );
     setFilteredAccounts(filtered);
   }, [searchQuery, accounts]);
