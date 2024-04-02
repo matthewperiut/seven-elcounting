@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { db } from '../../firebase-config';
 import CustomCalendar from '../layouts/CustomCalendar';
+import Help from '../layouts/Help.jsx';
 
 const DeactivateAccounts = () => {
   const [activeAccounts, setActiveAccounts] = useState([]);
@@ -34,9 +35,10 @@ const DeactivateAccounts = () => {
 
   return (
     <div>
-      <div style={{ position: 'fixed', top: '120px', left: '20px', zIndex: 100 }}>
+      <div style={{ position: 'absolute', top: '120px', left: '20px', zIndex: 100 }}>
         <CustomCalendar />
       </div>
+      <Help />
       <h1>Deactivate an Account</h1>
       <h3>Active Accounts</h3>
       <div className="database-list">

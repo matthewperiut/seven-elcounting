@@ -12,7 +12,7 @@ const CustomCalendar = () => {
                 {showCalendar ? 'Hide Calendar' : 'Show Calendar'}
             </button>
             {showCalendar && (
-                <div style={{ position: 'fixed', top: '180px', left: '20px', zIndex: 1000 }}>
+                <div style={{ position: 'absolute', top: '180px', left: '20px', zIndex: 1000 }}>
                     <Calendar />
                 </div>
             )}

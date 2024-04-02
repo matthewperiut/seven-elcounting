@@ -3,6 +3,7 @@ import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase-config';
 import CustomCalendar from '../layouts/CustomCalendar';
 import CurrencyInput from 'react-currency-input-field';
+import Help from '../layouts/Help.jsx';
 
 /**
  * Formats a Firestore timestamp to a readable date string.
@@ -151,9 +152,10 @@ const ViewAccounts = ( showEdit ) => {
 
   return (
     <div>
-      <div style={{ position: 'fixed', top: '120px', left: '20px', zIndex: 100 }}>
+      <div style={{ position: 'absolute', top: '120px', left: '20px', zIndex: 100 }}>
         <CustomCalendar />
       </div>
+      <Help />
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
       <h1>{showEdit ? "Edit" : "View"} Accounts</h1>
       <input

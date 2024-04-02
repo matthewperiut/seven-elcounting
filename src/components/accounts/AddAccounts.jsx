@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 import CustomCalendar from "../layouts/CustomCalendar";
 import CurrencyInput from "react-currency-input-field";
+import Help from '../layouts/Help.jsx';
 
 export const AddAccounts = () => {
   const [accountInfo, setAccountInfo] = useState({});
@@ -89,6 +90,7 @@ export const AddAccounts = () => {
   return (
     <div className="wrapper">
       <CustomCalendar />
+      <Help />
       <h1>Add an Account</h1>
       <form className="input-form" onSubmit={handleSubmit}>
         {inputFields.map(({ id, label, type }) => (

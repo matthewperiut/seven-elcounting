@@ -76,7 +76,7 @@ const Accounts = ({ canEdit = true, canView = true }) => {
 
   return (
     <div className='editDBs'>
-      <div style={{ position: 'fixed', top: '120px', left: '20px', zIndex: 100 }}>
+      <div style={{ position: 'absolute', top: '120px', left: '20px', zIndex: 100 }}>
         <CustomCalendar />
       </div>
       <h1>{canView ? 'View Accounts' : 'Edit Accounts'}</h1>

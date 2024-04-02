@@ -209,3 +209,73 @@ select {
     z-Index: 100;
 }
 /* Calendar */
+
+/* Help Button */
+/* Floating help button style */
+.floating-help-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    font-size: large;
+  }
+  
+  /* Modal background style */
+  .help-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  /* Help content within the modal */
+  .help-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  
+  /* Close button style */
+  .close-btn {
+    display: block;
+    margin: 20px auto 0;
+    padding: 10px 20px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  /* Help Button */
+
+.viewonlyaccount-div, .accounts-table th, .accounts-table td {
+    text-align: center;
+}
+
+.accounts-table {
+    display: flex;
+    justify-content: center;
+}
+
+.accounts-table table {
+    width: 80%;
+    border-collapse: collapse;
+}
