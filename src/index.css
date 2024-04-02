@@ -266,10 +266,13 @@ select {
   }
   /* Help Button */
 
+  /* Center Text */
 .viewonlyaccount-div, .accounts-table th, .accounts-table td {
     text-align: center;
 }
+/* Center Text */
 
+/* Charts of Accounts */
 .accounts-table {
     display: flex;
     justify-content: center;
@@ -279,3 +282,4 @@ select {
     width: 80%;
     border-collapse: collapse;
 }
+/* Charts of Accounts */
