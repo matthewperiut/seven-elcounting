@@ -4,6 +4,45 @@ import { db } from '../../firebase-config';
 import CustomCalendar from '../layouts/CustomCalendar';
 import Help from '../layouts/Help.jsx';
 
+// Modal component 
+const Modal = ({ isOpen, onClose, ledgerData }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal">
+      <div className="modal-content">
+        <span className="close" onClick={onClose}>&times;</span>
+        <h2>Account Ledger</h2>
+        <table border="1">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Entry Number</th>
+              <th>Description</th>
+              <th>Credit</th>
+              <th>Debit</th>
+              <th>Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ledgerData.map(entry => (
+              <tr key={entry.entryNumber}>
+                <td>{entry.date}</td>
+                <td>{entry.entryNumber}</td>
+                <td>{entry.description}</td>
+                <td>{entry.credit}</td>
+                <td>{entry.debit}</td>
+                <td>{entry.balance}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <Modal isOpen={selectedAccount !== null} onClose={closeModal} ledgerData={selectedAccount ? selectedAccount.ledgerData : []} />
+
+    </div>
+  );
+};
 const ViewAccounts = (showEdit) => {
   const [accounts, setAccounts] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState({
@@ -20,6 +59,7 @@ const ViewAccounts = (showEdit) => {
     financialStatement: true,
   });
   const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState(null);
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -39,6 +79,15 @@ const ViewAccounts = (showEdit) => {
     const date = timestamp.toDate();
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
+  };
+
+  const openModal = (account) => {
+    console.log("Opening modal with account:", account);
+    setSelectedAccount(account);
+  };
+
+  const closeModal = () => {
+    setSelectedAccount(null);
   };
 
   // Toggle Column Visibility
@@ -96,7 +145,11 @@ const ViewAccounts = (showEdit) => {
           <tbody>
             {accounts.map((account) => (
               <tr key={account.id}>
-                {visibleColumns.accountName && <td>{account.accountName}</td>}
+          <td>
+        <button onClick={() => openModal(account)} style={{ border: 'none', background: 'none', color: 'black', cursor: 'pointer' }}>
+          {account.accountName}
+         </button>
+        </td>                
                 {visibleColumns.accountNumber && <td>{account.accountNumber}</td>}
                 {visibleColumns.accountDescription && <td>{account.accountDescription}</td>}
                 {visibleColumns.normalSide && <td>{account.normalSide}</td>}
