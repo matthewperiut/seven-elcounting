@@ -39,12 +39,17 @@ const Modal = ({ isOpen, onClose, ledgerData }) => {
         </table>
       </div>
       <Modal isOpen={selectedAccount !== null} onClose={closeModal} ledgerData={selectedAccount ? selectedAccount.ledgerData : []} />
-
     </div>
   );
 };
 const ViewAccounts = (showEdit) => {
   const [accounts, setAccounts] = useState([]);
+  
+  //used for searching account name or number
+  const [searchQuery, setSearchQuery] = useState(''); 
+  const [filteredAccounts, setFilteredAccounts] = useState([]);
+  
+  //setting the columns to show or not
   const [visibleColumns, setVisibleColumns] = useState({
     accountName: true,
     accountNumber: true,
@@ -63,16 +68,27 @@ const ViewAccounts = (showEdit) => {
 
   useEffect(() => {
     const fetchAccounts = async () => {
-      const querySnapshot = await getDocs(query(collection(db, 'accounts'), where('isActivated', '==', true))); //gets snapshot of all active accounts
+      const querySnapshot = await getDocs(query(collection(db, 'accounts'), where('isActivated', '==', true))); //grabs all active accounts
       const fetchedAccounts = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
       }));
       setAccounts(fetchedAccounts);
     };
-
     fetchAccounts();
   }, []);
+
+  useEffect(() => {
+    // Filter accounts based on the search query or other filters
+    const filtered = accounts.filter(account =>
+      account.accountName.toLowerCase().includes(searchQuery.toLowerCase()) || account.accountNumber.toString().includes(searchQuery)
+    );
+    setFilteredAccounts(filtered);
+  }, [searchQuery, accounts]);
+  
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
 
   const formatDate = (timestamp) => {
     if (!timestamp || typeof timestamp.toDate !== 'function') return 'N/A';
@@ -125,7 +141,17 @@ const ViewAccounts = (showEdit) => {
             </div>
           )}
       </div>
+      <div style={{ textAlign: 'center', padding: '0 10px' }}>
+        <input
+          type="text"
+          placeholder="Search by Account Name or Number..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          style={{ marginBottom: '20px' , borderRadius: '30px' }}
+        />
+      </div>
       <div className="accounts-table" style={{ paddingTop: '30px' }}>
+      {filteredAccounts.length > 0 && (
         <table border="2">
           <thead>
             <tr>
@@ -143,7 +169,7 @@ const ViewAccounts = (showEdit) => {
             </tr>
           </thead>
           <tbody>
-            {accounts.map((account) => (
+            {filteredAccounts.map((account) => (
               <tr key={account.id}>
           <td>
         <button onClick={() => openModal(account)} style={{ border: 'none', background: 'none', color: 'black', cursor: 'pointer' }}>
@@ -164,7 +190,12 @@ const ViewAccounts = (showEdit) => {
             ))}
           </tbody>
         </table>
+      )}
       </div>
+      <Modal isOpen={selectedAccount !== null} onClose={closeModal} ledgerData={selectedAccount ? selectedAccount.ledgerData : []} />
+      {searchQuery && filteredAccounts.length === 0 && (
+          <div style={{ textAlign: 'center', color:'red', fontWeight: 'bold', fontSize: 18 }}>No results found</div>
+        )} 
     </div>
   );
 };
