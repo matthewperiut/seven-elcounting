@@ -8,7 +8,7 @@ export { RequireAccount, RequireUser, RequireManager, RequireAdmin } from "./con
 export { default as PageNotFound } from "./layouts/PageNotFound"
 export { default as Dashboard } from "./layouts/Dashboard"
 export { default as AddAccounts } from "./accounts/AddAccounts"
-export { default as ViewOnlyAccounts } from "./accounts/ViewOnlyAccounts"
+export { default as ChartofAccounts } from "./accounts/ChartofAccounts"
 export { default as EditAccounts } from "./accounts/EditAccounts"
 export { default as DeactivateAccounts } from "./accounts/DeactivateAccounts"
 export { default as Journalizing } from "./accounts/Journalizing"

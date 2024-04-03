@@ -54,7 +54,6 @@ button:hover {
 }
 
 .removetransaction-button {
-    /* Positions button below bottom right corner of input box */
     /* Makes button a circle */
     width: 20px;
     height: 20px;
@@ -64,10 +63,7 @@ button:hover {
     /* Color and center the - */
     background-color: #dc3545;
     color: white;
-    font-size: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-size: 16px; /* Adjust font size as needed */
 }
 /* Buttons */ 
 

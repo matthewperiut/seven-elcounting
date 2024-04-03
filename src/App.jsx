@@ -12,7 +12,7 @@ Banner,
 PageNotFound, 
 Dashboard, 
 AddAccounts, 
-ViewOnlyAccounts, 
+ChartofAccounts, 
 EditAccounts, 
 DeactivateAccounts,
 Help, 
@@ -38,7 +38,7 @@ function App() {
         <Route path="/" element={<RequireAccount><Dashboard/></RequireAccount>} />
         <Route path="addaccounts" element={<RequireAdmin><AddAccounts /></RequireAdmin>} />
         <Route path="editusers" element={<RequireAdmin>< RoleManagement/></RequireAdmin>} />
-        <Route path="viewaccounts" element={<RequireUser><ViewOnlyAccounts/></RequireUser>} />
+        <Route path="viewaccounts" element={<RequireUser><ChartofAccounts/></RequireUser>} />
         <Route path="editaccounts" element={<RequireAdmin><EditAccounts/></RequireAdmin>} />
         <Route path="deactivateaccounts" element={<RequireAdmin><DeactivateAccounts/></RequireAdmin>} />
         <Route path="journalizing" element={<Journalizing/>} />
