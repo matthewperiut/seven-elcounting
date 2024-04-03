@@ -1,16 +1,22 @@
-import React from 'react';
 import logo from '../../assets/logo.png';
 import default_pfp from '../../assets/default_pfp.png';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+import Reports from './Reports';
 import { Context } from '../context/UserContext';
+import React, { useState } from 'react';
+
 
 export const Banner = () => {
   const { user, logout } = Context(); //pull user context and logout function
   const navigate = useNavigate();
 
+  const [isReportsOpen, setIsReportsOpen] = useState(false);
   const backToHome = () => {
     navigate("/", { replace: true })
   }
+  const handleReportsHover = (status) => {
+    setIsReportsOpen(status);
+  };
 
   return (
     <>
@@ -33,6 +39,8 @@ export const Banner = () => {
               <li className='navbar-item'><Link className='navbar-link' to="editaccounts">Edit Accounts</Link></li>
               <li className='navbar-item'><Link className='navbar-link' to="deactivateaccounts">Deactivate Accounts</Link></li>
               <li className='navbar-item'><Link className='navbar-link' to="journalizing">Journalizing</Link></li>
+              <li className='navbar-item'><Reports /></li>
+
             </ul>
           )}
           {(user && (user.role === 1 || user.role == 2)) && (

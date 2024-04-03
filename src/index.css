@@ -283,3 +283,56 @@ select {
     border-collapse: collapse;
 }
 /* Charts of Accounts */
+.reports-menu {
+    position: relative;
+  }
+  
+  .reports-menu-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px 16px; /* Adjust padding as needed */
+    margin-left: 5px; /* Adjust margin as needed */
+    text-decoration: none;
+    color: #4b1172e5; /* Set color to match other navbar links */
+    font-family: "Times New Roman", Times, serif;
+    font-size: 16px;
+    margin-top: -8px;
+
+}
+  
+  .reports-menu-button:hover {
+    background-color: #6972f7;
+    font-family: "Times New Roman", Times, serif;
+  }
+  
+  .reports-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    width: 150px; /* Adjust width as needed */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .reports-dropdown ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .reports-dropdown ul li {
+    padding: 10px;
+  }
+  
+  .reports-dropdown ul li a {
+    color: #333;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .reports-dropdown ul li a:hover {
+    background-color: #f0f0f0;
+  }
