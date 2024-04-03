@@ -33,38 +33,6 @@ button:hover {
     cursor: not-allowed; /* disables cursor on hover */ 
     background-color: #878ffa; /* resets to base background color */
 }
-
-.addtransaction-button {
-    /* Positions button below bottom right corner of input box */
-    position: relative;
-    display: flex;
-    left: 85%;
-
-    /* Makes button a circle */
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    border-radius: 50%;
-
-    /* Color and center the + */
-    color: white;
-    font-size: 20px;
-    justify-content: center;
-    align-items: center;
-}
-
-.removetransaction-button {
-    /* Makes button a circle */
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    border-radius: 50%;
-
-    /* Color and center the - */
-    background-color: #dc3545;
-    color: white;
-    font-size: 16px; /* Adjust font size as needed */
-}
 /* Buttons */ 
 
 
@@ -109,6 +77,45 @@ select {
     width: 193px; /* Align input box with $ with other input boxes */
 }
 /* Input fields */
+
+
+
+/* Journal Entries */
+.entry-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.credit-entry {
+    margin-left: 20%; /* Indent credit entries */
+}
+
+.debit-entry {
+    margin-right: 20%;
+}
+
+.addtransaction-button{
+    font-size: 12px;
+    margin: 15px;
+}
+
+.removetransaction-button {
+    /* Makes button a circle */
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border-radius: 50%;
+
+    /* Color and center the + and - buttons*/
+    background-color: #dc3545; /* make - button red */
+    color: white;
+    font-size: 25px;
+    text-align: center;
+    line-height: 0; /* center - */
+}
+/* Journal Entries */
+
 
 
 /* Dashboard/Banner */
@@ -298,7 +305,7 @@ select {
   }
   /* Help Button */
 
-  /* Center Text */
+/* Center Text */
 .viewonlyaccount-div, .accounts-table th, .accounts-table td {
     text-align: center;
 }
