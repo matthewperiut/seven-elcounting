@@ -34,7 +34,7 @@ export const Banner = () => {
           {(user && user.role === 3) && (
             <ul className='navbar'>
               <li className='navbar-item'><Link className='navbar-link' to="addaccounts">Add Accounts</Link></li>
-              <li className='navbar-item'><Link className='navbar-link' to="viewaccounts">View Accounts</Link></li>
+              <li className='navbar-item'><Link className='navbar-link' to="viewaccounts">Chart of Accounts</Link></li>
               <li className='navbar-item'><Link className='navbar-link' to="editusers">Edit Users</Link></li>
               <li className='navbar-item'><Link className='navbar-link' to="editaccounts">Edit Accounts</Link></li>
               <li className='navbar-item'><Link className='navbar-link' to="deactivateaccounts">Deactivate Accounts</Link></li>

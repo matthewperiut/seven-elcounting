@@ -19,17 +19,17 @@ const DeactivateAccounts = () => {
       fetchAllAccounts(); //fetches all accounts 
   }, []);
 
-  const deactivateAccount = async (UID, balance) => {
+  const deactivateAccount = async (id, balance) => {
     if (balance > 0) {
       alert('This account has a balance above 0 and cannot be deactivated'); //if user attempts to deactivate account with balance greater than zero
     }
     else {
-      await updateDoc(doc(db, 'accounts', UID), {isActivated: false}); //deactivate account
+      await updateDoc(doc(db, 'accounts', id), {isActivated: false}); //deactivate account
       fetchAllAccounts();
     }
   }
-  const activateAccount = async (UID) => {
-    await updateDoc(doc(db, 'accounts', UID), {isActivated: true}); //active account
+  const activateAccount = async (id) => {
+    await updateDoc(doc(db, 'accounts', id), {isActivated: true}); //active account
     fetchAllAccounts();
   }
 
@@ -45,7 +45,7 @@ const DeactivateAccounts = () => {
           {activeAccounts.map((account) => (
               <div key={account.accountName} className="database-item">  
                 <p>{account.accountName}</p>
-                <button className="button-edit" onClick={ () => deactivateAccount(account.UID, account.balance)}>Deactivate</button>
+                <button className="button-edit" onClick={ () => deactivateAccount(account.accountID, account.balance)}>Deactivate</button>
               </div>
           ))}
       </div>
@@ -54,7 +54,7 @@ const DeactivateAccounts = () => {
       {deactivedAccounts.map((account) => (
             <div key={account.accountName} className="database-item">  
               <p>{account.accountName}</p>
-              <button className="button-edit" onClick={ () => activateAccount(account.UID)}>Activate</button>
+              <button className="button-edit" onClick={ () => activateAccount(account.accountID)}>Activate</button>
             </div>
         ))}
       </div>

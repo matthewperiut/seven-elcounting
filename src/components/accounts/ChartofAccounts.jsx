@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase-config';
-import CustomCalendar from '../layouts/CustomCalendar';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../../firebase-config.js';
+import CustomCalendar from '../layouts/CustomCalendar.jsx';
 import Help from '../layouts/Help.jsx';
 
 // Modal component 
@@ -63,7 +63,7 @@ const ViewAccounts = (showEdit) => {
 
   useEffect(() => {
     const fetchAccounts = async () => {
-      const querySnapshot = await getDocs(collection(db, 'accounts'));
+      const querySnapshot = await getDocs(query(collection(db, 'accounts'), where('isActivated', '==', true))); //gets snapshot of all active accounts
       const fetchedAccounts = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),

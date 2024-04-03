@@ -83,7 +83,6 @@ export const AddAccounts = () => {
   const handleValueChange = (value) => {
     if (!isNaN(value)) {
       setAccountInfo(prev => ({ ...prev, balance: value }));
-      console.log(value);
     }
   };
 
@@ -109,6 +108,7 @@ export const AddAccounts = () => {
           </div>
           <span>$</span>
           <CurrencyInput
+            value={accountInfo.balance}
             className="currency-input"
             name="initialBalance"
             decimalsLimit={2}
