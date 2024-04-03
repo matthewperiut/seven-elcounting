@@ -337,7 +337,7 @@ select {
     background-color: #6972f7;
     font-family: "Times New Roman", Times, serif;
   }
-  
+  /* for the reports component*/
   .reports-dropdown {
     position: absolute;
     top: 100%;
@@ -367,4 +367,28 @@ select {
   
   .reports-dropdown ul li a:hover {
     background-color: #f0f0f0;
+  }
+/* for the GeneralLedger component*/
+.ledger-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .ledger-table {
+    width: 80%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .ledger-table th,
+  .ledger-table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid black;
+  }
+  
+  .ledger-table th {
+    background-color: white;
   }
