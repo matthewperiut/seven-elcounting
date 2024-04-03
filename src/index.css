@@ -33,6 +33,42 @@ button:hover {
     cursor: not-allowed; /* disables cursor on hover */ 
     background-color: #878ffa; /* resets to base background color */
 }
+
+.addtransaction-button {
+    /* Positions button below bottom right corner of input box */
+    position: relative;
+    display: flex;
+    left: 85%;
+
+    /* Makes button a circle */
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border-radius: 50%;
+
+    /* Color and center the + */
+    color: white;
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.removetransaction-button {
+    /* Positions button below bottom right corner of input box */
+    /* Makes button a circle */
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border-radius: 50%;
+
+    /* Color and center the - */
+    background-color: #dc3545;
+    color: white;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 /* Buttons */ 
 
 
