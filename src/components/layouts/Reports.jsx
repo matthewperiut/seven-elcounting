@@ -20,10 +20,10 @@ const Reports = () => {
     >
       <button className="reports-menu-button">Reports</button>
       {isOpen && (
-        <div className="reports-dropdown"> {/* Style the dropdown */}
+        <div className="reports-dropdown"> 
           <ul>
             <li>
-              <Link to="/general-ledger">General Ledger</Link>
+              <Link to="/generalLedger">General Ledger</Link>
             </li>
             <li>
               <Link to="/balance-sheet">Balance Sheet</Link>
