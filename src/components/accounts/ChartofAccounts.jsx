@@ -66,6 +66,8 @@ const ViewAccounts = (showEdit) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState(null);
 
+  const [showTooltip, setShowTooltip] = useState(false);
+
   useEffect(() => {
     const fetchAccounts = async () => {
       const querySnapshot = await getDocs(query(collection(db, 'accounts'), where('isActivated', '==', true))); //grabs all active accounts
@@ -122,19 +124,44 @@ const ViewAccounts = (showEdit) => {
       <Help />
       <div style={{ textAlign: 'center', padding: '0 10px' }}>
       <h1 style={{ display: 'inline-block' }}>Charts of Accounts</h1>
+      <div style={{position: 'absolute', right: '20px', top: '120px' }}>
+        <button
+        onClick={() => setShowDropdown(!showDropdown)}
+        title="Show or hide filters"
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        style={{ cursor: 'pointer' }}
+        >
+          Filters
+        </button>
+        {showTooltip && (
+          <div style={{
+            position: 'absolute',
+            bottom: '10px', 
+            left: '-45%',
+            transform: 'translateX(-50%)',
+            background: 'rgba(0, 0, 0, 0.50)',
+            color: 'white',
+            padding: '5px 10px',
+            borderRadius: '4px',
+            fontSize: '12px',
+            whiteSpace: 'nowrap',
+          }}>
+            Table Filters
+            </div>
+        )}
       </div>
-      <div style={{ textAlign: 'right', padding: '0 20px', position: 'absolute', right: 0, top: '120px' }}>
-        <button onClick={() => setShowDropdown(!showDropdown)}>Filters</button>
-        {showDropdown && (
-          <div style={{textAlign: 'left', position: 'right', right: 0, border: '1px solid #ddd', padding: '10px', background: '#fff' }}>
-            {Object.keys(visibleColumns).map(columnName => (
-              <div key={columnName}>
-                <input
-                  type="checkbox"
-                  id={columnName}
-                  checked={visibleColumns[columnName]}
-                  onChange={() => toggleColumnVisibility(columnName)}
-                />
+      {showDropdown && (
+        <div style={{ position: 'absolute', right: '10px', top: '170px', border: '1px solid #ddd', padding: '10px', background: '#fff' }}>
+        {Object.keys(visibleColumns).map(columnName => (
+          <div key={columnName} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+            <input
+              type="checkbox"
+              id={columnName}
+              checked={visibleColumns[columnName]}
+              onChange={() => toggleColumnVisibility(columnName)}
+              style={{ marginRight: '5px' }}
+            />
                 <label htmlFor={columnName}>{columnName}</label>
               </div>
             ))}

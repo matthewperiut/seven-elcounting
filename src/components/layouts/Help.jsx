@@ -4,6 +4,8 @@ const FloatingHelpButton = () => {
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => setShowModal(!showModal);
 
+  const [showTooltip, setShowTooltip] = useState(false);
+
   return (
     <>
       <button
@@ -20,8 +22,28 @@ const FloatingHelpButton = () => {
           cursor: 'pointer',
         }}
         onClick={toggleModal}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
       >
         ?
+        {showTooltip && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '10px', 
+              left: '-95%',
+              transform: 'translateX(-50%)',
+              background: 'rgba(0, 0, 0, 0.50)',
+              color: 'white',
+              padding: '5px 10px',
+              borderRadius: '4px',
+              fontSize: '12px',
+              whiteSpace: 'nowrap',
+            }}
+            >
+              Need Help?
+          </div>
+        )}
       </button>
 
       {showModal && (
@@ -48,7 +70,9 @@ const FloatingHelpButton = () => {
               maxWidth: '500px',
               maxHeight: '90vh',
               overflowY: 'auto',
+              position: 'relative'
             }}
+            onClick={(e) => e.stopPropagation()}
           >
             <Help />
           </div>
