@@ -23,8 +23,122 @@ function formatDate(timestamp) {
   return date.toLocaleDateString("en-US", options);
 }
 
+//Custom modal to enter comment for rejected journal entry
+const Modal = ({ isOpen, closeModal, user, id, fetchEntries }) => {
+  const [comment, setComment] = useState(""); //state to hold comment
+  if (!isOpen) return null; //is isOpen state is false, nothing gets returned(modal closed)
+
+  //rejects entry and stores comment
+  const handleRejection = async () => {
+    await updateDoc(doc(db, "journalEntries", id), {
+      isRejected: true,
+      comment: comment,
+    });
+    fetchEntries(); //function to rerender tables(update approved/rejected list after decision is made on pending entry)
+    closeModal();
+  };
+
+  return (
+    <div onClick={closeModal} className="modal-background">
+      <div onClick={(e) => e.stopPropagation()} className="modal">
+        <p onClick={closeModal} className="closeButton">
+          &times;
+        </p>
+        <div>User: {user}</div>
+        <label htmlFor="comment">Comment: </label>
+        <input type="text" onChange={(e) => setComment(e.target.value)} />
+        <button onClick={handleRejection}>Reject</button>
+      </div>
+    </div>
+  );
+};
+
+//Custom table for rendering pending, approved, and rejected entries
+const Table = ({ entries, isPending, fetchEntries }) => {
+  const { user } = Context(); //pull user context for role
+  const [isModal, setIsModal] = useState(false); //state to manage if modal is open
+  const [rejectedEntryInfo, setRejectedEntryInfo] = useState([]); //state to store rejected entry information(userID and entryID)
+
+  const toggleModal = (user, id) => {
+    setIsModal(!isModal);
+    setRejectedEntryInfo([user, id]); //sets rejected entry information to chosen table
+  };
+
+  //approves entry
+  const handleApproval = async (entry) => {
+    await updateDoc(doc(db, "journalEntries", entry.id), {
+      isApproved: true,
+    });
+    fetchEntries(); //function to rerender tables(update approved/rejected list after decision is made on pending entry)
+  };
+
+  return (
+    <div>
+      {entries.map((entry) => (
+        <div key={entry.id}>
+          <div className="entries-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date Created</th>
+                  <th>User</th>
+                  <th>Account</th>
+                  <th>Debit</th>
+                  <th>Credit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {entry.entries.map((subEntry, index) => (
+                  <tr className="entry" key={index}>
+                    {index === 0 && (
+                      <>
+                        <td rowSpan={entry.entries.length}>
+                          {formatDate(entry.dateCreated)}
+                        </td>
+                        <td rowSpan={entry.entries.length}>{entry.user}</td>
+                      </>
+                    )}
+                    <td>{subEntry.account}</td>
+                    <td>
+                      {subEntry.type === "debit"
+                        ? "$" + parseFloat(subEntry.amount).toLocaleString()
+                        : ""}
+                    </td>
+                    <td>
+                      {subEntry.type === "credit"
+                        ? "$" + parseFloat(subEntry.amount).toLocaleString()
+                        : ""}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {user.role === 2 && isPending && (
+            <div>
+              <button onClick={() => handleApproval(entry)}>Approve</button>
+              <button onClick={() => toggleModal(entry.user, entry.id)}>
+                Reject
+              </button>
+            </div>
+          )}
+        </div>
+      ))}
+      {isModal && (
+        <Modal
+          isOpen={isModal}
+          closeModal={() => setIsModal(false)}
+          user={rejectedEntryInfo[0]}
+          id={rejectedEntryInfo[1]}
+          fetchEntries={fetchEntries}
+        />
+      )}
+    </div>
+  );
+};
+
 const Entries = () => {
-  const { user } = Context();
+  //state object of arrays to store pending, approved, and rejected entries
   const [entries, setEntries] = useState({
     pending: [],
     approved: [],
@@ -33,80 +147,67 @@ const Entries = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("account");
 
+  const fetchEntries = async () => {
+    //queries entries based off approval status
+    const pendingSnapshot = await getDocs(
+      query(
+        collection(db, "journalEntries"),
+        where("isApproved", "==", false),
+        where("isRejected", "==", false)
+      )
+    );
+    const approvedSnapshot = await getDocs(
+      query(
+        collection(db, "journalEntries"),
+        where("isApproved", "==", true),
+        where("isRejected", "==", false)
+      )
+    );
+    const rejectedSnapshot = await getDocs(
+      query(
+        collection(db, "journalEntries"),
+        where("isApproved", "==", false),
+        where("isRejected", "==", true)
+      )
+    );
+
+    //maps data in snapshot documents into array of objects to make data accessable
+    const pendingEntries = pendingSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    const approvedEntries = approvedSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    const rejectedEntries = rejectedSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    //sets entries with respective document data
+    setEntries({
+      pending: pendingEntries,
+      approved: approvedEntries,
+      rejected: rejectedEntries,
+    });
+  };
+
+  //run fetchEntries() everytime the component is rendered
   useEffect(() => {
-
-    const fetchEntries = async () => {
-      const pendingSnapshot = await getDocs(
-        query(
-          collection(db, "journalEntries"),
-          where("isApproved", "==", false),
-          where("isRejected", "==", false)
-        )
-      );
-      const approvedSnapshot = await getDocs(
-        query(
-          collection(db, "journalEntries"),
-          where("isApproved", "==", true),
-          where("isRejected", "==", false)
-        )
-      );
-      const rejectedSnapshot = await getDocs(
-        query(
-          collection(db, "journalEntries"),
-          where("isApproved", "==", false),
-          where("isRejected", "==", true)
-        )
-      );
-
-      const pendingEntries = pendingSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      const approvedEntries = approvedSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      const rejectedEntries = rejectedSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setEntries({
-        pending: pendingEntries,
-        approved: approvedEntries,
-        rejected: rejectedEntries,
-      });
-    };
     fetchEntries();
   }, []);
 
-  const handleApproval = async (entry) => {
-    await updateDoc(doc(db, "journalEntries", entry.id), {
-      isApproved: true,
-    });
-    setEntries((prev) => ({
-      ...prev,
-      pending: prev.pending.filter((e) => e.id !== entry.id),
-      approved: [...prev.approved, entry]
-    }))
-  };
-  const handleRejection = async (entry) => {
-    await updateDoc(doc(db, "journalEntries", entry.id), {
-      isRejected: true,
-    });
-    setEntries((prev) => ({
-      ...prev,
-      pending: prev.pending.filter((e) => e.id !== entry.id),
-      rejected: [...prev.rejected, entry]
-    }))
-  };
   const getFilteredEntries = (entries) => {
     if (!searchTerm) return entries;
-  
+
     return entries.filter((entry) => {
       return entry.entries.some((subEntry) => {
         switch (filterType) {
           case "account":
-            return subEntry.account.toLowerCase().includes(searchTerm.toLowerCase());
+            return subEntry.account
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase());
           case "amount":
             return Number(subEntry.amount) === Number(searchTerm);
           case "date":
@@ -118,52 +219,8 @@ const Entries = () => {
     });
   };
 
-  const Table = ({ entries, isPending }) => (
-    <div>
-      {entries.map((entry) => (
-        <div className="entries-table" key={entry.id}>
-          <table>
-            <thead>
-              <tr>
-                <th>Date Created</th>
-                <th>User</th>
-                <th>Account</th>
-                <th>Type</th>
-                <th>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr key={entry.id}>
-                <td rowSpan={entry.entries.length}>
-                  {formatDate(entry.dateCreated)}
-                </td>
-                <td rowSpan={entry.entries.length}>{entry.user}</td>
-                <td>{entry.entries[0].account}</td>
-                <td>{entry.entries[0].type}</td>
-                <td>{entry.entries[0].amount}</td>
-              </tr>
-              {entry.entries.slice(1).map((subEntry, index) => (
-                <tr key={index}>
-                  <td>{subEntry.account}</td>
-                  <td>{subEntry.type}</td>
-                  <td>{subEntry.amount}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {user.role === 2 && isPending && (
-            <div>
-              <button onClick={() => handleApproval(entry)}>Approve</button>
-              <button onClick={() => handleRejection(entry)}>Reject</button>
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
-  );
-
   return (
-    <div className="wrapper">
+    <div className="entries-container">
       <div>
         <label>Search by: </label>
         <select onChange={(e) => setFilterType(e.target.value)}>
@@ -180,15 +237,25 @@ const Entries = () => {
       </div>
       <div>
         <h2>Pending: </h2>
-        <Table entries={getFilteredEntries(entries.pending)} isPending={true} />
+        <Table
+          entries={getFilteredEntries(entries.pending)}
+          isPending={true}
+          fetchEntries={fetchEntries}
+        />
       </div>
       <div>
         <h2>Approved: </h2>
-        <Table entries={getFilteredEntries(entries.approved)} isPending={false} />
+        <Table
+          entries={getFilteredEntries(entries.approved)}
+          isPending={false}
+        />
       </div>
       <div>
         <h2>Rejected: </h2>
-        <Table entries={getFilteredEntries(entries.rejected)} isPending={false} />
+        <Table
+          entries={getFilteredEntries(entries.rejected)}
+          isPending={false}
+        />
       </div>
     </div>
   );

@@ -49,7 +49,7 @@ const Journalizing = () => {
       //creates object for storing entry data
       const entry = { 
         user: user.displayName,
-        isApproved: false,
+        isApproved: user.role > 1 ? true : false, //if user is manager or admin, auto approve entry, else in pending state
         isRejected: false,
         dateCreated: new Date(),
         comment: "",

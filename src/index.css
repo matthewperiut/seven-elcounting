@@ -409,6 +409,13 @@ select {
 
 
 /* Journal Entries */
+.entries-container {
+    position: relative;
+    padding: 15px;
+    margin: 10px;
+    text-align: center;
+}
+
 .entries-table {
     display: flex;
     justify-content: center;
@@ -421,5 +428,9 @@ select {
     border-collapse: collapse;
     border: 1px solid;
     padding: 8px;
+}
+
+.entry td {
+    min-width: 150px;
 }
 /* Journal Entries */
