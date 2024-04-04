@@ -41,6 +41,15 @@ const EventLog = () => {
     fetchEvents();
   }, []);
 
+  const retrieveIdentifier = (event) => {
+    if (typeof event.after.accountName != "undefined") {
+      return event.after.accountName;
+    }
+    if (typeof event.after.DisplayName != "undefined") {
+      return event.after.DisplayName;
+    }
+  }
+
   return (
       <>
         <h1>Event Log</h1>
@@ -50,6 +59,7 @@ const EventLog = () => {
             <th>ID</th>
             <th>Time</th>
             <th>Author</th>
+            <th>Name</th>
             <th>Type</th>
             <th>Change</th>
           </tr>
@@ -60,6 +70,7 @@ const EventLog = () => {
                 <td>{event.id}</td>
                 <td>{formatDate(event.timestamp)}</td>
                 <td>{event.author}</td>
+                <td>{retrieveIdentifier(event)}</td>
                 <td>{event.type}</td>
                 <td>
                   {Array.isArray(event.diff) ? event.diff.map((change, index) => (
