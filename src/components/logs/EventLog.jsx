@@ -2,6 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import {db} from "../../firebase-config.js";
 
+function formatDate(timestamp) {
+    if (!timestamp) return '';
+
+    const date = timestamp.toDate();
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+}
+
+
 const EventLog = () => {
   const [events, setEvents] = useState([]);
 
@@ -39,6 +48,7 @@ const EventLog = () => {
           <thead>
           <tr>
             <th>ID</th>
+            <th>Time</th>
             <th>Author</th>
             <th>Type</th>
             <th>Change</th>
@@ -48,6 +58,7 @@ const EventLog = () => {
           {events.map(event => (
               <tr key={event.id}>
                 <td>{event.id}</td>
+                <td>{formatDate(event.timestamp)}</td>
                 <td>{event.author}</td>
                 <td>{event.type}</td>
                 <td>
