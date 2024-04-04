@@ -3,21 +3,107 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase-config.js';
 import CustomCalendar from '../layouts/CustomCalendar.jsx';
 import Help from '../layouts/Help.jsx';
-import GeneralLedger from '../reports/GeneralLedger.jsx';
 
-// Modal component 
-const Modal = ({ isOpen, onClose, ledgerData }) => {
+function formatDate(timestamp) {
+  if (!timestamp) return "";
+
+  const date = timestamp.toDate();
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  return date.toLocaleDateString("en-US", options);
+}
+
+// Modal component
+const Modal = ({ isOpen, onClose, ledgerData, accountName, initialBalance }) => {
   if (!isOpen) return null;
+  let runningBalance = parseFloat(initialBalance) || 0; //initalize the balance of the account
+  let entryNo = 0; //initalize entry no.
   return (
-    <div className="modal-overlay">
-      <div className="modal">
-        <span className="close" onClick={onClose}>&times;</span>
-        <h2>Account Ledger</h2>
-        <GeneralLedger ledgerData={ledgerData} showSearchBar={false} />
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0,0,0,0.5)',
+    }}>
+      <div style={{
+        width: '80%',
+        maxHeight: '90vh',
+        overflowY: 'auto',
+        backgroundColor: 'white',
+        padding: '20px',
+        borderRadius: '5px',
+        boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+        position: 'relative',
+      }}>
+        <span style={{
+          position: 'absolute',
+          top: '10px',
+          right: '20px',
+          cursor: 'pointer',
+          fontSize: '1.5rem',
+        }} onClick={onClose}>&times;</span>
+        <h2 style={{ textAlign: 'center' }}>Account Ledger for {accountName}</h2>
+        {ledgerData && ledgerData.length > 0 ? (
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}>
+            <table style={{
+              width: '100%',
+              maxWidth: '600px',
+              borderCollapse: 'collapse',
+              margin: '20px 0',
+            }}>
+              <thead>
+                <tr>
+                  <th style={{ borderBottom: '2px solid #ddd', padding: '10px', textAlign: 'left' }}>Entry No.</th>
+                  <th style={{ borderBottom: '2px solid #ddd', padding: '10px', textAlign: 'left' }}>Date</th>
+                  <th style={{ borderBottom: '2px solid #ddd', padding: '10px', textAlign: 'left' }}>Debit</th>
+                  <th style={{ borderBottom: '2px solid #ddd', padding: '10px', textAlign: 'left' }}>Credit</th>
+                  <th style={{ borderBottom: '2px solid #ddd', padding: '10px', textAlign: 'left' }}>Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+              {ledgerData.map((entry) => {
+                // Filters to the selected account
+                const relevantSubEntries = entry.entries.filter(subEntry => subEntry.account === accountName);
+
+                return relevantSubEntries.map((subEntry) => {
+                entryNo += 1; // Increment entry no.
+
+                // Adjust running balance based on the transaction type
+                if (subEntry.type === 'debit') {
+                  runningBalance += parseFloat(subEntry.amount);
+                } else if (subEntry.type === 'credit') {
+                  runningBalance -= parseFloat(subEntry.amount);
+                }
+                
+                return (
+                  <tr key={entryNo}>
+                    <td style={{ padding: '10px' }}>{entryNo !== 1 ? entryNo - 1 : "N/A"}</td>
+                    <td style={{ padding: '10px' }}>{formatDate(entry.dateCreated)}</td>
+                    <td style={{ padding: '10px' }}>{subEntry.type === 'debit' ? `$${parseFloat(subEntry.amount).toLocaleString()}` : ''}</td>
+                    <td style={{ padding: '10px' }}>{subEntry.type === 'credit' ? `$${parseFloat(subEntry.amount).toLocaleString()}` : ''}</td>
+                    <td style={{ padding: '10px' }}>${runningBalance.toLocaleString()}</td> {}
+                  </tr>
+                );
+                });
+              })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p style={{ textAlign: 'center' }}>No ledger entries found for this account.</p>
+        )}
       </div>
     </div>
   );
 };
+
 
 const ViewAccounts = (showEdit) => {
   const [accounts, setAccounts] = useState([]);
@@ -76,11 +162,24 @@ const ViewAccounts = (showEdit) => {
     return date.toLocaleDateString('en-US', options);
   };
 
-  const openModal = (account) => {
+  const openModal = async (account) => {
     console.log("Opening modal with account:", account);
-    setSelectedAccount(account);
-  };
-
+    try {
+      const allEntriesSnapshot = await getDocs(collection(db, 'journalEntries'));
+      const allEntries = allEntriesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  
+      // Filter entries related to the selected account with case-insensitive comparison
+      const relatedEntries = allEntries.filter(entry => 
+        entry.entries && entry.entries.some(subEntry => 
+          subEntry.account === account.accountName
+        )
+      );
+      setSelectedAccount({ ...account, ledgerData: relatedEntries, initialBalance: account.balance });
+    } catch (error) {
+      console.error('Error fetching ledger data:', error);
+    }
+  };  
+  
   const closeModal = () => {
     setSelectedAccount(null);
   };
@@ -195,7 +294,7 @@ const ViewAccounts = (showEdit) => {
           </table>
         )}
       </div>
-      <Modal isOpen={selectedAccount !== null} onClose={closeModal} ledgerData={selectedAccount ? selectedAccount.ledgerData : []} showSearchBar={false} />
+      <Modal isOpen={selectedAccount !== null} onClose={closeModal} ledgerData={selectedAccount ? selectedAccount.ledgerData : []} accountName={selectedAccount ? selectedAccount.accountName : ""} />
       {searchQuery && filteredAccounts.length === 0 && (
         <div style={{ textAlign: 'center', color:'red', fontWeight: 'bold', fontSize: 18 }}>No results found</div>
       )} 
