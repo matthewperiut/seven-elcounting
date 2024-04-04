@@ -1,7 +1,7 @@
 import logo from '../../assets/logo.png';
 import default_pfp from '../../assets/default_pfp.png';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import Reports from './Reports';
+import Reports from '../reports/Reports';
 import { Context } from '../context/UserContext';
 import React, { useState } from 'react';
 
