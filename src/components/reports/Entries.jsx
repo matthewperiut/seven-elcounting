@@ -146,6 +146,7 @@ const Entries = () => {
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("account");
+  const [viewType, setViewType] = useState("3");
 
   const fetchEntries = async () => {
     //queries entries based off approval status
@@ -224,39 +225,54 @@ const Entries = () => {
       <div>
         <label>Search by: </label>
         <select onChange={(e) => setFilterType(e.target.value)}>
-          <option value="account">Account </option>
+          <option value="account">Account</option>
           <option value="amount">Amount</option>
           <option value="date">Date</option>
         </select>
         <input
-          type="text"
-          placeholder="Enter search term..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+            type="text"
+            placeholder="Enter search term..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
         />
+        <p>
+        <label>View: </label>
+        <select onChange={(e) => setViewType(e.target.value)}>
+          <option value={3}>All</option>
+          <option value={0}>Pending</option>
+          <option value={1}>Approved</option>
+          <option value={2}>Rejected</option>
+        </select>
+        </p>
       </div>
-      <div>
-        <h2>Pending: </h2>
-        <Table
-          entries={getFilteredEntries(entries.pending)}
-          isPending={true}
-          fetchEntries={fetchEntries}
-        />
-      </div>
-      <div>
-        <h2>Approved: </h2>
-        <Table
-          entries={getFilteredEntries(entries.approved)}
-          isPending={false}
-        />
-      </div>
-      <div>
-        <h2>Rejected: </h2>
-        <Table
-          entries={getFilteredEntries(entries.rejected)}
-          isPending={false}
-        />
-      </div>
+      {viewType === "3" || viewType === "0" ? (
+          <div>
+            <h2>Pending: </h2>
+            <Table
+                entries={getFilteredEntries(entries.pending)}
+                isPending={true}
+                fetchEntries={fetchEntries}
+            />
+          </div>
+      ) : null}
+      {viewType === "3" || viewType === "1" ? (
+          <div>
+            <h2>Approved: </h2>
+            <Table
+                entries={getFilteredEntries(entries.approved)}
+                isPending={false}
+            />
+          </div>
+      ) : null}
+      {viewType === "3" || viewType === "2" ? (
+          <div>
+            <h2>Rejected: </h2>
+            <Table
+                entries={getFilteredEntries(entries.rejected)}
+                isPending={false}
+            />
+          </div>
+      ) : null}
     </div>
   );
 };
