@@ -117,8 +117,9 @@ const GeneralLedger = ({ showSearchBar }) => {
                 <tr>
                   <th>Date Created</th>
                   <th>User</th>
-                  <th>Credit</th>
+                  <th>Account</th>
                   <th>Debit</th>
+                  <th>Credit</th>
                 </tr>
               </thead>
               <tbody>
@@ -133,17 +134,17 @@ const GeneralLedger = ({ showSearchBar }) => {
                           <td rowSpan={entry.entries.length}>{entry.user}</td>
                         </>
                       )}
-                      {subEntry.type === "credit" ? (
-                        <>
-                          <td>{subEntry.account}</td>
-                          <td></td>
-                        </>
-                      ) : (
-                        <>
-                          <td></td>
-                          <td>{subEntry.account}</td>
-                        </>
-                      )}
+                      <td>{subEntry.account}</td>
+                      <td>
+                        {subEntry.type === "debit" ? (
+                          "$" + parseFloat(subEntry.amount).toLocaleString()
+                        ) : ""}
+                      </td>
+                      <td>
+                        {subEntry.type === "credit" ? (
+                          "$" + parseFloat(subEntry.amount).toLocaleString()
+                        ) : ""}
+                      </td>
                     </tr>
                   ))
                 ))}
