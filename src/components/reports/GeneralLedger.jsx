@@ -15,7 +15,7 @@ function formatDate(timestamp) {
   return date.toLocaleDateString('en-US', options);
 }
 
-const GeneralLedger = () => {
+const GeneralLedger = ({ showSearchBar }) => {
   const [approvedEntries, setApprovedEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -53,8 +53,7 @@ const GeneralLedger = () => {
     if (searchQuery) {
       filtered = filtered.filter(entry =>
         entry.entries.some(subEntry =>
-          subEntry.account.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          subEntry.amount.toString().includes(searchQuery)
+          subEntry.account.toLowerCase().includes(searchQuery.toLowerCase())
         )
       );
     }
@@ -85,13 +84,17 @@ const GeneralLedger = () => {
   return (
     <div className="wrapper">
       <div>
-        <h2>General Ledger: </h2>
-        <input
-          type="text"
-          placeholder="Search Account or Amount"
-          value={searchQuery}
-          onChange={handleSearchChange}
-        />
+        {showSearchBar && (
+          <div>
+            <h2>General Ledger: </h2>
+            <input
+              type="text"
+              placeholder="Search Account"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+          </div>
+        )}
         {showDateInput ? (
           <>
             <input
@@ -108,39 +111,45 @@ const GeneralLedger = () => {
         {loading ? (
           <p>Loading...</p>
         ) : (
-          filteredEntries.map((entry) => (
-            <div className="entries-table" key={entry.id}>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Date Created</th>
-                    <th>User</th>
-                    <th>Account</th>
-                    <th>Type</th>
-                    <th>Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr key={entry.id}>
-                    <td rowSpan={entry.entries.length}>
-                      {formatDate(entry.dateCreated)}
-                    </td>
-                    <td rowSpan={entry.entries.length}>{entry.user}</td>
-                    <td>{entry.entries[0].account}</td>
-                    <td>{entry.entries[0].type}</td>
-                    <td>{entry.entries[0].amount}</td>
-                  </tr>
-                  {entry.entries.slice(1).map((subEntry, index) => (
+          <div className="entries-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date Created</th>
+                  <th>User</th>
+                  <th>Credit</th>
+                  <th>Debit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredEntries.map((entry) => (
+                  entry.entries.map((subEntry, index) => (
                     <tr key={index}>
-                      <td>{subEntry.account}</td>
-                      <td>{subEntry.type}</td>
-                      <td>{subEntry.amount}</td>
+                      {index === 0 && (
+                        <>
+                          <td rowSpan={entry.entries.length}>
+                            {formatDate(entry.dateCreated)}
+                          </td>
+                          <td rowSpan={entry.entries.length}>{entry.user}</td>
+                        </>
+                      )}
+                      {subEntry.type === "credit" ? (
+                        <>
+                          <td>{subEntry.account}</td>
+                          <td></td>
+                        </>
+                      ) : (
+                        <>
+                          <td></td>
+                          <td>{subEntry.account}</td>
+                        </>
+                      )}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ))
+                  ))
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

@@ -3,45 +3,22 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase-config.js';
 import CustomCalendar from '../layouts/CustomCalendar.jsx';
 import Help from '../layouts/Help.jsx';
+import GeneralLedger from '../reports/GeneralLedger.jsx';
 
 // Modal component 
 const Modal = ({ isOpen, onClose, ledgerData }) => {
   if (!isOpen) return null;
-
   return (
-    <div className="modal">
-      <div className="modal-content">
+    <div className="modal-overlay">
+      <div className="modal">
         <span className="close" onClick={onClose}>&times;</span>
         <h2>Account Ledger</h2>
-        <table border="1">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Entry Number</th>
-              <th>Description</th>
-              <th>Credit</th>
-              <th>Debit</th>
-              <th>Balance</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ledgerData.map(entry => (
-              <tr key={entry.entryNumber}>
-                <td>{entry.date}</td>
-                <td>{entry.entryNumber}</td>
-                <td>{entry.description}</td>
-                <td>{entry.credit}</td>
-                <td>{entry.debit}</td>
-                <td>{entry.balance}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <GeneralLedger ledgerData={ledgerData} showSearchBar={false} />
       </div>
-      <Modal isOpen={selectedAccount !== null} onClose={closeModal} ledgerData={selectedAccount ? selectedAccount.ledgerData : []} />
     </div>
   );
 };
+
 const ViewAccounts = (showEdit) => {
   const [accounts, setAccounts] = useState([]);
   
@@ -123,50 +100,50 @@ const ViewAccounts = (showEdit) => {
       </div>
       <Help />
       <div style={{ textAlign: 'center', padding: '0 10px' }}>
-      <h1 style={{ display: 'inline-block' }}>Charts of Accounts</h1>
-      <div style={{position: 'absolute', right: '20px', top: '120px' }}>
-        <button
-        onClick={() => setShowDropdown(!showDropdown)}
-        title="Show or hide filters"
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
-        style={{ cursor: 'pointer' }}
-        >
-          Filters
-        </button>
-        {showTooltip && (
-          <div style={{
-            position: 'absolute',
-            bottom: '10px', 
-            left: '-45%',
-            transform: 'translateX(-50%)',
-            background: 'rgba(0, 0, 0, 0.50)',
-            color: 'white',
-            padding: '5px 10px',
-            borderRadius: '4px',
-            fontSize: '12px',
-            whiteSpace: 'nowrap',
-          }}>
-            Table Filters
+        <h1 style={{ display: 'inline-block' }}>Charts of Accounts</h1>
+        <div style={{position: 'absolute', right: '20px', top: '120px' }}>
+          <button
+            onClick={() => setShowDropdown(!showDropdown)}
+            title="Show or hide filters"
+            onMouseEnter={() => setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}
+            style={{ cursor: 'pointer' }}
+          >
+            Filters
+          </button>
+          {showTooltip && (
+            <div style={{
+              position: 'absolute',
+              bottom: '10px', 
+              left: '-45%',
+              transform: 'translateX(-50%)',
+              background: 'rgba(0, 0, 0, 0.50)',
+              color: 'white',
+              padding: '5px 10px',
+              borderRadius: '4px',
+              fontSize: '12px',
+              whiteSpace: 'nowrap',
+            }}>
+              Table Filters
             </div>
-        )}
-      </div>
-      {showDropdown && (
-        <div style={{ position: 'absolute', right: '10px', top: '170px', border: '1px solid #ddd', padding: '10px', background: '#fff' }}>
-        {Object.keys(visibleColumns).map(columnName => (
-          <div key={columnName} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
-            <input
-              type="checkbox"
-              id={columnName}
-              checked={visibleColumns[columnName]}
-              onChange={() => toggleColumnVisibility(columnName)}
-              style={{ marginRight: '5px' }}
-            />
+          )}
+        </div>
+        {showDropdown && (
+          <div style={{ position: 'absolute', right: '10px', top: '170px', border: '1px solid #ddd', padding: '10px', background: '#fff' }}>
+            {Object.keys(visibleColumns).map(columnName => (
+              <div key={columnName} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+                <input
+                  type="checkbox"
+                  id={columnName}
+                  checked={visibleColumns[columnName]}
+                  onChange={() => toggleColumnVisibility(columnName)}
+                  style={{ marginRight: '5px' }}
+                />
                 <label htmlFor={columnName}>{columnName}</label>
               </div>
             ))}
-            </div>
-          )}
+          </div>
+        )}
       </div>
       <div style={{ textAlign: 'center', padding: '0 10px' }}>
         <input
@@ -177,51 +154,51 @@ const ViewAccounts = (showEdit) => {
         />
       </div>
       <div className="accounts-table" style={{ paddingTop: '30px' }}>
-      {filteredAccounts.length > 0 && (
-        <table border="2">
-          <thead>
-            <tr>
-              {visibleColumns.accountName && <th>Account Name</th>}
-              {visibleColumns.accountNumber && <th>Account Number</th>}
-              {visibleColumns.accountDescription && <th>Account Description</th>}
-              {visibleColumns.normalSide && <th>Normal Side</th>}
-              {visibleColumns.category && <th>Category</th>}
-              {visibleColumns.subcategory && <th>Subcategory</th>}
-              {visibleColumns.initialBalance && <th>Initial Balance</th>}
-              {visibleColumns.date && <th>Date</th>}
-              {visibleColumns.userID && <th>User ID</th>}
-              {visibleColumns.order && <th>Order</th>}
-              {visibleColumns.financialStatement && <th>Financial Statement</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredAccounts.map((account) => (
-              <tr key={account.id}>
-          <td>
-        <button onClick={() => openModal(account)} style={{ border: 'none', background: 'none', color: 'black', cursor: 'pointer' }}>
-          {account.accountName}
-         </button>
-        </td>                
-                {visibleColumns.accountNumber && <td>{account.accountNumber}</td>}
-                {visibleColumns.accountDescription && <td>{account.accountDescription}</td>}
-                {visibleColumns.normalSide && <td>{account.normalSide}</td>}
-                {visibleColumns.category && <td>{account.accountCatagory}</td>} 
-                {visibleColumns.subcategory && <td>{account.accountSubcatagory}</td>}
-                {visibleColumns.initialBalance && <td>{account.balance}</td>}
-                {visibleColumns.date && <td>{account.DateAccountAdded ? formatDate(account.DateAccountAdded) : 'N/A'}</td>}
-                {visibleColumns.userID && <td>{account.UID}</td>}
-                {visibleColumns.order && <td>{account.order}</td>}
-                {visibleColumns.financialStatement && <td>{account.statement}</td>}
+        {filteredAccounts.length > 0 && (
+          <table border="2">
+            <thead>
+              <tr>
+                {visibleColumns.accountName && <th>Account Name</th>}
+                {visibleColumns.accountNumber && <th>Account Number</th>}
+                {visibleColumns.accountDescription && <th>Account Description</th>}
+                {visibleColumns.normalSide && <th>Normal Side</th>}
+                {visibleColumns.category && <th>Category</th>}
+                {visibleColumns.subcategory && <th>Subcategory</th>}
+                {visibleColumns.initialBalance && <th>Initial Balance</th>}
+                {visibleColumns.date && <th>Date</th>}
+                {visibleColumns.userID && <th>User ID</th>}
+                {visibleColumns.order && <th>Order</th>}
+                {visibleColumns.financialStatement && <th>Financial Statement</th>}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody>
+              {filteredAccounts.map((account) => (
+                <tr key={account.id}>
+                  <td>
+                    <button onClick={() => openModal(account)} style={{ border: 'none', background: 'none', color: 'black', cursor: 'pointer' }}>
+                      {account.accountName}
+                    </button>
+                  </td>                
+                  {visibleColumns.accountNumber && <td>{account.accountNumber}</td>}
+                  {visibleColumns.accountDescription && <td>{account.accountDescription}</td>}
+                  {visibleColumns.normalSide && <td>{account.normalSide}</td>}
+                  {visibleColumns.category && <td>{account.accountCatagory}</td>} 
+                  {visibleColumns.subcategory && <td>{account.accountSubcatagory}</td>}
+                  {visibleColumns.initialBalance && <td>{account.balance}</td>}
+                  {visibleColumns.date && <td>{account.DateAccountAdded ? formatDate(account.DateAccountAdded) : 'N/A'}</td>}
+                  {visibleColumns.userID && <td>{account.UID}</td>}
+                  {visibleColumns.order && <td>{account.order}</td>}
+                  {visibleColumns.financialStatement && <td>{account.statement}</td>}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
-      <Modal isOpen={selectedAccount !== null} onClose={closeModal} ledgerData={selectedAccount ? selectedAccount.ledgerData : []} />
+      <Modal isOpen={selectedAccount !== null} onClose={closeModal} ledgerData={selectedAccount ? selectedAccount.ledgerData : []} showSearchBar={false} />
       {searchQuery && filteredAccounts.length === 0 && (
-          <div style={{ textAlign: 'center', color:'red', fontWeight: 'bold', fontSize: 18 }}>No results found</div>
-        )} 
+        <div style={{ textAlign: 'center', color:'red', fontWeight: 'bold', fontSize: 18 }}>No results found</div>
+      )} 
     </div>
   );
 };
