@@ -34,6 +34,7 @@ const Login = () => {
       if (error.message.includes("invalid-credential")) {
         setFailedAttempts(failedAttempts + 1);
       }
+      reportError(error.message);
     });
   };
 

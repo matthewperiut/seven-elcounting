@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import CurrencyInput from "react-currency-input-field";
 import { db } from "../../firebase-config";
 import { Context } from "../context/UserContext";
+import { reportError } from "../logs/ErrorLogController";
 
 const Journalizing = () => {
   const { user } = Context(); //pull user context for user ID
@@ -111,6 +112,7 @@ const Journalizing = () => {
         setCreditsList([{ account: "", amount: "" }]);
     } catch (error) {
       console.log(error.message);
+      reportError(error.message);
     }
   };
 

@@ -146,6 +146,7 @@ const ViewAccounts = ( showEdit ) => {
       setAccounts(accounts.map(account => account.id === updatedAccount.id ? updatedAccount : account));
     } catch (error) {
       console.error("Error updating document: ", error);
+      reportError(error.message);
     }
   };
   

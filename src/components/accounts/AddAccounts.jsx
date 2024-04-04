@@ -11,6 +11,7 @@ import {
 import CustomCalendar from "../layouts/CustomCalendar";
 import CurrencyInput from "react-currency-input-field";
 import Help from '../layouts/Help.jsx';
+import { reportError } from "../logs/ErrorLogController.jsx";
 
 export const AddAccounts = () => {
   const [accountInfo, setAccountInfo] = useState({});
@@ -73,6 +74,7 @@ export const AddAccounts = () => {
           ? "Missing critical field!"
           : error.message
       );
+      reportError(error.message);
     }
   };
 

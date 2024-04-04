@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../../firebase-config';
 import { Link } from 'react-router-dom';
+import { reportError } from '../logs/ErrorLogController';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -16,6 +17,7 @@ const ForgotPassword = () => {
     .catch((error) => {
       console.error(error.message);
       setErrorMessage(error.message);
+      reportError(error.message);
     });
   };
 
