@@ -14,6 +14,6 @@ export { default as DeactivateAccounts } from "./accounts/DeactivateAccounts"
 export { default as Journalizing } from "./accounts/Journalizing"
 export { default as Help } from "./layouts/Help"
 export { default as GeneralLedger} from "./layouts/GeneralLedger"
-
+export { default as Entries } from "./reports/Entries"
 
 {/* File for easily exporting all components */}

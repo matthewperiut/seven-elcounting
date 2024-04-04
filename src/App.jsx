@@ -19,7 +19,8 @@ Help,
 RoleManagement, 
 UserContextProvider, 
 Journalizing,
-GeneralLedger 
+Entries,
+GeneralLedger
 } from "./components"
 
 
@@ -43,6 +44,7 @@ function App() {
         <Route path="editaccounts" element={<RequireAdmin><EditAccounts/></RequireAdmin>} />
         <Route path="deactivateaccounts" element={<RequireAdmin><DeactivateAccounts/></RequireAdmin>} />
         <Route path="journalizing" element={<Journalizing/>} />
+        <Route path="journal-entries" element={<RequireAccount><Entries/></RequireAccount>} />
         <Route path="generalLedger" element={<GeneralLedger />} />
         {/* page not found */}
         <Route path="*" element={<PageNotFound />} />

@@ -4,19 +4,15 @@ import { Link } from 'react-router-dom';
 const Reports = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleMenuOpen = () => {
-    setIsOpen(true);
-  };
-
-  const handleMenuClose = () => {
-    setIsOpen(false);
+  const handleMenu = () => {
+    setIsOpen(!isOpen);
   };
 
   return (
     <div
       className="reports-menu"
-      onMouseEnter={handleMenuOpen}
-      onMouseLeave={handleMenuClose}
+      onMouseEnter={handleMenu}
+      onMouseLeave={handleMenu}
     >
       <button className="reports-menu-button">Reports</button>
       {isOpen && (
@@ -33,6 +29,9 @@ const Reports = () => {
             </li>
             <li>
               <Link to="/income-statement">Income Statement</Link>
+            </li>
+            <li>
+              <Link to="/journal-entries">Journal Entries</Link>
             </li>
             </ul>
         </div>

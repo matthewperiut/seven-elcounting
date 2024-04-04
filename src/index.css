@@ -80,43 +80,6 @@ select {
 
 
 
-/* Journal Entries */
-.entry-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.credit-entry {
-    margin-left: 20%; /* Indent credit entries */
-}
-
-.debit-entry {
-    margin-right: 20%;
-}
-
-.addtransaction-button{
-    font-size: 12px;
-    margin: 15px;
-}
-
-.removetransaction-button {
-    /* Makes button a circle */
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    border-radius: 50%;
-
-    /* Color and center the + and - buttons*/
-    background-color: #dc3545; /* make - button red */
-    color: white;
-    font-size: 25px;
-    text-align: center;
-    line-height: 0; /* center - */
-}
-/* Journal Entries */
-
-
 
 /* Dashboard/Banner */
 .welcome-div {
@@ -303,15 +266,15 @@ select {
     border-radius: 5px;
     cursor: pointer;
   }
-  /* Help Button */
+/* Help Button */
 
-/* Center Text */
+
+
+/* Chart of Accounts */
 .viewonlyaccount-div, .accounts-table th, .accounts-table td {
-    text-align: center;
+    text-align: center; /* Center Text */
 }
-/* Center Text */
 
-/* Charts of Accounts */
 .accounts-table {
     display: flex;
     justify-content: center;
@@ -322,6 +285,10 @@ select {
     border-collapse: collapse;
 }
 /* Charts of Accounts */
+
+
+
+/* Reports dropdown menu */
 .reports-menu {
     position: relative;
   }
@@ -342,7 +309,6 @@ select {
   
   .reports-menu-button:hover {
     background-color: #6972f7;
-    font-family: "Times New Roman", Times, serif;
   }
   /* for the reports component*/
   .reports-dropdown {
@@ -354,6 +320,7 @@ select {
     border-top: none;
     width: 150px; /* Adjust width as needed */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 999;
   }
   
   .reports-dropdown ul {
@@ -375,7 +342,8 @@ select {
   .reports-dropdown ul li a:hover {
     background-color: #f0f0f0;
   }
-/* for the GeneralLedger component*/
+
+  /* for the GeneralLedger component*/
 .ledger-container {
     display: flex;
     flex-direction: column;
@@ -399,3 +367,59 @@ select {
   .ledger-table th {
     background-color: white;
   }
+/* Reports dropdown menu */
+
+
+
+/* Journalizing */
+.entry-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.credit-entry {
+    margin-left: 20%; /* Indent credit entries */
+}
+
+.debit-entry {
+    margin-right: 20%;
+}
+
+.addtransaction-button{
+    font-size: 12px;
+    margin: 15px;
+}
+
+.removetransaction-button {
+    /* Makes button a circle */
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border-radius: 50%;
+
+    /* Color and center the + and - buttons*/
+    background-color: #dc3545; /* make - button red */
+    color: white;
+    font-size: 25px;
+    text-align: center;
+    line-height: 0; /* center - */
+}
+/* Journalizing */
+
+
+/* Journal Entries */
+.entries-table {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
+}
+
+.entries-table table, .entries-table th, .entries-table td {
+    width: 60%;
+    border-collapse: collapse;
+    border: 1px solid;
+    padding: 8px;
+}
+/* Journal Entries */
