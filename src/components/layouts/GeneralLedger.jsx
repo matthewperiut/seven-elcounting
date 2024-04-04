@@ -54,7 +54,6 @@ const GeneralLedger = () => {
         placeholder="Search Account name or amount"
         value={searchQuery}
         onChange={handleSearchChange}
-        style={{ marginBottom: '20px', borderRadius: '30px' }}
       />
       <table className="ledger-table">
         <thead>

@@ -174,7 +174,6 @@ const ViewAccounts = (showEdit) => {
           placeholder="Search by Account Name or Number..."
           value={searchQuery}
           onChange={handleSearchChange}
-          style={{ marginBottom: '20px' , borderRadius: '30px' }}
         />
       </div>
       <div className="accounts-table" style={{ paddingTop: '30px' }}>
