@@ -28,7 +28,8 @@ export async function reportError(errorStr) {
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false };
+    // Include error details in the initial state
+    this.state = { hasError: false, error: null, errorInfo: null };
   }
 
   static getDerivedStateFromError(error) {
@@ -37,15 +38,33 @@ class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
+    // Catch errors in any components below and re-render with error message
+    this.setState({
+      error: error,
+      errorInfo: errorInfo
+    });
     reportError(error + " " + errorInfo);
+    console.log(error + " " + errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
-      return <h1>Something went wrong.</h1>;
+      // Customized UI when rendering error information
+      return (
+          <div>
+            <h1>Something went wrong.</h1>
+            <details style={{ whiteSpace: 'pre-wrap' }}>
+              {this.state.error && this.state.error.toString()}
+              <br />
+              {/* Safely access componentStack, checking if errorInfo is not null */}
+              {this.state.errorInfo ? this.state.errorInfo.componentStack : 'No stack trace available'}
+            </details>
+          </div>
+      );
     }
 
-    return this.props.children; 
+    // Normally, just render children
+    return this.props.children;
   }
 }
 

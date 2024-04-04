@@ -1,40 +1,95 @@
-export async function logEvent(type, author, before, after) {
-    if (type !== "account" || type !== "journal" || type !== "account")
-    return;
+import {doc, getDoc, setDoc, updateDoc} from "firebase/firestore";
+import {db} from "../../firebase-config.js";
+import {reportError} from "./ErrorLogController.jsx";
 
-let uniqueId = -1;
-const errorDocRef = doc(db, "eventLog", "idCounter");
+async function genEventUID() {
+    // generate uid
+    const counterRef = doc(db, "eventLog", "idCounter");
+    const docSnap = await getDoc(counterRef);
 
-// Try to get the document
-const docSnap = await getDoc(errorDocRef);
+    if (docSnap.exists()) {
+        let uniqueId = docSnap.data().count;
+        await updateDoc(counterRef, {
+            count: uniqueId + 1
+        });
+        return uniqueId;
+    } else {
+        console.error("Counter document does not exist.");
+        await reportError("Counter document does not exist.");
+        return -1;
+    }
+}
 
-if (docSnap.exists()) {
-    uniqueId = docSnap.data().count;
-  // If document exists, increment the count
-  await updateDoc(errorDocRef, {
-    count: docSnap.data().count + 1
-  });
+export async function logEvent(type, before, after, user) {
+    if (!(type === "account" || type === "user" || type === "journal")) return;
 
+    let uniqueId = await genEventUID();
+    if (uniqueId < 0) return;
 
-// Use a simplified version of the error string as a document ID
-const errorId = errorStr.substring(0, 50).replace(/\W/g, '_');
-const errorDocRef = doc(db, "errorLog", errorId);
+    // Generate the difference array
+    const differences = Object.keys(before).reduce((acc, key) => {
+        if (before[key] !== after[key]) {
+            acc.push(`${key} changed from ${before[key]} to ${after[key]}`);
+        }
+        return acc;
+    }, []);
 
-// Try to get the document
-const docSnap = await getDoc(errorDocRef);
-
-if (docSnap.exists()) {
-    // If document exists, increment the count
-    await updateDoc(errorDocRef, {
-    count: docSnap.data().count + 1
-    });
-} else {
-    // If it doesn't exist, create a new document with count set to 1
-    await setDoc(errorDocRef, {
-    errorStr: errorStr,
-    count: 1,
-    timestamp: new Date()
+    // Create a new event document with the generated unique ID
+    const docEvent = doc(db, "eventLog", `${uniqueId}`);
+    await setDoc(docEvent, {
+        type: type,
+        diff: differences.length > 0 ? differences : ["No changes detected"],
+        before: before,
+        after: after,
+        author: user ? user.displayName : "Unknown",
+        timestamp: new Date()
     });
 }
+
+export async function logEventCreation(type, accountName, account, user) {
+    if (!(type === "account" || type === "user" || type === "journal")) return;
+    let uniqueId = await genEventUID();
+    if (uniqueId < 0) return;
+    const docEvent = doc(db, "eventLog", `${uniqueId}`);
+    await setDoc(docEvent, {
+        type: type,
+        diff: ["Created " + type + ", " + accountName],
+        before: {},
+        after: account,
+        author: user ? user.displayName : "Unknown",
+        timestamp: new Date()
+    });
 }
+
+export async function logEventDeactivation(type, accountName, account, user) {
+    if (!(type === "account" || type === "user")) return;
+    let uniqueId = await genEventUID();
+    if (uniqueId < 0) return;
+    const beforeAccount = { ...account, isActivated: true };
+    const docEvent = doc(db, "eventLog", `${uniqueId}`);
+    await setDoc(docEvent, {
+        type: type,
+        diff: ["Deactivated " + type + ", " + accountName],
+        before: beforeAccount,
+        after: account,
+        author: user ? user.displayName : "Unknown",
+        timestamp: new Date()
+    });
+}
+
+// lazy to do this right
+export async function logEventActivation(type, accountName, account, user) {
+    if (!(type === "account" || type === "user")) return;
+    let uniqueId = await genEventUID();
+    if (uniqueId < 0) return;
+    const beforeAccount = { ...account, isActivated: false };
+    const docEvent = doc(db, "eventLog", `${uniqueId}`);
+    await setDoc(docEvent, {
+        type: type,
+        diff: ["Activated " + type + ", " + accountName],
+        before: beforeAccount,
+        after: account,
+        author: user ? user.displayName : "Unknown",
+        timestamp: new Date()
+    });
 }

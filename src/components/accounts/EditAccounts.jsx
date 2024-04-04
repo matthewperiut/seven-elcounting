@@ -4,6 +4,8 @@ import { db } from '../../firebase-config.js';
 import CustomCalendar from '../layouts/CustomCalendar.jsx';
 import CurrencyInput from 'react-currency-input-field';
 import Help from '../layouts/Help.jsx';
+import {logEvent} from "../logs/EventLogController.jsx";
+import {Context} from "../context/UserContext.jsx";
 
 /**
  * Formats a Firestore timestamp to a readable date string.
@@ -21,9 +23,11 @@ function formatDate(timestamp) {
 
 const Modal = ({ isOpen, account, closeModal, isEdit, updateAccount }) => {
   const [currentAccount, setCurrentAccount] = useState(account);
+  const [originalAccount, setOriginalAccount] = useState(account);
 
   useEffect(() => {
     setCurrentAccount(account);
+    setOriginalAccount(account);
   }, [account]);
 
   const handleValueChange = (value, field) => {
@@ -32,9 +36,11 @@ const Modal = ({ isOpen, account, closeModal, isEdit, updateAccount }) => {
     }
   };
 
+  const { user } = Context();
   const saveChanges = async () => {
     if (isEdit) {
       await updateAccount(currentAccount);
+      await logEvent("account", originalAccount, currentAccount, user);
     }
     closeModal();
   };

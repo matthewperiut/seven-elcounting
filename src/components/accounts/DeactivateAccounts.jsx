@@ -3,10 +3,13 @@ import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/fire
 import { db } from '../../firebase-config';
 import CustomCalendar from '../layouts/CustomCalendar';
 import Help from '../layouts/Help.jsx';
+import {Context} from "../context/UserContext.jsx";
+import {logEventDeactivation} from "../logs/EventLogController.jsx";
 
 const DeactivateAccounts = () => {
   const [activeAccounts, setActiveAccounts] = useState([]);
   const [deactivedAccounts, setDeactivedAccounts] = useState([]);
+  const { user } = Context();
 
   const fetchAllAccounts = async () => {
     const activeSnapshot = await getDocs(query(collection(db, 'accounts'), where('isActivated', '==', true))); //gets snapshot of all active accounts
@@ -19,17 +22,19 @@ const DeactivateAccounts = () => {
       fetchAllAccounts(); //fetches all accounts 
   }, []);
 
-  const deactivateAccount = async (id, balance) => {
-    if (balance > 0) {
+  const deactivateAccount = async (account) => {
+    if (account.balance > 0) {
       alert('This account has a balance above 0 and cannot be deactivated'); //if user attempts to deactivate account with balance greater than zero
     }
     else {
-      await updateDoc(doc(db, 'accounts', id), {isActivated: false}); //deactivate account
+      await updateDoc(doc(db, 'accounts', account.accountID), {isActivated: false}); //deactivate account
+      await logEventDeactivation("account", account.accountName, account, user);
       fetchAllAccounts();
     }
   }
-  const activateAccount = async (id) => {
-    await updateDoc(doc(db, 'accounts', id), {isActivated: true}); //active account
+  const activateAccount = async (account) => {
+    await updateDoc(doc(db, 'accounts', account.accountID), {isActivated: true}); //active account
+    await logEventDeactivation("account", account.accountName, account, user);
     fetchAllAccounts();
   }
 
@@ -45,7 +50,7 @@ const DeactivateAccounts = () => {
           {activeAccounts.map((account) => (
               <div key={account.accountName} className="database-item">  
                 <p>{account.accountName}</p>
-                <button className="button-edit" onClick={ () => deactivateAccount(account.accountID, account.balance)}>Deactivate</button>
+                <button className="button-edit" onClick={ () => deactivateAccount(account)}>Deactivate</button>
               </div>
           ))}
       </div>
@@ -54,7 +59,7 @@ const DeactivateAccounts = () => {
       {deactivedAccounts.map((account) => (
             <div key={account.accountName} className="database-item">  
               <p>{account.accountName}</p>
-              <button className="button-edit" onClick={ () => activateAccount(account.accountID)}>Activate</button>
+              <button className="button-edit" onClick={ () => activateAccount(account)}>Activate</button>
             </div>
         ))}
       </div>

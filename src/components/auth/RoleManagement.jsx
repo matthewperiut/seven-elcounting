@@ -3,15 +3,19 @@ import { doc, getDocs, collection, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import { Context } from "../context/UserContext";
 import CustomCalendar from "../layouts/CustomCalendar";
+import {logEvent} from "../logs/EventLogController.jsx";
 
-const Modal = ({ isOpen, onClose, user, updateUser }) => {
-  const [localUser, setLocalUser] = useState(user);
+const Modal = ({ isOpen, onClose, user: edittingUser, updateUser }) => {
+  const [localUser, setLocalUser] = useState(edittingUser);
+  const [originalLocalUser, setOriginalLocalUser] = useState(edittingUser);
+  const { user } = Context();
 
   useEffect(() => {
-    if (user) {
-      setLocalUser(user);
+    if (edittingUser) {
+      setOriginalLocalUser(edittingUser);
+      setLocalUser(edittingUser);
     }
-  }, [user]);
+  }, [edittingUser]);
 
   if (!isOpen || !localUser) return null;
 
@@ -33,6 +37,7 @@ const Modal = ({ isOpen, onClose, user, updateUser }) => {
     const userDocRef = doc(db, "users", localUser.id);
     await updateDoc(userDocRef, localUser);
     updateUser(localUser); // Update user in the parent component state
+    logEvent("user", originalLocalUser, localUser, user)
     onClose(); // Close modal after saving changes
   };
 
