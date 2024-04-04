@@ -33,6 +33,10 @@ const Reports = () => {
             <li>
               <Link to="/journal-entries">Journal Entries</Link>
             </li>
+            <li>
+              <Link to="/eventLog">Event Log</Link>
+            </li>
+
             </ul>
         </div>
       )}

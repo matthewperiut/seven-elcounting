@@ -22,6 +22,7 @@ Journalizing,
 Entries,
 GeneralLedger
 } from "./components"
+import EventLog from './components/logs/EventLog';
 
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
         <Route path="journalizing" element={<Journalizing/>} />
         <Route path="journal-entries" element={<RequireAccount><Entries/></RequireAccount>} />
         <Route path="generalLedger" element={<GeneralLedger />} />
+        <Route path="eventLog" element={<EventLog />} />
         {/* page not found */}
         <Route path="*" element={<PageNotFound />} />
         </Route>
