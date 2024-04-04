@@ -30,6 +30,8 @@ const Entries = () => {
     approved: [],
     rejected: [],
   });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("account");
 
   useEffect(() => {
 
@@ -97,6 +99,24 @@ const Entries = () => {
       rejected: [...prev.rejected, entry]
     }))
   };
+  const getFilteredEntries = (entries) => {
+    if (!searchTerm) return entries;
+  
+    return entries.filter((entry) => {
+      return entry.entries.some((subEntry) => {
+        switch (filterType) {
+          case "account":
+            return subEntry.account.toLowerCase().includes(searchTerm.toLowerCase());
+          case "amount":
+            return Number(subEntry.amount) === Number(searchTerm);
+          case "date":
+            return formatDate(entry.dateCreated).includes(searchTerm);
+          default:
+            return true;
+        }
+      });
+    });
+  };
 
   const Table = ({ entries, isPending }) => (
     <div>
@@ -145,16 +165,30 @@ const Entries = () => {
   return (
     <div className="wrapper">
       <div>
+        <label>Search by: </label>
+        <select onChange={(e) => setFilterType(e.target.value)}>
+          <option value="account">Account </option>
+          <option value="amount">Amount</option>
+          <option value="date">Date</option>
+        </select>
+        <input
+          type="text"
+          placeholder="Enter search term..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+      <div>
         <h2>Pending: </h2>
-        <Table entries={entries.pending} isPending={true} />
+        <Table entries={getFilteredEntries(entries.pending)} isPending={true} />
       </div>
       <div>
         <h2>Approved: </h2>
-        <Table entries={entries.approved} isPending={false} />
+        <Table entries={getFilteredEntries(entries.approved)} isPending={false} />
       </div>
       <div>
         <h2>Rejected: </h2>
-        <Table entries={entries.rejected} isPending={false} />
+        <Table entries={getFilteredEntries(entries.rejected)} isPending={false} />
       </div>
     </div>
   );
