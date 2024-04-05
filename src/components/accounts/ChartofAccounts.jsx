@@ -261,6 +261,7 @@ const ViewAccounts = (showEdit) => {
     const filtered = accounts.filter(account =>
       account.accountName.toLowerCase().includes(searchQuery.toLowerCase()) || account.accountNumber.toString().includes(searchQuery)
     );
+    filtered.sort((a, b) => a.accountNumber - b.accountNumber); //sorts filtered accounts by account number
     setFilteredAccounts(filtered);
   }, [searchQuery, accounts]);
   
@@ -401,7 +402,7 @@ const ViewAccounts = (showEdit) => {
                     <button onClick={() => openModal(account)} style={{ border: 'none', background: 'none', color: 'black', cursor: 'pointer' }}>
                       {account.accountName}
                     </button>
-                  </td>                
+                  </td>
                   {visibleColumns.accountNumber && <td>{account.accountNumber}</td>}
                   {visibleColumns.accountDescription && <td>{account.accountDescription}</td>}
                   {visibleColumns.normalSide && <td>{account.normalSide}</td>}
