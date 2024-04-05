@@ -13,7 +13,7 @@ function formatDate(timestamp) {
 }
 
 // Modal component
-const Modal = ({ isOpen, onClose, ledgerData, accountName, initialBalance, dateAccountAdded }) => {
+const Modal = ({ isOpen, onClose, ledgerData, accountName, initialBalance, dateAccountAdded, onPRClick }) => {
   if (!isOpen) return null;
 
   // Initial balance is now directly used from props
@@ -145,6 +145,8 @@ const Modal = ({ isOpen, onClose, ledgerData, accountName, initialBalance, dateA
                   <th style={{ borderBottom: '2px solid #ddd', padding: '10px', textAlign: 'left' }}>Debit</th>
                   <th style={{ borderBottom: '2px solid #ddd', padding: '10px', textAlign: 'left' }}>Credit</th>
                   <th style={{ borderBottom: '2px solid #ddd', padding: '10px', textAlign: 'left' }}>Balance</th>
+                  <th style={{ borderBottom: '2px solid #ddd', padding: '10px', textAlign: 'left' }}>PR</th>
+
                 </tr>
               </thead>
             <tbody>
@@ -154,6 +156,7 @@ const Modal = ({ isOpen, onClose, ledgerData, accountName, initialBalance, dateA
                   <td style={{ padding: '10px' }}></td>
                   <td style={{ padding: '10px' }}></td>
                   <td style={{ padding: '10px' }}>${parseFloat(initialBalance).toLocaleString()}</td>
+                  <td style={{ padding: '10px' }}>0</td> {/* PR number for initial balance */}
                 </tr>
                 {filteredEntries.map((entry, index) => {
                   const relevantSubEntries = entry.entries.filter(subEntry => subEntry.account === accountName);
@@ -172,6 +175,7 @@ const Modal = ({ isOpen, onClose, ledgerData, accountName, initialBalance, dateA
                                <td style={{ padding: '10px' }}>{subEntry.type === 'debit' ? `$${parseFloat(subEntry.amount).toLocaleString()}` : ''}</td>
                                <td style={{ padding: '10px' }}>{subEntry.type === 'credit' ? `$${parseFloat(subEntry.amount).toLocaleString()}` : ''}</td>
                                <td style={{ padding: '10px' }}>${runningBalance.toLocaleString()}</td>
+                               <td style={{ padding: '10px' }}>PR</td> {/* PR numbers for other entries */}
                         </tr>
                       );
                   });
@@ -212,6 +216,9 @@ const ViewAccounts = (showEdit) => {
   const [selectedAccount, setSelectedAccount] = useState(null);
 
   const [showTooltip, setShowTooltip] = useState(false);
+  const [isEntriesModalOpen, setIsEntriesModalOpen] = useState(false);
+  const [selectedPR, setSelectedPR] = useState(null);
+  const [entries, setEntries] = useState([]);
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -224,6 +231,30 @@ const ViewAccounts = (showEdit) => {
     };
     fetchAccounts();
   }, []);
+  const handlePRClick = (pr) => {
+    setSelectedPR(pr); // Set the selected PR
+    setIsEntriesModalOpen(true); // Open the EntriesModal
+  };
+
+  // Fetch entries by PR when the modal opens
+  useEffect(() => {
+    const fetchEntriesByPR = async () => {
+      if (selectedPR) {
+        // Fetch entries by PR and update the entries state
+        try {
+          // Your code to fetch entries by PR from the database
+          const entries = await getEntriesByPR(selectedPR); // Example function
+          setEntries(entries);
+        } catch (error) {
+          console.error('Error fetching entries:', error);
+        }
+      }
+    };
+
+    if (isEntriesModalOpen) {
+      fetchEntriesByPR();
+    }
+  }, [isEntriesModalOpen, selectedPR]);
 
   useEffect(() => {
     // Filter accounts based on the search query or other filters
@@ -387,10 +418,13 @@ const ViewAccounts = (showEdit) => {
           </table>
         )}
       </div>
-      <Modal isOpen={selectedAccount !== null} onClose={closeModal} ledgerData={selectedAccount ? selectedAccount.ledgerData : []} accountName={selectedAccount ? selectedAccount.accountName : ""} initialBalance={selectedAccount ? selectedAccount.initialBalance : ""} dateAccountAdded={selectedAccount ? selectedAccount.dateAccountAdded : null} />
+        <Modal isOpen={selectedAccount !== null} onClose={closeModal} ledgerData={selectedAccount ? selectedAccount.ledgerData : []} accountName={selectedAccount ? selectedAccount.accountName : ""} initialBalance={selectedAccount ? selectedAccount.initialBalance : ""} dateAccountAdded={selectedAccount ? selectedAccount.dateAccountAdded : null} onPRClick={handlePRClick}/>
+      
       {searchQuery && filteredAccounts.length === 0 && (
-        <div style={{ textAlign: 'center', color:'red', fontWeight: 'bold', fontSize: 18 }}>No results found</div>
-      )} 
+       
+       <div style={{ textAlign: 'center', color:'red', fontWeight: 'bold', fontSize: 18 }}>No results found</div>
+     
+     )} 
     </div>
   );
 };
