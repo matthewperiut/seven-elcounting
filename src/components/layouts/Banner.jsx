@@ -38,7 +38,6 @@ export const Banner = () => {
               <li className='navbar-item'><Link className='navbar-link' to="editusers">Edit Users</Link></li>
               <li className='navbar-item'><Link className='navbar-link' to="editaccounts">Edit Accounts</Link></li>
               <li className='navbar-item'><Link className='navbar-link' to="deactivateaccounts">Deactivate Accounts</Link></li>
-              <li className='navbar-item'><Link className='navbar-link' to="eventLog">Event Log</Link></li>
               <li className='navbar-item'><Link className='navbar-link' to="journalizing">Journalizing</Link></li>
               <li className='navbar-item'><Reports /></li>
 
