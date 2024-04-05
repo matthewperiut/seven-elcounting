@@ -13,10 +13,59 @@ function formatDate(timestamp) {
 }
 
 // Modal component
-const Modal = ({ isOpen, onClose, ledgerData, accountName, initialBalance }) => {
+const Modal = ({ isOpen, onClose, ledgerData, accountName, initialBalance, dateAccountAdded }) => {
   if (!isOpen) return null;
-  let runningBalance = parseFloat(initialBalance) || 0; //initalize the balance of the account
-  let entryNo = 0; //initalize entry no.
+
+  // Initial balance is now directly used from props
+  let runningBalance = parseFloat(initialBalance) || 0;
+
+  let entryNo = 0; // Initialize entry no.
+  
+  const [filteredEntries, setFilteredEntries] = useState(ledgerData);
+  const [searchAmount, setSearchAmount] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
+  
+  useEffect(() => {
+    setFilteredEntries(ledgerData);
+  }, [ledgerData]);
+
+  const handleSearchAmountChange = (event) => {
+    setSearchAmount(event.target.value);
+    filterEntries(startDate, endDate, event.target.value);
+  };
+
+  const handleStartDateChange = (event) => {
+    setStartDate(event.target.value);
+    filterEntries(event.target.value, endDate, searchAmount);
+  };
+
+  const handleEndDateChange = (event) => {
+    setEndDate(event.target.value);
+    filterEntries(startDate, event.target.value, searchAmount);
+  };
+
+  const toggleFilters = () => {
+    setShowFilters(!showFilters); // Toggle the visibility of filters
+  };
+
+  const filterEntries = (start, end, amount) => {
+    let filtered = ledgerData.filter((entry) => {
+      const date = new Date(entry.dateCreated);
+      return (!start || date >= new Date(start)) && (!end || date <= new Date(end));
+    });
+
+    if (amount) {
+      filtered = filtered.filter((entry) => {
+        return entry.entries.some((subEntry) =>
+          subEntry.amount.toString().includes(amount)
+        );
+      });
+    }
+    setFilteredEntries(filtered);
+  };
+
   return (
     <div style={{
       position: 'fixed',
@@ -47,7 +96,39 @@ const Modal = ({ isOpen, onClose, ledgerData, accountName, initialBalance }) => 
           fontSize: '1.5rem',
         }} onClick={onClose}>&times;</span>
         <h2 style={{ textAlign: 'center' }}>Account Ledger for {accountName}</h2>
-        {ledgerData && ledgerData.length > 0 ? (
+      <div>
+        <button onClick={toggleFilters} style={{ marginBottom: '10px' }}>Filters</button>
+        {showFilters && (
+          <div style={{ display: 'flex', marginBottom: '10px' }}>
+          <div style={{ marginRight: '10px' }}>
+          <label>Search:</label>
+            <input
+              type="text"
+              placeholder="Search amount..."
+              value={searchAmount}
+              onChange={handleSearchAmountChange}
+            />
+          </div>
+          <div style={{ marginRight: '10px' }}>
+          <label>Start Date:</label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={handleStartDateChange}
+            />
+          </div>
+          <div>
+          <label>End Date:</label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={handleEndDateChange}
+            />
+          </div>
+        </div>
+        )}
+        </div>
+        {filteredEntries && filteredEntries.length > 0 ? (
           <div style={{
             display: 'flex',
             justifyContent: 'center',
@@ -67,33 +148,36 @@ const Modal = ({ isOpen, onClose, ledgerData, accountName, initialBalance }) => 
                   <th style={{ borderBottom: '2px solid #ddd', padding: '10px', textAlign: 'left' }}>Balance</th>
                 </tr>
               </thead>
-              <tbody>
-              {ledgerData.map((entry) => {
-                // Filters to the selected account
+            <tbody>
+                <tr>
+                  <td style={{ padding: '10px' }}>N/A</td>
+                  <td style={{ padding: '10px' }}>{formatDate(dateAccountAdded)}</td>
+                  <td style={{ padding: '10px' }}></td>
+                  <td style={{ padding: '10px' }}></td>
+                  <td style={{ padding: '10px' }}>${runningBalance.toLocaleString()}</td>
+                </tr>
+              {filteredEntries.map((entry, index) => {
                 const relevantSubEntries = entry.entries.filter(subEntry => subEntry.account === accountName);
+                return relevantSubEntries.map((subEntry, subIndex) => {
+                entryNo += 1; // Increment entry number
 
-                return relevantSubEntries.map((subEntry) => {
-                entryNo += 1; // Increment entry no.
-
-                // Adjust running balance based on the transaction type
                 if (subEntry.type === 'debit') {
-                  runningBalance += parseFloat(subEntry.amount);
+                 runningBalance += parseFloat(subEntry.amount);
                 } else if (subEntry.type === 'credit') {
-                  runningBalance -= parseFloat(subEntry.amount);
+                 runningBalance -= parseFloat(subEntry.amount);
                 }
-                
                 return (
-                  <tr key={entryNo}>
-                    <td style={{ padding: '10px' }}>{entryNo !== 1 ? entryNo - 1 : "N/A"}</td>
+                  <tr key={subIndex}>
+                    <td style={{ padding: '10px' }}>{entryNo}</td>
                     <td style={{ padding: '10px' }}>{formatDate(entry.dateCreated)}</td>
                     <td style={{ padding: '10px' }}>{subEntry.type === 'debit' ? `$${parseFloat(subEntry.amount).toLocaleString()}` : ''}</td>
                     <td style={{ padding: '10px' }}>{subEntry.type === 'credit' ? `$${parseFloat(subEntry.amount).toLocaleString()}` : ''}</td>
-                    <td style={{ padding: '10px' }}>${runningBalance.toLocaleString()}</td> {}
+                    <td style={{ padding: '10px' }}>${runningBalance.toLocaleString()}</td>
                   </tr>
-                );
+                  );
                 });
               })}
-              </tbody>
+            </tbody>
             </table>
           </div>
         ) : (
@@ -103,7 +187,6 @@ const Modal = ({ isOpen, onClose, ledgerData, accountName, initialBalance }) => 
     </div>
   );
 };
-
 
 const ViewAccounts = (showEdit) => {
   const [accounts, setAccounts] = useState([]);
@@ -165,21 +248,30 @@ const ViewAccounts = (showEdit) => {
   const openModal = async (account) => {
     console.log("Opening modal with account:", account);
     try {
-      const allEntriesSnapshot = await getDocs(collection(db, 'journalEntries'));
-      const allEntries = allEntriesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  
-      // Filter entries related to the selected account with case-insensitive comparison
-      const relatedEntries = allEntries.filter(entry => 
-        entry.entries && entry.entries.some(subEntry => 
-          subEntry.account === account.accountName
-        )
-      );
-      setSelectedAccount({ ...account, ledgerData: relatedEntries, initialBalance: account.balance });
+        const querySnapshot = await getDocs(
+            query(
+                collection(db, 'journalEntries'),
+                where('isApproved', '==', true) // Ensure only fetching approved entries
+            )
+        );
+        const allEntries = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const relatedEntries = allEntries.filter(entry => 
+            entry.entries && entry.entries.some(subEntry => 
+                subEntry.account === account.accountName
+            )
+        );
+        // Pass dateAccountAdded to the Modal
+        setSelectedAccount({ 
+          ...account, 
+          ledgerData: relatedEntries, 
+          initialBalance: account.balance,
+          dateAccountAdded: account.DateAccountAdded // Ensure this field is correctly named as per your database
+        });
     } catch (error) {
-      console.error('Error fetching ledger data:', error);
+        console.error('Error fetching ledger data:', error);
     }
-  };  
-  
+};
+
   const closeModal = () => {
     setSelectedAccount(null);
   };
@@ -194,64 +286,66 @@ const ViewAccounts = (showEdit) => {
 
   return (
     <div>
-      <div style={{ position: 'absolute', top: '120px', left: '20px', zIndex: 100 }}>
-        <CustomCalendar />
-      </div>
-      <Help />
-      <div style={{ textAlign: 'center', padding: '0 10px' }}>
-        <h1 style={{ display: 'inline-block' }}>Charts of Accounts</h1>
-        <div style={{position: 'absolute', right: '20px', top: '120px' }}>
-          <button
-            onClick={() => setShowDropdown(!showDropdown)}
-            title="Show or hide filters"
-            onMouseEnter={() => setShowTooltip(true)}
-            onMouseLeave={() => setShowTooltip(false)}
-            style={{ cursor: 'pointer' }}
-          >
-            Filters
-          </button>
-          {showTooltip && (
-            <div style={{
-              position: 'absolute',
-              bottom: '10px', 
-              left: '-45%',
-              transform: 'translateX(-50%)',
-              background: 'rgba(0, 0, 0, 0.50)',
-              color: 'white',
-              padding: '5px 10px',
-              borderRadius: '4px',
-              fontSize: '12px',
-              whiteSpace: 'nowrap',
-            }}>
-              Table Filters
+      {!selectedAccount && (
+        <>
+          <CustomCalendar />
+          <Help />
+          <div style={{ textAlign: 'center', padding: '0 10px' }}>
+            <h1 style={{ display: 'inline-block' }}>Charts of Accounts</h1>
+            <div style={{position: 'absolute', right: '20px', top: '120px' }}>
+              <button
+                onClick={() => setShowDropdown(!showDropdown)}
+                title="Show or hide filters"
+                onMouseEnter={() => setShowTooltip(true)}
+                onMouseLeave={() => setShowTooltip(false)}
+                style={{ cursor: 'pointer' }}
+              >
+                Filters
+              </button>
+              {showTooltip && (
+                <div style={{
+                  position: 'absolute',
+                  bottom: '10px', 
+                  left: '-45%',
+                  transform: 'translateX(-50%)',
+                  background: 'rgba(0, 0, 0, 0.50)',
+                  color: 'white',
+                  padding: '5px 10px',
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                  whiteSpace: 'nowrap',
+                }}>
+                  Table Filters
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        {showDropdown && (
-          <div style={{ position: 'absolute', right: '10px', top: '170px', border: '1px solid #ddd', padding: '10px', background: '#fff' }}>
-            {Object.keys(visibleColumns).map(columnName => (
-              <div key={columnName} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
-                <input
-                  type="checkbox"
-                  id={columnName}
-                  checked={visibleColumns[columnName]}
-                  onChange={() => toggleColumnVisibility(columnName)}
-                  style={{ marginRight: '5px' }}
-                />
-                <label htmlFor={columnName}>{columnName}</label>
+            {showDropdown && (
+              <div style={{ position: 'absolute', right: '10px', top: '170px', border: '1px solid #ddd', padding: '10px', background: '#fff' }}>
+                {Object.keys(visibleColumns).map(columnName => (
+                  <div key={columnName} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+                    <input
+                      type="checkbox"
+                      id={columnName}
+                      checked={visibleColumns[columnName]}
+                      onChange={() => toggleColumnVisibility(columnName)}
+                      style={{ marginRight: '5px' }}
+                    />
+                    <label htmlFor={columnName}>{columnName}</label>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
-        )}
-      </div>
-      <div style={{ textAlign: 'center', padding: '0 10px' }}>
-        <input
-          type="text"
-          placeholder="Search by Account Name or Number..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-        />
-      </div>
+          <div style={{ textAlign: 'center', padding: '0 10px' }}>
+            <input
+              type="text"
+              placeholder="Search by Account Name or Number..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+          </div>
+        </>
+      )}
       <div className="accounts-table" style={{ paddingTop: '30px' }}>
         {filteredAccounts.length > 0 && (
           <table border="2">
