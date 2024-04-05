@@ -9,6 +9,8 @@ import {
 import React, { useEffect, useState } from "react";
 import { db } from "../../firebase-config";
 import { Context } from "../context/UserContext";
+import CustomCalendar from "../layouts/CustomCalendar";
+import Help from '../layouts/Help.jsx';
 
 /**
  * Formats a Firestore timestamp to a readable date string.
@@ -222,6 +224,8 @@ const Entries = () => {
 
   return (
     <div className="entries-container">
+      <CustomCalendar />
+      <Help />
       <div>
         <label>Search by: </label>
         <select onChange={(e) => setFilterType(e.target.value)}>

@@ -14,7 +14,7 @@ const CustomCalendar = () => {
                 onClick={toggleCalendar} 
                 onMouseEnter={() => setShowTooltip(true)}
                 onMouseLeave={() => setShowTooltip(false)}
-                style={{ position: 'absolute', top: 120, left: 20, zIndex: 1000 }}>
+                style={{ position: 'absolute', top: 0, left: 20, zIndex: 1000 }}>
                 {showCalendar ? 'Hide Calendar' : 'Show Calendar'}
                 {showTooltip && (
                     <div style={{

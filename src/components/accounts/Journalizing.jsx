@@ -11,6 +11,8 @@ import CurrencyInput from "react-currency-input-field";
 import { db } from "../../firebase-config";
 import { Context } from "../context/UserContext";
 import { reportError } from "../logs/ErrorLogController";
+import CustomCalendar from "../layouts/CustomCalendar";
+import Help from '../layouts/Help.jsx';
 
 const Journalizing = () => {
   const { user } = Context(); //pull user context for user ID
@@ -154,6 +156,8 @@ const Journalizing = () => {
 
   return (
     <div className="wrapper">
+      <CustomCalendar />
+      <Help />
       <h1>Journalizing</h1>
       <form onSubmit={handleSubmit}>
         <div className="entry-container">

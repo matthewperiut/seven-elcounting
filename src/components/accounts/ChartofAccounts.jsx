@@ -284,14 +284,14 @@ const ViewAccounts = (showEdit) => {
   };
 
   return (
-    <div>
+    <div className='wrapper'>
       {!selectedAccount && (
         <>
           <CustomCalendar />
           <Help />
           <div style={{ textAlign: 'center', padding: '0 10px' }}>
             <h1 style={{ display: 'inline-block' }}>Charts of Accounts</h1>
-            <div style={{position: 'absolute', right: '20px', top: '120px' }}>
+            <div style={{position: 'absolute', right: '20px', top: '0' }}>
               <button
                 onClick={() => setShowDropdown(!showDropdown)}
                 title="Show or hide filters"

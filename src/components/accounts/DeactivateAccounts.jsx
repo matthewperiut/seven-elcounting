@@ -39,10 +39,8 @@ const DeactivateAccounts = () => {
   }
 
   return (
-    <div>
-      <div style={{ position: 'absolute', top: '120px', left: '20px', zIndex: 100 }}>
-        <CustomCalendar />
-      </div>
+    <div className='wrapper'>
+      <CustomCalendar />
       <Help />
       <h1>Deactivate an Account</h1>
       <h3>Active Accounts</h3>

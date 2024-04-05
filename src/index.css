@@ -149,6 +149,7 @@ select {
   
 .database-item {
     display: contents;
+    text-align: left;
   }
 /* Database list(users/accounts) */
 

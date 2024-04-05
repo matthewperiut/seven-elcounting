@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase-config';
 import CustomCalendar from '../layouts/CustomCalendar';
+import Help from '../layouts/Help.jsx';
 
 /**
  * Formats a Firestore timestamp to a readable date string.
@@ -85,6 +86,7 @@ const GeneralLedger = ({ showSearchBar }) => {
   return (
     <div className="wrapper">
       <CustomCalendar />
+      <Help />
       <div>
         {showSearchBar && (
           <div>

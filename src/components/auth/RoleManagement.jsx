@@ -4,6 +4,7 @@ import { db } from "../../firebase-config";
 import { Context } from "../context/UserContext";
 import CustomCalendar from "../layouts/CustomCalendar";
 import {logEvent} from "../logs/EventLogController.jsx";
+import Help from '../layouts/Help.jsx';
 
 const Modal = ({ isOpen, onClose, user: edittingUser, updateUser }) => {
   const [localUser, setLocalUser] = useState(edittingUser);
@@ -123,10 +124,9 @@ export const RoleManagement = () => {
   };
 
   return (
-    <div>
-      <div style={{ position: 'fixed', top: '120px', left: '20px', zIndex: 100 }}>
-        <CustomCalendar />
-      </div>
+    <div className="wrapper">
+      <CustomCalendar />
+      <Help />
       <h2>User Role Management</h2>
       <div className="database-list">
         {users.map((user) => (

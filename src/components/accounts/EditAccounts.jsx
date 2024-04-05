@@ -158,10 +158,8 @@ const ViewAccounts = ( showEdit ) => {
   
 
   return (
-    <div>
-      <div style={{ position: 'absolute', top: '120px', left: '20px', zIndex: 100 }}>
-        <CustomCalendar />
-      </div>
+    <div className='wrapper'>
+      <CustomCalendar />
       <Help />
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
       <h1>{showEdit ? "Edit" : "View"} Accounts</h1>

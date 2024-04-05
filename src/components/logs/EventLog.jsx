@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import {db} from "../../firebase-config.js";
+import CustomCalendar from '../layouts/CustomCalendar.jsx';
+import Help from '../layouts/Help.jsx';
 
 function formatDate(timestamp) {
     if (!timestamp) return '';
@@ -51,7 +53,9 @@ const EventLog = () => {
   }
 
   return (
-      <>
+      <div className='wrapper'>
+        <CustomCalendar />
+        <Help />
         <h1>Event Log</h1>
         <table className="event-log-table">
           <thead>
@@ -83,7 +87,7 @@ const EventLog = () => {
           ))}
           </tbody>
         </table>
-      </>
+      </div>
   );
 }
 

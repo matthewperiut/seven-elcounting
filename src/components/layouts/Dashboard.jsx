@@ -8,10 +8,8 @@ const Dashboard = () => {
   const { user } = Context(); // pull user context
 
   return (
-    <>
-      <div style={{ position: 'absolute', top: '120px', left: '20px', zIndex: 100 }}>
-        <CustomCalendar />
-      </div>
+    <div className='wrapper'>
+      <CustomCalendar />
       <Help />
       <h1>Dashboard</h1>
       {user.role === 3 ? (
@@ -25,7 +23,7 @@ const Dashboard = () => {
           You do not have access to the system yet, please wait for administrator approval.
         </div>
       )}
-    </>
+    </div>
   );
 };
 
