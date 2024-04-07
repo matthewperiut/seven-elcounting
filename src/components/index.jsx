@@ -15,5 +15,5 @@ export { default as Journalizing } from "./accounts/Journalizing"
 export { default as Help } from "./layouts/Help"
 export { default as GeneralLedger} from "./reports/GeneralLedger"
 export { default as Entries } from "./reports/Entries"
-
+export {default as SecurityQuestion} from "./auth/SecurityQuestion"
 {/* File for easily exporting all components */}

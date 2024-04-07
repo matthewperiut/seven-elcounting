@@ -5,8 +5,8 @@ Login,
 Registration,
 ForgotPassword, 
 RequireAccount, 
-RequireUser, 
-RequireManager, 
+RequireUser,
+SecurityQuestion, 
 RequireAdmin, 
 Banner, 
 PageNotFound, 
@@ -35,6 +35,8 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="registration" element={<Registration />} />
         <Route path="forgotpassword" element={<ForgotPassword />} />
+        <Route path="securityquestion" element={<SecurityQuestion />} />
+
         <Route path="Help" element={<Help />} />
 
         {/* private routes */}

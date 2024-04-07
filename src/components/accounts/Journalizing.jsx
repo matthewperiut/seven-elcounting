@@ -12,7 +12,7 @@ import { db } from "../../firebase-config";
 import { Context } from "../context/UserContext";
 import { reportError } from "../logs/ErrorLogController";
 import CustomCalendar from "../layouts/CustomCalendar";
-import Help from '../layouts/Help.jsx';
+import Help from "../layouts/Help.jsx";
 
 const Journalizing = () => {
   const { user } = Context(); //pull user context for user ID
@@ -24,11 +24,10 @@ const Journalizing = () => {
 
   useEffect(() => {
     const fetchAllAccounts = async () => {
-
       //gets snapshot of all active accounts
       const querySnapshot = await getDocs(
         query(collection(db, "accounts"), where("isActivated", "==", true))
-      ); 
+      );
 
       //maps data into fetchedAccounts array
       const fetchedAccounts = querySnapshot.docs.map((doc) => ({
@@ -50,7 +49,7 @@ const Journalizing = () => {
     setErrorMessage(""); //reset error message
     try {
       //creates object for storing entry data
-      const entry = { 
+      const entry = {
         user: user.displayName,
         isApproved: user.role > 1 ? true : false, //if user is manager or admin, auto approve entry, else in pending state
         isRejected: false,
@@ -107,11 +106,11 @@ const Journalizing = () => {
         );
         return; //if not, return from function
       }
-        await setDoc(doc(collection(db, "journalEntries")), entry); //creates document with entry data
-        setSuccess(true); //document created
-        e.target.reset(); //reset uncontrolled input fields
-        setDebitsList([{ account: "", amount: "" }]); //reset array with empty objects
-        setCreditsList([{ account: "", amount: "" }]);
+      await setDoc(doc(collection(db, "journalEntries")), entry); //creates document with entry data
+      setSuccess(true); //document created
+      e.target.reset(); //reset uncontrolled input fields
+      setDebitsList([{ account: "", amount: "" }]); //reset array with empty objects
+      setCreditsList([{ account: "", amount: "" }]);
     } catch (error) {
       console.log(error.message);
       reportError(error.message);
