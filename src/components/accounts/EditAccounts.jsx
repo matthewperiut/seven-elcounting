@@ -97,7 +97,7 @@ const Modal = ({ isOpen, account, closeModal, isEdit, updateAccount }) => {
   );
 };
 
-const ViewAccounts = ( showEdit ) => {
+const EditAccounts = ( showEdit ) => {
   const [accounts, setAccounts] = useState([]);
   const [filteredAccounts, setFilteredAccounts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -195,5 +195,5 @@ const ViewAccounts = ( showEdit ) => {
   );
 };
 
-export default ViewAccounts;
+export default EditAccounts;
 

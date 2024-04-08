@@ -42,8 +42,8 @@ function App() {
         {/* private routes */}
         <Route path="/" element={<RequireAccount><Dashboard/></RequireAccount>} />
         <Route path="addaccounts" element={<RequireAdmin><AddAccounts /></RequireAdmin>} />
-        <Route path="editusers" element={<RequireAdmin>< RoleManagement/></RequireAdmin>} />
-        <Route path="viewaccounts" element={<RequireUser><ChartofAccounts/></RequireUser>} />
+        <Route path="users" element={<RequireAdmin>< RoleManagement/></RequireAdmin>} />
+        <Route path="chartofaccounts" element={<RequireUser><ChartofAccounts/></RequireUser>} />
         <Route path="editaccounts" element={<RequireAdmin><EditAccounts/></RequireAdmin>} />
         <Route path="deactivateaccounts" element={<RequireAdmin><DeactivateAccounts/></RequireAdmin>} />
         <Route path="journalizing" element={<Journalizing/>} />

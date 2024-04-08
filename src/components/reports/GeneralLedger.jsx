@@ -25,7 +25,6 @@ const GeneralLedger = ({ showSearchBar }) => {
   const [dateFilter, setDateFilter] = useState('');
   const [showDateInput, setShowDateInput] = useState(false);
   const [filteredEntries, setFilteredEntries] = useState([]);
-  const [prNumbers, setPRNumbers] = useState({}); // State to store PR numbers
 
   useEffect(() => {
     const fetchApprovedEntries = async () => {
@@ -69,25 +68,6 @@ const GeneralLedger = ({ showSearchBar }) => {
     setFilteredEntries(filtered);
   }, [searchQuery, dateFilter, approvedEntries]);
 
-  useEffect(() => {
-    // Generate unique PR numbers for each account
-    const generateUniquePRNumbers = () => {
-      const uniquePRNumbers = {};
-      let prCounter = 0;
-
-      filteredEntries.forEach(entry => {
-        entry.entries.forEach(subEntry => {
-          if (!(subEntry.account in uniquePRNumbers)) {
-            uniquePRNumbers[subEntry.account] = prCounter++;
-          }
-        });
-      });
-
-      setPRNumbers(uniquePRNumbers);
-    };
-
-    generateUniquePRNumbers();
-  }, [filteredEntries]);
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -146,11 +126,10 @@ const GeneralLedger = ({ showSearchBar }) => {
                   <th>Account</th>
                   <th>Debit</th>
                   <th>Credit</th>
-                  <th>PR</th> {/* Add PR column header */}
                 </tr>
               </thead>
               <tbody>
-                {filteredEntries.map((entry, rowIndex) => (
+                {filteredEntries.map((entry) => (
                   entry.entries.map((subEntry, index) => (
                     <tr className="entry" key={index}>
                       {index === 0 && (
@@ -172,7 +151,6 @@ const GeneralLedger = ({ showSearchBar }) => {
                           "$" + parseFloat(subEntry.amount).toLocaleString()
                         ) : ""}
                       </td>
-                      <td>{prNumbers[subEntry.account]}</td> {/* Display PR number for each account */}
                     </tr>
                   ))
                 ))}

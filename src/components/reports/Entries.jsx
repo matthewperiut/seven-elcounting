@@ -223,7 +223,7 @@ const Entries = () => {
   };
 
   return (
-    <div className="entries-container">
+    <div className="wrapper">
       <CustomCalendar />
       <Help />
       <div>

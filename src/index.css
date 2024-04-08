@@ -87,18 +87,20 @@ select {
 }
 
 .banner {
-    margin: 0;
-    padding: 20px;
+    padding: 15px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
     background-color: #878ffa;
+}
+
+.banner button {
+    padding: 5px;
+    border-radius: 50px;
 }
 
 .navbar {
     list-style-type: none;
-    margin: 0;
-    padding: 0;
+    padding-top: 15px;
 }
 
 .navbar-item {
@@ -115,8 +117,42 @@ select {
     background-color: #6972f7;
 }
 
+.logo {
+    height: 50px;
+}
+
 .logo:hover {
     cursor: pointer; /* pointer on hover */
+}
+
+.dropdown-menu {
+    position: relative;
+}
+
+.dropdown {
+    position: absolute;
+    background-color: #878ffa;
+    border: 1px solid #6972f7;
+    border-top: none;
+    width: 150px; /* Adjust width as needed */
+    z-index: 999;
+}
+  
+.dropdown ul {
+    list-style-type: none;
+}
+  
+.dropdown ul li {
+    padding: 10px;
+}
+
+.dropdown ul li:hover {
+    background-color: #6972f7;
+}
+
+.dropdown ul li a {
+    text-decoration: none;
+    display: block;
 }
 /* Dashboard/Banner */
 
@@ -300,89 +336,6 @@ select {
 
 
 
-/* Reports dropdown menu */
-.reports-menu {
-    position: relative;
-  }
-  
-  .reports-menu-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 8px 16px; /* Adjust padding as needed */
-    margin-left: 5px; /* Adjust margin as needed */
-    text-decoration: none;
-    color: #4b1172e5; /* Set color to match other navbar links */
-    font-family: "Times New Roman", Times, serif;
-    font-size: 16px;
-    margin-top: -8px;
-
-}
-  
-  .reports-menu-button:hover {
-    background-color: #6972f7;
-  }
-  /* for the reports component*/
-  .reports-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-top: none;
-    width: 150px; /* Adjust width as needed */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 999;
-  }
-  
-  .reports-dropdown ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .reports-dropdown ul li {
-    padding: 10px;
-  }
-  
-  .reports-dropdown ul li a {
-    color: #333;
-    text-decoration: none;
-    display: block;
-  }
-  
-  .reports-dropdown ul li a:hover {
-    background-color: #f0f0f0;
-  }
-
-  /* for the GeneralLedger component*/
-.ledger-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .ledger-table {
-    width: 80%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  .ledger-table th,
-  .ledger-table td {
-    padding: 12px;
-    text-align: center;
-    border: 1px solid black;
-  }
-  
-  .ledger-table th {
-    background-color: white;
-  }
-/* Reports dropdown menu */
-
-
-
 /* Journalizing */
 .entry-container {
     display: flex;
@@ -421,13 +374,6 @@ select {
 
 
 /* Journal Entries */
-.entries-container {
-    position: relative;
-    padding: 15px;
-    margin: 10px;
-    text-align: center;
-}
-
 .entries-table {
     display: flex;
     justify-content: center;
@@ -467,3 +413,26 @@ select {
     background-color: #f9f9f9;
 }
 /* Event Log */
+
+/* Ledgers */
+.accountledger-table {
+    display: flex;
+    justify-content: center;
+}
+
+.accountledger-table table {
+    width: 100%;
+    max-width: 600px;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.accountledger-table th{
+    border-bottom: 2px solid #ddd;
+    padding: 10px;
+}
+
+.accountledger-table td {
+    padding: 10px;
+}
+/* Ledgers */

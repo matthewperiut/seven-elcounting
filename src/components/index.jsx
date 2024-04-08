@@ -3,6 +3,7 @@ export { default as Registration } from "./auth/Registration";
 export { default as RoleManagement } from "./auth/RoleManagement";
 export { default as Banner } from "./layouts/Banner"
 export { default as ForgotPassword } from "./auth/ForgotPassword"
+export { default as SecurityQuestion } from "./auth/SecurityQuestion"
 export { default as UserContextProvider } from "./context/UserContext"
 export { RequireAccount, RequireUser, RequireManager, RequireAdmin } from "./context/ProtectedRoutes"
 export { default as PageNotFound } from "./layouts/PageNotFound"
@@ -15,5 +16,4 @@ export { default as Journalizing } from "./accounts/Journalizing"
 export { default as Help } from "./layouts/Help"
 export { default as GeneralLedger} from "./reports/GeneralLedger"
 export { default as Entries } from "./reports/Entries"
-export {default as SecurityQuestion} from "./auth/SecurityQuestion"
 {/* File for easily exporting all components */}

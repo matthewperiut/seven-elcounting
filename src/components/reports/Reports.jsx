@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Context } from "../context/UserContext";
 
 const Reports = () => {
+  const { user } = Context();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleMenu = () => {
@@ -10,13 +12,13 @@ const Reports = () => {
 
   return (
     <div
-      className="reports-menu"
+      className="dropdown-menu"
       onMouseEnter={handleMenu}
       onMouseLeave={handleMenu}
     >
-      <button className="reports-menu-button">Reports</button>
+      <Link className="navbar-link">Reports</Link>
       {isOpen && (
-        <div className="reports-dropdown"> 
+        <div className="dropdown">
           <ul>
             <li>
               <Link to="/generalLedger">General Ledger</Link>
@@ -33,11 +35,10 @@ const Reports = () => {
             <li>
               <Link to="/journal-entries">Journal Entries</Link>
             </li>
-            <li>
+            {(user && user.role === 3) && <li>
               <Link to="/eventLog">Event Log</Link>
-            </li>
-
-            </ul>
+            </li>}
+          </ul>
         </div>
       )}
     </div>
