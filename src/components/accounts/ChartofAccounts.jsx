@@ -321,42 +321,24 @@ const ChartOfAccounts = () => {
           <CustomCalendar />
           <Help />
           <div style={{ textAlign: "center", padding: "0 10px" }}>
-            <h1 style={{ display: "inline-block" }}>Charts of Accounts</h1>
+            <h1>Chart of Accounts</h1>
             <div style={{ position: "absolute", right: "20px", top: "0" }}>
+              {showTooltip && (<div className="tooltip">Table Filters</div>)}
               <button
                 onClick={() => setShowDropdown(!showDropdown)}
                 title="Show or hide filters"
                 onMouseEnter={() => setShowTooltip(true)}
                 onMouseLeave={() => setShowTooltip(false)}
-                style={{ cursor: "pointer" }}
               >
                 Filters
               </button>
-              {showTooltip && (
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "10px",
-                    left: "-45%",
-                    transform: "translateX(-50%)",
-                    background: "rgba(0, 0, 0, 0.50)",
-                    color: "white",
-                    padding: "5px 10px",
-                    borderRadius: "4px",
-                    fontSize: "12px",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  Table Filters
-                </div>
-              )}
             </div>
             {showDropdown && (
               <div
                 style={{
                   position: "absolute",
                   right: "10px",
-                  top: "170px",
+                  top: "60px",
                   border: "1px solid #ddd",
                   padding: "10px",
                   background: "#fff",
@@ -384,17 +366,17 @@ const ChartOfAccounts = () => {
               </div>
             )}
           </div>
-          <div style={{ textAlign: "center", padding: "0 10px" }}>
+          <div>
             <input
               type="text"
-              placeholder="Search by Account Name or Number..."
+              placeholder="Search..."
               value={searchQuery}
               onChange={handleSearchChange}
             />
           </div>
         </>
       )}
-      <div className="accounts-table" style={{ paddingTop: "30px" }}>
+      <div className="accounts-table">
         {filteredAccounts.length > 0 && (
           <table border="2">
             <thead>

@@ -251,7 +251,7 @@ const Entries = () => {
       </div>
       {viewType === "3" || viewType === "0" ? (
           <div>
-            <h2>Pending: </h2>
+            <h2>Pending</h2>
             <Table
                 entries={getFilteredEntries(entries.pending)}
                 isPending={true}
@@ -261,7 +261,7 @@ const Entries = () => {
       ) : null}
       {viewType === "3" || viewType === "1" ? (
           <div>
-            <h2>Approved: </h2>
+            <h2>Approved</h2>
             <Table
                 entries={getFilteredEntries(entries.approved)}
                 isPending={false}
@@ -270,7 +270,7 @@ const Entries = () => {
       ) : null}
       {viewType === "3" || viewType === "2" ? (
           <div>
-            <h2>Rejected: </h2>
+            <h2>Rejected</h2>
             <Table
                 entries={getFilteredEntries(entries.rejected)}
                 isPending={false}

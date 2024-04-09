@@ -32,7 +32,7 @@ const ForgotPassword = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
         <p style={{ color: "#d94f00" }}>{errorMessage}</p>
-        <button>Send Password Reset Link</button>
+        <div><button>Send Password Reset Link</button></div>
         <Link to="/SecurityQuestion">
           <button>Security Question Recovery</button>
         </Link>

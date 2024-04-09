@@ -20,24 +20,12 @@ const Reports = () => {
       {isOpen && (
         <div className="dropdown">
           <ul>
-            <li>
-              <Link to="/generalLedger">General Ledger</Link>
-            </li>
-            <li>
-              <Link to="/balance-sheet">Balance Sheet</Link>
-            </li>
-            <li>
-              <Link to="/trial-balance">Trial Balance</Link>
-            </li>
-            <li>
-              <Link to="/income-statement">Income Statement</Link>
-            </li>
-            <li>
-              <Link to="/journal-entries">Journal Entries</Link>
-            </li>
-            {(user && user.role === 3) && <li>
-              <Link to="/eventLog">Event Log</Link>
-            </li>}
+            <Link to="/generalLedger"><li>General Ledger</li></Link>
+            <Link to="/balance-sheet"><li>Balance Sheet</li></Link>
+            <Link to="/trial-balance"><li>Trial Balance</li></Link>
+            <Link to="/income-statement"><li>Income Statement</li></Link>
+            <Link to="/journal-entries"><li>Journal Entries</li></Link>
+            {(user && user.role === 3) && <Link to="/eventLog"><li>Event Log</li></Link>}
           </ul>
         </div>
       )}

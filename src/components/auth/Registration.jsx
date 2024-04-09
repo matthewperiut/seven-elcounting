@@ -16,7 +16,6 @@ const Registration = () => {
   const [securityQuestion1, setSecurityQuestion1] = useState("");
   const [securityQuestion2, setSecurityQuestion2] = useState("");
 
-
   const [validationResults, setValidationResults] = useState({
     minLength: false,
     specialChar: false,
@@ -109,7 +108,7 @@ const Registration = () => {
         console.error(error.message);
         setErrorMessage(error.message);
         reportError(error.message);
-    });
+      });
   };
 
   return (
@@ -158,8 +157,6 @@ const Registration = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-
-        <p style={{ color: "#d94f00" }}>{errorMessage}</p>
         {password && (
           <ul>
             {renderValidationMessage(
@@ -184,7 +181,6 @@ const Registration = () => {
             )}
           </ul>
         )}
-
         <label htmlFor="securityQuestion1">Favorite Color:</label>
         <input
           required
@@ -192,7 +188,6 @@ const Registration = () => {
           value={securityQuestion1}
           onChange={(e) => setSecurityQuestion1(e.target.value)}
         />
-
         <label htmlFor="securityQuestion2">Favorite Food:</label>
         <input
           required
@@ -200,13 +195,10 @@ const Registration = () => {
           value={securityQuestion2}
           onChange={(e) => setSecurityQuestion2(e.target.value)}
         />
-
-
+        {errorMessage && <p style={{ color: "#d94f00" }}>{errorMessage}</p>}
         <div>
           <button type="submit">Register</button>
-          <Link to="/login">
-            <button> Already have an account? Login </button>
-          </Link>
+          <div className="register-login-link">Already have an account? <Link to="/login"> Login</Link></div>
         </div>
       </form>
     </div>

@@ -52,7 +52,6 @@ const Modal = ({ isOpen, onClose, user: edittingUser, updateUser }) => {
         <div className="editDB-form">
           <label className="editDB-label">Role: </label>
           <select
-            className="editDB-selection"
             value={localUser.role}
             onChange={(e) => handleValueChange("role", e.target.value)}
           >

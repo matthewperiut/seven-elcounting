@@ -20,15 +20,9 @@ const Accounts = () => {
       {isOpen && (
         <div className="dropdown">
           <ul>
-            <li>
-              <Link to="/addaccounts">Add</Link>
-            </li>
-            <li>
-              <Link to="/editaccounts">View/Edit</Link>
-            </li>
-            <li>
-              <Link to="/deactivateaccounts">Activate/Deactivate</Link>
-            </li>
+              <Link to="/addaccounts"><li>Add</li></Link>
+              <Link to="/editaccounts"><li>View/Edit</li></Link>
+              <Link to="/deactivateaccounts"><li>Activate/Deactivate</li></Link>
           </ul>
         </div>
       )}

@@ -17,37 +17,27 @@ export const Banner = () => {
   return (
     <>
       <div className="banner">
-        <div>
           {user && (
             <div className="user-info">
-              <img src={user.photoURL || default_pfp} alt="Profile" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
+              <img src={user.photoURL || default_pfp} alt="Profile"/>
               <span>{user.displayName || user.email}</span>
               {user && (<button onClick={logout}>Logout</button>)}
             </div>
           )}
-        </div>
-        <div>
-          {(user && user.role === 3) && (
-            <ul className='navbar'>
-              <li className='navbar-item'><Link className='navbar-link' to="chartofaccounts">Chart of Accounts</Link></li>
-              <li className='navbar-item'><Link className='navbar-link' to="journalizing">Journalizing</Link></li>
-              <li className='navbar-item'><Accounts /></li>
-              <li className='navbar-item'><Reports /></li>
-              <li className='navbar-item'><Link className='navbar-link' to="users">Users</Link></li>
-
-            </ul>
-          )}
-          {(user && (user.role === 1 || user.role == 2)) && (
+          {(user && (user.role > 0)) && (
             <ul className='navbar'>
               <li className='navbar-item'><Link className='navbar-link' to="chartofaccounts">Chart of Accounts</Link></li>
               <li className='navbar-item'><Link className='navbar-link' to="journalizing">Journalizing</Link></li>
               <li className='navbar-item'><Reports/></li>
+              {(user && (user.role === 3)) && (
+                <>
+                <li className='navbar-item'><Accounts /></li>
+                <li className='navbar-item'><Link className='navbar-link' to="users">Users</Link></li>
+                </>
+              )}
             </ul>
-          )}
-        </div>
-        <div>
+        )}
           <img className='logo' onClick={backToHome} src={logo} alt="Logo" />
-        </div>
       </div>
       <div><Outlet /></div>
     </>
