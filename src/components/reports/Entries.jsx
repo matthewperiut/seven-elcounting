@@ -116,7 +116,7 @@ const Table = ({ entries, isPending, fetchEntries }) => {
               </tbody>
             </table>
           </div>
-          {user.role === 2 && isPending && (
+          {user.role > 1 && isPending && (
             <div>
               <button onClick={() => handleApproval(entry)}>Approve</button>
               <button onClick={() => toggleModal(entry.user, entry.id)}>
