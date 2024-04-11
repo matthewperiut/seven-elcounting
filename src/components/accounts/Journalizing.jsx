@@ -20,9 +20,11 @@ const Journalizing = () => {
   const [debitsList, setDebitsList] = useState([{ account: "", amount: "" }]); //array of objects for creating new inputs and storing account and amount info
   const [creditsList, setCreditsList] = useState([{ account: "", amount: "" }]);
   const [errorMessage, setErrorMessage] = useState(""); //state for error handling and messages
-  const [success, setSuccess] = useState(false); //state to display success message
-  const [isSubmit, setIsSubmit] = useState(false); //state to display confirm and cancel buttons
-  const [isReset, setIsReset] = useState(false); //state to cancel journal entry submission
+  const [status, setStatus] = useState({
+    success: false,
+    submit: false,
+    reset: false,
+  }); //state to display success message, show confirm and cancel buttons, and handle entry reset
 
   useEffect(() => {
     const fetchAllAccounts = async () => {
@@ -46,7 +48,7 @@ const Journalizing = () => {
     let error = false; //variable to detect an error
     let debitTotal = 0; //variable to track debits total
     let creditTotal = 0; //variable to track credits total
-    setSuccess(false); //reset success message on every submit
+    setStatus((prev) => ({ ...prev, success: false })); //reset success message on every submit
     setErrorMessage(""); //reset error message
 
     try {
@@ -118,24 +120,22 @@ const Journalizing = () => {
       }
 
       //if no errors, shows confirm and cancel buttons
-      if (!isSubmit) {
-        setIsSubmit(true);
+      if (!status.submit) {
+        setStatus((prev) => ({ ...prev, submit: true }));
         return;
       }
 
       //if user chooses to cancel, resets all input fields
-      if (isReset) {
+      if (status.reset) {
         e.target.reset();
         setDebitsList([{ account: "", amount: "" }]); //reset array with empty objects
         setCreditsList([{ account: "", amount: "" }]);
-        setIsSubmit(false);
-        setIsReset(false);
+        setStatus((prev) => ({ ...prev, submit: false, reset: false }));
         return;
       }
 
       await setDoc(doc(collection(db, "journalEntries")), entry); //creates document with entry data
-      setSuccess(true); //update state to display success message
-      setIsSubmit(false); //reset submission buttons
+      setStatus((prev) => ({ ...prev, success: true, submit: false })); //update state to display success message
       e.target.reset(); //reset uncontrolled input fields
       setDebitsList([{ account: "", amount: "" }]); //reset array with empty objects
       setCreditsList([{ account: "", amount: "" }]);
@@ -148,13 +148,13 @@ const Journalizing = () => {
   const handleDebitAdd = () => {
     setDebitsList([...debitsList, { account: "", amount: "" }]); //adds new empty object to array to create new account selection and input field when another entry is added
     setErrorMessage(""); //resets error message
-    setSuccess(false); //resets success
+    setStatus((prev) => ({ ...prev, success: false, submit: false })); //resets success
   };
 
   const handleCreditAdd = () => {
     setCreditsList([...creditsList, { account: "", amount: "" }]);
     setErrorMessage("");
-    setSuccess(false);
+    setStatus((prev) => ({ ...prev, success: false, submit: false }));
   };
 
   const handleDebitRemoval = (index) => {
@@ -288,13 +288,18 @@ const Journalizing = () => {
         </div>
 
         {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
-        {success && <div style={{ color: "green" }}>Entry Submitted!</div>}
+        {status.success && (
+          <div style={{ color: "green" }}>Entry Submitted!</div>
+        )}
         <div>
-          {!isSubmit ? (
+          {!status.submit ? (
             <button type="submit">Submit</button>
           ) : (
             <>
-              <button type="submit" onClick={() => setIsReset(true)}>
+              <button
+                type="submit"
+                onClick={() => setStatus((prev) => ({ ...prev, reset: true }))}
+              >
                 Cancel
               </button>
               <button type="submit">Confirm</button>
