@@ -19,8 +19,10 @@ const Journalizing = () => {
   const [accounts, setAccounts] = useState([]); //array to hold all active accounts
   const [debitsList, setDebitsList] = useState([{ account: "", amount: "" }]); //array of objects for creating new inputs and storing account and amount info
   const [creditsList, setCreditsList] = useState([{ account: "", amount: "" }]);
-  const [success, setSuccess] = useState(false); //state to determine success
   const [errorMessage, setErrorMessage] = useState(""); //state for error handling and messages
+  const [success, setSuccess] = useState(false); //state to display success message
+  const [isSubmit, setIsSubmit] = useState(false); //state to display confirm and cancel buttons
+  const [isReset, setIsReset] = useState(false); //state to cancel journal entry submission
 
   useEffect(() => {
     const fetchAllAccounts = async () => {
@@ -31,7 +33,6 @@ const Journalizing = () => {
 
       //maps data into fetchedAccounts array
       const fetchedAccounts = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
         ...doc.data(),
       }));
       setAccounts(fetchedAccounts); //sets accounts state with fetchedAccounts
@@ -43,10 +44,11 @@ const Journalizing = () => {
   const handleSubmit = async (e) => {
     e.preventDefault(); //prevent page refresh on submit
     let error = false; //variable to detect an error
-    let debitTotal = 0; //variable to track debit total
-    let creditTotal = 0; //variable to track credit total
+    let debitTotal = 0; //variable to track debits total
+    let creditTotal = 0; //variable to track credits total
     setSuccess(false); //reset success message on every submit
     setErrorMessage(""); //reset error message
+
     try {
       //creates object for storing entry data
       const entry = {
@@ -61,8 +63,12 @@ const Journalizing = () => {
       //iterates through each debit transaction and checks for errors.
       //if no errors, pushes the debit values into the entries array in the entry object and calculates total debits
       debitsList.forEach((debit) => {
-        if (!debit.account || !debit.amount) {
-          setErrorMessage("Must enter an account and amount for debit!");
+        if (!debit.account) {
+          setErrorMessage("Must enter a debit account!");
+          error = true;
+          return; //returns from foreach loop
+        } else if (!debit.amount) {
+          setErrorMessage("Must enter an amount for debit!");
           error = true;
           return;
         }
@@ -78,8 +84,12 @@ const Journalizing = () => {
       //if no errors, pushes the credit values into the entries array in the entry object and calculates total credits
       if (!error) {
         creditsList.forEach((credit) => {
-          if (!credit.account || !credit.amount) {
-            setErrorMessage("Must enter an account and amount for credit!");
+          if (!credit.account) {
+            setErrorMessage("Must enter a credit account!");
+            error = true;
+            return;
+          } else if (!credit.amount) {
+            setErrorMessage("Must enter an amount for credit!");
             error = true;
             return;
           }
@@ -106,8 +116,26 @@ const Journalizing = () => {
         );
         return; //if not, return from function
       }
+
+      //if no errors, shows confirm and cancel buttons
+      if (!isSubmit) {
+        setIsSubmit(true);
+        return;
+      }
+
+      //if user chooses to cancel, resets all input fields
+      if (isReset) {
+        e.target.reset();
+        setDebitsList([{ account: "", amount: "" }]); //reset array with empty objects
+        setCreditsList([{ account: "", amount: "" }]);
+        setIsSubmit(false);
+        setIsReset(false);
+        return;
+      }
+
       await setDoc(doc(collection(db, "journalEntries")), entry); //creates document with entry data
-      setSuccess(true); //document created
+      setSuccess(true); //update state to display success message
+      setIsSubmit(false); //reset submission buttons
       e.target.reset(); //reset uncontrolled input fields
       setDebitsList([{ account: "", amount: "" }]); //reset array with empty objects
       setCreditsList([{ account: "", amount: "" }]);
@@ -262,7 +290,16 @@ const Journalizing = () => {
         {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
         {success && <div style={{ color: "green" }}>Entry Submitted!</div>}
         <div>
-          <button type="submit">Submit</button>
+          {!isSubmit ? (
+            <button type="submit">Submit</button>
+          ) : (
+            <>
+              <button type="submit" onClick={() => setIsReset(true)}>
+                Cancel
+              </button>
+              <button type="submit">Confirm</button>
+            </>
+          )}
         </div>
       </form>
     </div>
