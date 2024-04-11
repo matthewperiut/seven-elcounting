@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Context } from "../context/UserContext";
 
 const Accounts = () => {
-  const { user } = Context();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleMenu = () => {

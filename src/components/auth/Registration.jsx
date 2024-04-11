@@ -143,6 +143,20 @@ const Registration = () => {
           value={address}
           onChange={(e) => setAddress(e.target.value)}
         />
+        <label htmlFor="securityQuestion1">Enter your favorite color:</label>
+        <input
+          required
+          type="securityQuestion1"
+          value={securityQuestion1}
+          onChange={(e) => setSecurityQuestion1(e.target.value)}
+        />
+        <label htmlFor="securityQuestion2">Enter your favorite food:</label>
+        <input
+          required
+          type="securityQuestion2"
+          value={securityQuestion2}
+          onChange={(e) => setSecurityQuestion2(e.target.value)}
+        />
         <label htmlFor="email">Email: </label>
         <input
           required
@@ -181,21 +195,7 @@ const Registration = () => {
             )}
           </ul>
         )}
-        <label htmlFor="securityQuestion1">Favorite Color:</label>
-        <input
-          required
-          type="securityQuestion1"
-          value={securityQuestion1}
-          onChange={(e) => setSecurityQuestion1(e.target.value)}
-        />
-        <label htmlFor="securityQuestion2">Favorite Food:</label>
-        <input
-          required
-          type="securityQuestion2"
-          value={securityQuestion2}
-          onChange={(e) => setSecurityQuestion2(e.target.value)}
-        />
-        {errorMessage && <p style={{ color: "#d94f00" }}>{errorMessage}</p>}
+        {errorMessage && <p className="error">{errorMessage}</p>}
         <div>
           <button type="submit">Register</button>
           <div className="register-login-link">Already have an account? <Link to="/login"> Login</Link></div>

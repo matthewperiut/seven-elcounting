@@ -6,7 +6,6 @@ Registration,
 ForgotPassword, 
 RequireAccount, 
 RequireUser,
-SecurityQuestion, 
 RequireAdmin, 
 Banner, 
 PageNotFound, 
@@ -15,43 +14,44 @@ AddAccounts,
 ChartofAccounts, 
 EditAccounts, 
 DeactivateAccounts,
-Help, 
 RoleManagement, 
 UserContextProvider, 
 Journalizing,
 Entries,
-GeneralLedger
+GeneralLedger,
+EventLog
 } from "./components"
-import EventLog from './components/logs/EventLog';
 
 
 function App() {
   return (
     <UserContextProvider> 
       <Routes>
-        <Route path="/" element={<Banner />} >
           
         {/* public routes */}
+        <Route path="/" element={<Banner />} >
         <Route path="login" element={<Login />} />
         <Route path="registration" element={<Registration />} />
         <Route path="forgotpassword" element={<ForgotPassword />} />
-        <Route path="securityquestion" element={<SecurityQuestion />} />
-
-        <Route path="Help" element={<Help />} />
 
         {/* private routes */}
         <Route path="/" element={<RequireAccount><Dashboard/></RequireAccount>} />
-        <Route path="addaccounts" element={<RequireAdmin><AddAccounts /></RequireAdmin>} />
+        {/* admin routes */}
         <Route path="users" element={<RequireAdmin>< RoleManagement/></RequireAdmin>} />
-        <Route path="chartofaccounts" element={<RequireUser><ChartofAccounts/></RequireUser>} />
+        <Route path="addaccounts" element={<RequireAdmin><AddAccounts /></RequireAdmin>} />
         <Route path="editaccounts" element={<RequireAdmin><EditAccounts/></RequireAdmin>} />
         <Route path="deactivateaccounts" element={<RequireAdmin><DeactivateAccounts/></RequireAdmin>} />
-        <Route path="journalizing" element={<Journalizing/>} />
-        <Route path="journal-entries" element={<RequireAccount><Entries/></RequireAccount>} />
-        <Route path="generalLedger" element={<GeneralLedger />} />
-        <Route path="eventLog" element={<EventLog />} />
+
+        {/* accountant routes */}
+        <Route path="chartofaccounts" element={<RequireUser><ChartofAccounts/></RequireUser>} />
+        <Route path="journalizing" element={<RequireUser><Journalizing/></RequireUser>} />
+        <Route path="journal-entries" element={<RequireUser><Entries/></RequireUser>} />
+        <Route path="generalLedger" element={<RequireUser><GeneralLedger/></RequireUser>} />
+        <Route path="eventLog" element={<RequireUser><EventLog /></RequireUser>} />
+
         {/* page not found */}
         <Route path="*" element={<PageNotFound />} />
+
         </Route>
       </Routes>    
     </UserContextProvider>

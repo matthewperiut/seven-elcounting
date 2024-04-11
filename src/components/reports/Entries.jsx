@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import { db } from "../../firebase-config";
 import { Context } from "../context/UserContext";
 import CustomCalendar from "../layouts/CustomCalendar";
-import Help from '../layouts/Help.jsx';
+import Help from '../layouts/Help';
 
 /**
  * Formats a Firestore timestamp to a readable date string.

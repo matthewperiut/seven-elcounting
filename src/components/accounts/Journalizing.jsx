@@ -12,7 +12,7 @@ import { db } from "../../firebase-config";
 import { Context } from "../context/UserContext";
 import { reportError } from "../logs/ErrorLogController";
 import CustomCalendar from "../layouts/CustomCalendar";
-import Help from "../layouts/Help.jsx";
+import Help from "../layouts/Help";
 
 const Journalizing = () => {
   const { user } = Context(); //pull user context for user ID
@@ -287,7 +287,7 @@ const Journalizing = () => {
           </div>
         </div>
 
-        {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
+        {errorMessage && <div className="error">{errorMessage}</div>}
         {status.success && (
           <div style={{ color: "green" }}>Entry Submitted!</div>
         )}

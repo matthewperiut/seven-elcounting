@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import {db} from "../../firebase-config.js";
 import CustomCalendar from '../layouts/CustomCalendar.jsx';
-import Help from '../layouts/Help.jsx';
+import Help from '../layouts/Help';
 
 function formatDate(timestamp) {
     if (!timestamp) return '';

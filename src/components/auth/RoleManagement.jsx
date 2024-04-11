@@ -4,7 +4,7 @@ import { db } from "../../firebase-config";
 import { Context } from "../context/UserContext";
 import CustomCalendar from "../layouts/CustomCalendar";
 import { logEvent } from "../logs/EventLogController.jsx";
-import Help from "../layouts/Help.jsx";
+import Help from "../layouts/Help";
 
 const Modal = ({ isOpen, onClose, user: edittingUser, updateUser }) => {
   const [localUser, setLocalUser] = useState(edittingUser);

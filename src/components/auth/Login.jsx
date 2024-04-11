@@ -29,9 +29,9 @@ const Login = () => {
       })
       .catch((error) => {
         console.error(error.message);
-        setErrorMessage(error.message);
         if (error.message.includes("invalid-credential")) {
           setFailedAttempts(failedAttempts + 1);
+          setErrorMessage("Invalid email or password!");
         }
         reportError(error.message);
       });
@@ -58,16 +58,13 @@ const Login = () => {
         <div className="forgot-password-link">
           <Link to="/forgotpassword">Forgot Password?</Link>
         </div>
-
-        {errorMessage && (
-          <span style={{ color: "#d94f00" }}>{errorMessage}</span>
-        )}
+        {errorMessage && <span className="error">{errorMessage}</span>}
         {failedAttempts > 0 &&
           ((failedAttempts < 3 && (
-            <span>Failed Attempts: {failedAttempts}</span>
+            <span className="error">Failed Attempts: {failedAttempts}</span>
           )) ||
             (failedAttempts > 2 && (
-              <span style={{ color: "red" }}>
+              <span className="error">
                 Attempted too many wrong passwords! Please try again later.
               </span>
             )))}
@@ -79,7 +76,9 @@ const Login = () => {
           >
             Login
           </button>
-          <div className="register-login-link">Don't have an account? <Link to="/registration">Register</Link></div>
+          <div className="register-login-link">
+            Don't have an account? <Link to="/registration">Register</Link>
+          </div>
         </div>
       </form>
     </div>

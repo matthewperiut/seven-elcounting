@@ -13,6 +13,12 @@ p {
     font-size: 25px;
 }
 
+.error {
+    color: #dc3545;
+    font-weight: bold;
+    font-size: 20px;
+}
+
 
 /* Buttons */ 
 button {
@@ -79,7 +85,7 @@ select {
 }
 
 .forgot-password-link {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .forgot-password-link a {
@@ -91,7 +97,7 @@ select {
 }
 
 .register-login-link {
-    margin-top: 15px;
+    margin-top: 10px;
 }
 
 .register-login-link a {
