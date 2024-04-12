@@ -289,7 +289,7 @@ const Journalizing = () => {
 
         {errorMessage && <div className="error">{errorMessage}</div>}
         {status.success && (
-          <div style={{ color: "green" }}>Entry Submitted!</div>
+          <div className="success">Entry Submitted!</div>
         )}
         <div>
           {!status.submit ? (

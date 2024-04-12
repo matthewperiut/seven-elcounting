@@ -13,11 +13,20 @@ p {
     font-size: 25px;
 }
 
+
+/* Error and success messages */ 
 .error {
     color: #dc3545;
     font-weight: bold;
     font-size: 20px;
 }
+
+.success {
+    color: #0fbe17;
+    font-weight: bold;
+    font-size: 20px;
+}
+/* Error and success messages */ 
 
 
 /* Buttons */ 
@@ -39,6 +48,50 @@ button:hover {
     background-color: #6a72ee; /* resets to base background color */
 }
 /* Buttons */ 
+
+
+/* Tooltips */
+.tooltip {
+    display: inline;
+    background: rgba(0, 0, 0, 0.50);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: white;
+    white-space: nowrap;
+}
+/* Tooltips */
+
+
+/* Calendar */
+.calendar-container {
+    position: absolute;
+    top: 0;
+    left: 5px;
+}
+
+.calendar {
+    position: absolute;
+    top: 48px;
+}
+/* Calendar */
+
+
+/* Help Button */
+.help-container {
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+}
+
+.help-content hr {
+    border-bottom: 1px solid #000;
+}
+
+.help-content p {
+    text-align: left;
+}
+/* Help Button */
 
 
 /* Input fields */
@@ -111,8 +164,6 @@ select {
     border-radius: 15px;
 }
 /* Input fields */
-
-
 
 
 /* Dashboard/Banner */
@@ -294,50 +345,6 @@ select {
 }
 /* Modal */
 
-/* Calendar */
-.calendar-container {
-    position: absolute;
-    top: 0;
-    left: 5px;
-}
-
-.calendar {
-    position: absolute;
-    top: 48px;
-}
-/* Calendar */
-
-/* Help Button */
-.help-container {
-    position: fixed;
-    bottom: 5px;
-    right: 5px;
-}
-
-.help-content hr {
-    border-bottom: 1px solid #000;
-}
-
-.help-content p {
-    text-align: left;
-}
-/* Help Button */
-
-
-
-/* Tooltips */
-.tooltip {
-    display: inline;
-    background: rgba(0, 0, 0, 0.50);
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    color: white;
-    white-space: nowrap;
-}
-/* Tooltips */
-
-
 
 /* Chart of Accounts */
 .viewonlyaccount-div, .accounts-table th, .accounts-table td {
@@ -355,8 +362,7 @@ select {
     border-collapse: collapse;
     border: 2px solid black;
 }
-/* Charts of Accounts */
-
+/* Chart of Accounts */
 
 
 /* Journalizing */
@@ -416,6 +422,7 @@ select {
 }
 /* Journal Entries */
 
+
 /* Event Log */
 .event-log-table {
     width: 100%;
@@ -436,6 +443,7 @@ select {
     background-color: #e0e0e0ce;
 }
 /* Event Log */
+
 
 /* Ledgers */
 .accountledger-table {

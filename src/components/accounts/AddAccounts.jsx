@@ -106,7 +106,7 @@ export const AddAccounts = () => {
                   {label}:
                 </label>
               </div>
-              <input id={id} name={id} type={type} onChange={handleChange} />
+              <input required id={id} name={id} type={type} onChange={handleChange} />
             </div>
           ))}
         <div className="input-label">
@@ -115,6 +115,7 @@ export const AddAccounts = () => {
           </div>
           <span>$</span>
           <CurrencyInput
+            required
             value={accountInfo.balance}
             className="currency-input"
             name="initialBalance"
@@ -127,7 +128,7 @@ export const AddAccounts = () => {
           <div className="label-container">
             <label htmlFor="normalSide">Normal Side:</label>
           </div>
-          <select name="normalSide" defaultValue="" onChange={handleChange}>
+          <select required name="normalSide" defaultValue="" onChange={handleChange}>
             <option disabled />
             <option value="credit">Credit</option>
             <option value="debit">Debit</option>
@@ -137,7 +138,7 @@ export const AddAccounts = () => {
           <div className="label-container">
             <label htmlFor="statement">Financial Statement:</label>
           </div>
-          <select name="statement" defaultValue="" onChange={handleChange}>
+          <select required name="statement" defaultValue="" onChange={handleChange}>
             <option disabled />
             <option value="Income_Statement">Income Statement</option>
             <option value="Balance_Sheet">Balance Sheet</option>
@@ -153,7 +154,7 @@ export const AddAccounts = () => {
           </select>
         </div>
         {errorMessage && <p className="error">{errorMessage}</p>}
-        {success && <p style={{ color: "green" }}>Account Added!</p>}
+        {success && <p className="success">Account Added!</p>}
         <div>
           <button>Add Account</button>
         </div>
