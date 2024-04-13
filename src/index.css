@@ -186,6 +186,7 @@ select {
 .navbar {
     list-style-type: none;
     padding-top: 25px;
+    margin-right: 50px;
 }
 
 .navbar-item {
@@ -312,7 +313,7 @@ select {
     background-color: white;
     margin: 50px auto;
     padding: 20px;
-    width: 60%;
+    width: 75%;
     max-height: 80vh;
     border-radius: 50px;
     overflow-y: scroll;

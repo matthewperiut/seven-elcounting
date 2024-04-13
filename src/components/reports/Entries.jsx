@@ -10,7 +10,8 @@ import React, { useEffect, useState } from "react";
 import { db } from "../../firebase-config";
 import { Context } from "../context/UserContext";
 import CustomCalendar from "../layouts/CustomCalendar";
-import Help from '../layouts/Help';
+import Help from "../layouts/Help";
+import Journalizing from "../accounts/Journalizing";
 
 /**
  * Formats a Firestore timestamp to a readable date string.
@@ -26,13 +27,13 @@ function formatDate(timestamp) {
 }
 
 //Custom modal to enter comment for rejected journal entry
-const Modal = ({ isOpen, closeModal, user, id, fetchEntries }) => {
+const Modal = ({ isOpen, closeModal, fetchEntries, isAdjusting, entry }) => {
   const [comment, setComment] = useState(""); //state to hold comment
   if (!isOpen) return null; //is isOpen state is false, nothing gets returned(modal closed)
 
   //rejects entry and stores comment
   const handleRejection = async () => {
-    await updateDoc(doc(db, "journalEntries", id), {
+    await updateDoc(doc(db, "journalEntries", entry.id), {
       isRejected: true,
       comment: comment,
     });
@@ -46,10 +47,17 @@ const Modal = ({ isOpen, closeModal, user, id, fetchEntries }) => {
         <p onClick={closeModal} className="closeButton">
           &times;
         </p>
-        <div>User: {user}</div>
-        <label htmlFor="comment">Comment: </label>
-        <input type="text" onChange={(e) => setComment(e.target.value)} />
-        <button onClick={handleRejection}>Reject</button>
+        <br />
+        {isAdjusting ? (
+          <Journalizing adjustingEntry={entry} />
+        ) : (
+          <>
+            <div>User: {entry.user}</div>
+            <label htmlFor="comment">Comment: </label>
+            <input type="text" onChange={(e) => setComment(e.target.value)} />
+            <button onClick={handleRejection}>Reject</button>
+          </>
+        )}
       </div>
     </div>
   );
@@ -59,11 +67,13 @@ const Modal = ({ isOpen, closeModal, user, id, fetchEntries }) => {
 const Table = ({ entries, isPending, fetchEntries }) => {
   const { user } = Context(); //pull user context for role
   const [isModal, setIsModal] = useState(false); //state to manage if modal is open
-  const [rejectedEntryInfo, setRejectedEntryInfo] = useState([]); //state to store rejected entry information(userID and entryID)
+  const [entryInfo, setEntryInfo] = useState({}); //state to store rejected entry information(userID and entryID)
+  const [isAdjusting, setIsAdjusting] = useState(false);
 
-  const toggleModal = (user, id) => {
+  const toggleModal = (entry, adjust) => {
     setIsModal(!isModal);
-    setRejectedEntryInfo([user, id]); //sets rejected entry information to chosen table
+    adjust ? setIsAdjusting(true) : setIsAdjusting(false);
+    setEntryInfo(entry); //sets rejected entry information to chosen table
   };
 
   //approves entry
@@ -117,22 +127,21 @@ const Table = ({ entries, isPending, fetchEntries }) => {
             </table>
           </div>
           {user.role > 1 && isPending && (
-            <div>
+            <>
               <button onClick={() => handleApproval(entry)}>Approve</button>
-              <button onClick={() => toggleModal(entry.user, entry.id)}>
-                Reject
-              </button>
-            </div>
+              <button onClick={() => toggleModal(entry, false)}>Reject</button>
+            </>
           )}
+          <button onClick={() => toggleModal(entry, true)}>Adjust</button>
         </div>
       ))}
       {isModal && (
         <Modal
           isOpen={isModal}
           closeModal={() => setIsModal(false)}
-          user={rejectedEntryInfo[0]}
-          id={rejectedEntryInfo[1]}
+          entry={entryInfo}
           fetchEntries={fetchEntries}
+          isAdjusting={isAdjusting}
         />
       )}
     </div>
@@ -234,48 +243,48 @@ const Entries = () => {
           <option value="date">Date</option>
         </select>
         <input
-            type="text"
-            placeholder="Enter search term..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+          type="text"
+          placeholder="Enter search term..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
         <p>
-        <label>View: </label>
-        <select onChange={(e) => setViewType(e.target.value)}>
-          <option value={3}>All</option>
-          <option value={0}>Pending</option>
-          <option value={1}>Approved</option>
-          <option value={2}>Rejected</option>
-        </select>
+          <label>View: </label>
+          <select onChange={(e) => setViewType(e.target.value)}>
+            <option value={3}>All</option>
+            <option value={0}>Pending</option>
+            <option value={1}>Approved</option>
+            <option value={2}>Rejected</option>
+          </select>
         </p>
       </div>
       {viewType === "3" || viewType === "0" ? (
-          <div>
-            <h2>Pending</h2>
-            <Table
-                entries={getFilteredEntries(entries.pending)}
-                isPending={true}
-                fetchEntries={fetchEntries}
-            />
-          </div>
+        <div>
+          <h2>Pending</h2>
+          <Table
+            entries={getFilteredEntries(entries.pending)}
+            isPending={true}
+            fetchEntries={fetchEntries}
+          />
+        </div>
       ) : null}
       {viewType === "3" || viewType === "1" ? (
-          <div>
-            <h2>Approved</h2>
-            <Table
-                entries={getFilteredEntries(entries.approved)}
-                isPending={false}
-            />
-          </div>
+        <div>
+          <h2>Approved</h2>
+          <Table
+            entries={getFilteredEntries(entries.approved)}
+            isPending={false}
+          />
+        </div>
       ) : null}
       {viewType === "3" || viewType === "2" ? (
-          <div>
-            <h2>Rejected</h2>
-            <Table
-                entries={getFilteredEntries(entries.rejected)}
-                isPending={false}
-            />
-          </div>
+        <div>
+          <h2>Rejected</h2>
+          <Table
+            entries={getFilteredEntries(entries.rejected)}
+            isPending={false}
+          />
+        </div>
       ) : null}
     </div>
   );

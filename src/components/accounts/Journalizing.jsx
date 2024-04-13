@@ -14,7 +14,7 @@ import { reportError } from "../logs/ErrorLogController";
 import CustomCalendar from "../layouts/CustomCalendar";
 import Help from "../layouts/Help";
 
-const Journalizing = () => {
+const Journalizing = ({ adjustingEntry }) => {
   const { user } = Context(); //pull user context for user ID
   const [accounts, setAccounts] = useState([]); //array to hold all active accounts
   const [debitsList, setDebitsList] = useState([{ account: "", amount: "" }]); //array of objects for creating new inputs and storing account and amount info
@@ -26,20 +26,32 @@ const Journalizing = () => {
     reset: false,
   }); //state to display success message, show confirm and cancel buttons, and handle entry reset
 
+  const fetchAllAccounts = async () => {
+    //gets snapshot of all active accounts
+    const querySnapshot = await getDocs(
+      query(collection(db, "accounts"), where("isActivated", "==", true))
+    );
+    
+    //maps data into fetchedAccounts array
+    const fetchedAccounts = querySnapshot.docs.map((doc) => ({
+      ...doc.data(),
+    }));
+    setAccounts(fetchedAccounts); //sets accounts state with fetchedAccounts
+  };
+
   useEffect(() => {
-    const fetchAllAccounts = async () => {
-      //gets snapshot of all active accounts
-      const querySnapshot = await getDocs(
-        query(collection(db, "accounts"), where("isActivated", "==", true))
+    if (adjustingEntry) {
+      setDebitsList(
+        adjustingEntry.entries
+          .filter((entry) => entry.type === "debit")
+          .map((entry) => ({ account: entry.account, amount: entry.amount }))
       );
-
-      //maps data into fetchedAccounts array
-      const fetchedAccounts = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-      }));
-      setAccounts(fetchedAccounts); //sets accounts state with fetchedAccounts
-    };
-
+      setCreditsList(
+        adjustingEntry.entries
+          .filter((entry) => entry.type === "credit")
+          .map((entry) => ({ account: entry.account, amount: entry.amount }))
+      );
+    }
     fetchAllAccounts();
   }, []);
 
@@ -183,8 +195,12 @@ const Journalizing = () => {
 
   return (
     <div className="wrapper">
-      <CustomCalendar />
-      <Help />
+      {!adjustingEntry && (
+        <>
+          <CustomCalendar />
+          <Help />
+        </>
+      )}
       <h1>Journalizing</h1>
       <form onSubmit={handleSubmit}>
         <div className="entry-container">
@@ -193,7 +209,7 @@ const Journalizing = () => {
             {debitsList.map((debit, index) => (
               <div key={index}>
                 <select
-                  defaultValue="Select Account"
+                  value={debit.account || "Select Account"}
                   onChange={(e) =>
                     handleDebitChange(index, "account", e.target.value)
                   }
@@ -243,7 +259,7 @@ const Journalizing = () => {
             {creditsList.map((credit, index) => (
               <div key={index}>
                 <select
-                  defaultValue="Select Account"
+                  value={credit.account || "Select Account"}
                   onChange={(e) =>
                     handleCreditChange(index, "account", e.target.value)
                   }
@@ -288,9 +304,7 @@ const Journalizing = () => {
         </div>
 
         {errorMessage && <div className="error">{errorMessage}</div>}
-        {status.success && (
-          <div className="success">Entry Submitted!</div>
-        )}
+        {status.success && <div className="success">Entry Submitted!</div>}
         <div>
           {!status.submit ? (
             <button type="submit">Submit</button>
