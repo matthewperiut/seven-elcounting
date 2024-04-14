@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import CurrencyInput from "react-currency-input-field";
 import { db } from "../../firebase-config";
 import { Context } from "../context/UserContext";
-import { reportError } from "../logs/ErrorLogController";
+import { reportError } from "../events/ErrorLogController";
 import CustomCalendar from "../layouts/CustomCalendar";
 import Help from "../layouts/Help";
 

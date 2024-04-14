@@ -4,7 +4,7 @@ import { db } from "../../firebase-config.js";
 import CustomCalendar from "../layouts/CustomCalendar.jsx";
 import CurrencyInput from "react-currency-input-field";
 import Help from "../layouts/Help";
-import { logEvent } from "../logs/EventLogController.jsx";
+import { logEvent } from "../events/EventLogController.jsx";
 import { Context } from "../context/UserContext.jsx";
 
 /**

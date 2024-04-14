@@ -11,8 +11,8 @@ import {
 import CurrencyInput from "react-currency-input-field";
 import CustomCalendar from "../layouts/CustomCalendar";
 import Help from '../layouts/Help';
-import { reportError } from "../logs/ErrorLogController.jsx";
-import { logEventCreation} from "../logs/EventLogController.jsx";
+import { reportError } from "../events/ErrorLogController.jsx";
+import { logEventCreation} from "../events/EventLogController.jsx";
 import { Context } from "../context/UserContext.jsx";
 
 export const AddAccounts = () => {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth, db } from "../../firebase-config";
 import { Link } from "react-router-dom";
-import { reportError } from "../logs/ErrorLogController";
+import { reportError } from "../events/ErrorLogController";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
 const ForgotPassword = () => {

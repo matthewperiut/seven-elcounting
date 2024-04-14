@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import ErrorBoundary from './components/logs/ErrorLogController.jsx'
+import ErrorBoundary from './components/events/ErrorLogController.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ErrorBoundary>

@@ -19,7 +19,7 @@ UserContextProvider,
 Journalizing,
 Entries,
 GeneralLedger,
-EventLog
+ChangeEventLog
 } from "./components"
 
 
@@ -47,7 +47,7 @@ function App() {
         <Route path="journalizing" element={<RequireUser><Journalizing/></RequireUser>} />
         <Route path="journal-entries" element={<RequireUser><Entries/></RequireUser>} />
         <Route path="generalLedger" element={<RequireUser><GeneralLedger/></RequireUser>} />
-        <Route path="eventLog" element={<RequireUser><EventLog /></RequireUser>} />
+        <Route path="eventLog" element={<RequireUser><ChangeEventLog /></RequireUser>} />
 
         {/* page not found */}
         <Route path="*" element={<PageNotFound />} />

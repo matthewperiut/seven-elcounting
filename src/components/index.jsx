@@ -14,6 +14,6 @@ export { default as DeactivateAccounts } from "./accounts/DeactivateAccounts"
 export { default as Journalizing } from "./accounts/Journalizing"
 export { default as GeneralLedger} from "./reports/GeneralLedger"
 export { default as Entries } from "./reports/Entries"
-export { default as EventLog } from "./logs/EventLog"
+export { default as ChangeEventLog } from "./events/ChangeEventLog"
 
 {/* File for easily exporting all components */}

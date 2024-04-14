@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import {db} from "../../firebase-config.js";
 import CustomCalendar from '../layouts/CustomCalendar.jsx';
-import Help from '../layouts/Help';
+import Help from '../layouts/Help.jsx';
 
 function formatDate(timestamp) {
     if (!timestamp) return '';
@@ -13,7 +13,7 @@ function formatDate(timestamp) {
 }
 
 
-const EventLog = () => {
+const ChangeEventLog = () => {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
@@ -91,4 +91,4 @@ const EventLog = () => {
   );
 }
 
-export default EventLog;
+export default ChangeEventLog;

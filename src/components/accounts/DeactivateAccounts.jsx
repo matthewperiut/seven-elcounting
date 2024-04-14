@@ -4,7 +4,7 @@ import { db } from '../../firebase-config';
 import CustomCalendar from '../layouts/CustomCalendar';
 import Help from '../layouts/Help';
 import {Context} from "../context/UserContext.jsx";
-import {logEventDeactivation} from "../logs/EventLogController.jsx";
+import {logEventDeactivation} from "../events/EventLogController.jsx";
 
 const DeactivateAccounts = () => {
   const [activeAccounts, setActiveAccounts] = useState([]);

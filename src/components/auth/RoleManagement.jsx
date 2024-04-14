@@ -3,7 +3,7 @@ import { doc, getDocs, collection, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import { Context } from "../context/UserContext";
 import CustomCalendar from "../layouts/CustomCalendar";
-import { logEvent } from "../logs/EventLogController.jsx";
+import { logEvent } from "../events/EventLogController.jsx";
 import Help from "../layouts/Help";
 
 const Modal = ({ isOpen, onClose, user: edittingUser, updateUser }) => {
