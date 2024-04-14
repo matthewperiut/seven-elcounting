@@ -148,7 +148,11 @@ const Journalizing = ({ adjustingEntry, update }) => {
       }
 
       if (adjustingEntry) {
-        await updateDoc(doc(db, "journalEntries", adjustingEntry.id), entry);
+        await updateDoc(doc(db, "journalEntries", adjustingEntry.id), {
+          ...entry,
+          isApproved: false,
+          isRejected: false,
+        });
         update();
       } else await setDoc(doc(collection(db, "journalEntries")), entry); //creates document with entry data
 
