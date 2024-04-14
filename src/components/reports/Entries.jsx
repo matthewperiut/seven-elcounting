@@ -32,11 +32,12 @@ const Modal = ({ isOpen, closeModal, fetchEntries, isAdjusting, entry }) => {
   if (!isOpen) return null; //is isOpen state is false, nothing gets returned(modal closed)
 
   //rejects entry and stores comment
-  const handleRejection = async () => {
-    await updateDoc(doc(db, "journalEntries", entry.id), {
-      isRejected: true,
-      comment: comment,
-    });
+  const handleSubmit = async () => {
+    !isAdjusting &&
+      (await updateDoc(doc(db, "journalEntries", entry.id), {
+        isRejected: true,
+        comment: comment,
+      }));
     fetchEntries(); //function to rerender tables(update approved/rejected list after decision is made on pending entry)
     closeModal();
   };
@@ -49,13 +50,13 @@ const Modal = ({ isOpen, closeModal, fetchEntries, isAdjusting, entry }) => {
         </p>
         <br />
         {isAdjusting ? (
-          <Journalizing adjustingEntry={entry} />
+          <Journalizing adjustingEntry={entry} update={handleSubmit} />
         ) : (
           <>
             <div>User: {entry.user}</div>
             <label htmlFor="comment">Comment: </label>
             <input type="text" onChange={(e) => setComment(e.target.value)} />
-            <button onClick={handleRejection}>Reject</button>
+            <button onClick={handleSubmit}>Reject</button>
           </>
         )}
       </div>
@@ -274,6 +275,7 @@ const Entries = () => {
           <Table
             entries={getFilteredEntries(entries.approved)}
             isPending={false}
+            fetchEntries={fetchEntries}
           />
         </div>
       ) : null}
@@ -283,6 +285,7 @@ const Entries = () => {
           <Table
             entries={getFilteredEntries(entries.rejected)}
             isPending={false}
+            fetchEntries={fetchEntries}
           />
         </div>
       ) : null}

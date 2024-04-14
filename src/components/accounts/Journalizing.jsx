@@ -4,6 +4,7 @@ import {
   getDocs,
   query,
   setDoc,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -14,7 +15,7 @@ import { reportError } from "../logs/ErrorLogController";
 import CustomCalendar from "../layouts/CustomCalendar";
 import Help from "../layouts/Help";
 
-const Journalizing = ({ adjustingEntry }) => {
+const Journalizing = ({ adjustingEntry, update }) => {
   const { user } = Context(); //pull user context for user ID
   const [accounts, setAccounts] = useState([]); //array to hold all active accounts
   const [debitsList, setDebitsList] = useState([{ account: "", amount: "" }]); //array of objects for creating new inputs and storing account and amount info
@@ -31,7 +32,7 @@ const Journalizing = ({ adjustingEntry }) => {
     const querySnapshot = await getDocs(
       query(collection(db, "accounts"), where("isActivated", "==", true))
     );
-    
+
     //maps data into fetchedAccounts array
     const fetchedAccounts = querySnapshot.docs.map((doc) => ({
       ...doc.data(),
@@ -146,7 +147,11 @@ const Journalizing = ({ adjustingEntry }) => {
         return;
       }
 
-      await setDoc(doc(collection(db, "journalEntries")), entry); //creates document with entry data
+      if (adjustingEntry) {
+        await updateDoc(doc(db, "journalEntries", adjustingEntry.id), entry);
+        update();
+      } else await setDoc(doc(collection(db, "journalEntries")), entry); //creates document with entry data
+
       setStatus((prev) => ({ ...prev, success: true, submit: false })); //update state to display success message
       e.target.reset(); //reset uncontrolled input fields
       setDebitsList([{ account: "", amount: "" }]); //reset array with empty objects
