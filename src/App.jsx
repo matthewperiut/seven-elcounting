@@ -19,7 +19,8 @@ UserContextProvider,
 Journalizing,
 Entries,
 GeneralLedger,
-ChangeEventLog
+ChangeEventLog,
+BalanceSheet
 } from "./components"
 
 
@@ -45,9 +46,10 @@ function App() {
         {/* accountant routes */}
         <Route path="chartofaccounts" element={<RequireUser><ChartofAccounts/></RequireUser>} />
         <Route path="journalizing" element={<RequireUser><Journalizing/></RequireUser>} />
-        <Route path="journal-entries" element={<RequireUser><Entries/></RequireUser>} />
+        <Route path="journalentries" element={<RequireUser><Entries/></RequireUser>} />
         <Route path="generalLedger" element={<RequireUser><GeneralLedger/></RequireUser>} />
         <Route path="eventLog" element={<RequireUser><ChangeEventLog /></RequireUser>} />
+        <Route path="balancesheet" element={<RequireUser><BalanceSheet/></RequireUser>} />
 
         {/* page not found */}
         <Route path="*" element={<PageNotFound />} />

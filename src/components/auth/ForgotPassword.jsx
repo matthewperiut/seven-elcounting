@@ -86,12 +86,16 @@ const ForgotPassword = () => {
               answer2: e.target.value,
             }))
           }
-        /> <br />
+        />{" "}
+        <br />
         <div>
           <button>Send Password Reset Link</button>
         </div>
       </form>
-      <div className="register-login-link"><Link to="/">Back To Login</Link></div>
+
+      <div className="register-login-link">
+        <Link to="/">Back To Login</Link>
+      </div>
     </div>
   );
 };

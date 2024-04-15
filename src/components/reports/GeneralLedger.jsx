@@ -1,9 +1,9 @@
 // Existing imports
-import React, { useEffect, useState } from 'react';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../../firebase-config';
-import CustomCalendar from '../layouts/CustomCalendar';
-import Help from '../layouts/Help';
+import React, { useEffect, useState } from "react";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../firebase-config";
+import CustomCalendar from "../layouts/CustomCalendar";
+import Help from "../layouts/Help";
 
 /**
  * Formats a Firestore timestamp to a readable date string.
@@ -11,18 +11,18 @@ import Help from '../layouts/Help';
  * @returns {string} The formatted date string.
  */
 function formatDate(timestamp) {
-  if (!timestamp) return '';
+  if (!timestamp) return "";
 
   const date = timestamp.toDate();
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return date.toLocaleDateString('en-US', options);
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  return date.toLocaleDateString("en-US", options);
 }
 
 const GeneralLedger = ({ showSearchBar }) => {
   const [approvedEntries, setApprovedEntries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [dateFilter, setDateFilter] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
   const [showDateInput, setShowDateInput] = useState(false);
   const [filteredEntries, setFilteredEntries] = useState([]);
 
@@ -32,9 +32,9 @@ const GeneralLedger = ({ showSearchBar }) => {
 
       const approvedSnapshot = await getDocs(
         query(
-          collection(db, 'journalEntries'),
-          where('isApproved', '==', true),
-          where('isRejected', '==', false)
+          collection(db, "journalEntries"),
+          where("isApproved", "==", true),
+          where("isRejected", "==", false)
         )
       );
 
@@ -54,20 +54,19 @@ const GeneralLedger = ({ showSearchBar }) => {
     // Filter entries based on the search query and date filter
     let filtered = approvedEntries;
     if (searchQuery) {
-      filtered = filtered.filter(entry =>
-        entry.entries.some(subEntry =>
+      filtered = filtered.filter((entry) =>
+        entry.entries.some((subEntry) =>
           subEntry.account.toLowerCase().includes(searchQuery.toLowerCase())
         )
       );
     }
     if (dateFilter) {
-      filtered = filtered.filter(entry =>
+      filtered = filtered.filter((entry) =>
         formatDate(entry.dateCreated).includes(dateFilter)
       );
     }
     setFilteredEntries(filtered);
   }, [searchQuery, dateFilter, approvedEntries]);
-
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -129,7 +128,7 @@ const GeneralLedger = ({ showSearchBar }) => {
                 </tr>
               </thead>
               <tbody>
-                {filteredEntries.map((entry) => (
+                {filteredEntries.map((entry) =>
                   entry.entries.map((subEntry, index) => (
                     <tr className="entry" key={index}>
                       {index === 0 && (
@@ -142,18 +141,18 @@ const GeneralLedger = ({ showSearchBar }) => {
                       )}
                       <td>{subEntry.account}</td>
                       <td>
-                        {subEntry.type === "debit" ? (
-                          "$" + parseFloat(subEntry.amount).toLocaleString()
-                        ) : ""}
+                        {subEntry.type === "debit"
+                          ? "$" + parseFloat(subEntry.amount).toLocaleString()
+                          : ""}
                       </td>
                       <td>
-                        {subEntry.type === "credit" ? (
-                          "$" + parseFloat(subEntry.amount).toLocaleString()
-                        ) : ""}
+                        {subEntry.type === "credit"
+                          ? "$" + parseFloat(subEntry.amount).toLocaleString()
+                          : ""}
                       </td>
                     </tr>
                   ))
-                ))}
+                )}
               </tbody>
             </table>
           </div>

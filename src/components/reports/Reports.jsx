@@ -21,10 +21,10 @@ const Reports = () => {
         <div className="dropdown">
           <ul>
             <Link to="/generalLedger"><li>General Ledger</li></Link>
-            <Link to="/balance-sheet"><li>Balance Sheet</li></Link>
-            <Link to="/trial-balance"><li>Trial Balance</li></Link>
-            <Link to="/income-statement"><li>Income Statement</li></Link>
-            <Link to="/journal-entries"><li>Journal Entries</li></Link>
+            <Link to="/balancesheet"><li>Balance Sheet</li></Link>
+            <Link to="/trialbalance"><li>Trial Balance</li></Link>
+            <Link to="/incomestatement"><li>Income Statement</li></Link>
+            <Link to="/journalentries"><li>Journal Entries</li></Link>
             {(user && user.role === 3) && <Link to="/eventLog"><li>Event Log</li></Link>}
           </ul>
         </div>
