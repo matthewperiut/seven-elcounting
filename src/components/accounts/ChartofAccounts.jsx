@@ -4,6 +4,60 @@ import { db } from "../../firebase-config.js";
 import CustomCalendar from "../layouts/CustomCalendar.jsx";
 import Help from "../layouts/Help";
 
+const JournalEntriesModal = ({ isOpen, closeModal, selectedPR }) => {
+  const [journalEntries, setJournalEntries] = useState([]);
+
+  useEffect(() => {
+    const fetchJournalEntries = async () => {
+      if (selectedPR) {
+        try {
+          const q = query(
+            collection(db, "journalEntries"),
+            where("entries.postRef", "==", selectedPR)
+          );
+          const querySnapshot = await getDocs(q);
+          const entries = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setJournalEntries(entries);
+        } catch (error) {
+          console.error("Error fetching journal entries:", error);
+        }
+      }
+    };
+
+    if (isOpen && selectedPR) {
+      fetchJournalEntries();
+    }
+  }, [isOpen, selectedPR]);
+
+  if (!isOpen || !selectedPR) return null;
+
+  return (
+    <div className="modal-background">
+      <div className="modal">
+        <p onClick={closeModal} className="closeButton">
+          &times;
+        </p>
+        <h2>Journal Entries</h2>
+        {journalEntries.length > 0 ? (
+          <div>
+            {journalEntries.map((entry) => (
+              <div key={entry.id}>
+                <p>Journal Entry Date: {entry.dateCreated}</p>
+                {/* Display other relevant entry details */}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No journal entries found for the selected post reference.</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
 function formatDate(timestamp) {
   if (!timestamp) return "";
 
@@ -33,11 +87,18 @@ const Modal = ({
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [showJournalEntriesModal, setShowJournalEntriesModal] = useState(false);
+  const [selectedPR, setSelectedPR] = useState(null);
 
   useEffect(() => {
     setFilteredEntries(ledgerData);
   }, [ledgerData]);
 
+  const handlePRClick = (pr) => {
+    setSelectedPR(pr); // Set the selected PR
+    setShowJournalEntriesModal(true); // Open the JournalEntriesModal
+  };
+   
   const handleSearchAmountChange = (event) => {
     setSearchAmount(event.target.value);
     filterEntries(startDate, endDate, event.target.value);
@@ -76,6 +137,7 @@ const Modal = ({
   };
 
   return (
+    <>
     <div onClick={closeModal} className="modal-background">
       <div onClick={(e) => e.stopPropagation()} className="modal">
         <p onClick={closeModal} className="closeButton">
@@ -124,7 +186,7 @@ const Modal = ({
                   <th>Debit</th>
                   <th>Credit</th>
                   <th>Balance</th>
-                  <th>PR</th>
+                  <th>Post Ref.</th>
                 </tr>
               </thead>
               <tbody>
@@ -134,7 +196,7 @@ const Modal = ({
                   <td></td>
                   <td></td>
                   <td>${parseFloat(initialBalance).toLocaleString()}</td>
-                  <td>0</td> {/* PR number for initial balance */}
+                  <td></td>
                 </tr>
                 {filteredEntries.map((entry) => {
                   const relevantSubEntries = entry.entries.filter(
@@ -153,17 +215,25 @@ const Modal = ({
                         <td>{entryNo}</td>
                         <td>{formatDate(entry.dateCreated)}</td>
                         <td>
-                          {subEntry.type === "debit"
-                            ? `$${parseFloat(subEntry.amount).toLocaleString()}`
-                            : ""}
+                          {subEntry.type === "debit" ? (
+                          `$${parseFloat(subEntry.amount).toLocaleString()}`
+                          ) : (
+                          ""
+                          )}
                         </td>
                         <td>
-                          {subEntry.type === "credit"
-                            ? `$${parseFloat(subEntry.amount).toLocaleString()}`
-                            : ""}
+                          {subEntry.type === "credit" ? (
+                          `$${parseFloat(subEntry.amount).toLocaleString()}`
+                          ) : (
+                          ""
+                          )}
                         </td>
                         <td>${runningBalance.toLocaleString()}</td>
-                        <td>PR</td> {/* PR numbers for other entries */}
+                        <td>
+                          <button onClick={() => handlePRClick(subEntry.postRef)}>
+                            {subEntry.postRef}
+                          </button>
+                        </td>
                       </tr>
                     );
                   });
@@ -178,6 +248,12 @@ const Modal = ({
         )}
       </div>
     </div>
+    <JournalEntriesModal
+        isOpen={showJournalEntriesModal}
+        closeModal={() => setShowJournalEntriesModal(false)}
+        selectedPR={selectedPR}
+      />
+    </>
   );
 };
 
@@ -242,7 +318,6 @@ const ChartOfAccounts = () => {
         }
       }
     };
-
     if (isEntriesModalOpen) {
       fetchEntriesByPR();
     }
@@ -457,7 +532,6 @@ const ChartOfAccounts = () => {
         }
         onPRClick={handlePRClick}
       />
-
       {searchQuery && filteredAccounts.length === 0 && (
         <div
           style={{

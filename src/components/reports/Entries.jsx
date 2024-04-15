@@ -96,6 +96,7 @@ const Table = ({ entries, isPending, fetchEntries }) => {
                   <th>Date Created</th>
                   <th>User</th>
                   <th>Account</th>
+                  <th>Post Ref.</th>
                   <th>Debit</th>
                   <th>Credit</th>
                 </tr>
@@ -112,6 +113,7 @@ const Table = ({ entries, isPending, fetchEntries }) => {
                       </>
                     )}
                     <td>{subEntry.account}</td>
+                    <td>{subEntry.postRef}</td> 
                     <td>
                       {subEntry.type === "debit"
                         ? "$" + parseFloat(subEntry.amount).toLocaleString()

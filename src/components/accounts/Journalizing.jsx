@@ -18,8 +18,8 @@ import Help from "../layouts/Help";
 const Journalizing = ({ adjustingEntry, update }) => {
   const { user } = Context(); //pull user context for user ID
   const [accounts, setAccounts] = useState([]); //array to hold all active accounts
-  const [debitsList, setDebitsList] = useState([{ account: "", amount: "" }]); //array of objects for creating new inputs and storing account and amount info
-  const [creditsList, setCreditsList] = useState([{ account: "", amount: "" }]);
+  const [debitsList, setDebitsList] = useState([{ account: "", amount: "", postRef: "" }]); //array of objects for creating new inputs and storing account, amount, and postRef info
+  const [creditsList, setCreditsList] = useState([{ account: "", amount: "", postRef: "" }]);
   const [errorMessage, setErrorMessage] = useState(""); //state for error handling and messages
   const [status, setStatus] = useState({
     success: false,
@@ -45,108 +45,94 @@ const Journalizing = ({ adjustingEntry, update }) => {
       setDebitsList(
         adjustingEntry.entries
           .filter((entry) => entry.type === "debit")
-          .map((entry) => ({ account: entry.account, amount: entry.amount }))
+          .map((entry) => ({ account: entry.account, amount: entry.amount, postRef: entry.postRef }))
       );
       setCreditsList(
         adjustingEntry.entries
           .filter((entry) => entry.type === "credit")
-          .map((entry) => ({ account: entry.account, amount: entry.amount }))
+          .map((entry) => ({ account: entry.account, amount: entry.amount, postRef: entry.postRef }))
       );
     }
     fetchAllAccounts();
   }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); //prevent page refresh on submit
-    let error = false; //variable to detect an error
-    let debitTotal = 0; //variable to track debits total
-    let creditTotal = 0; //variable to track credits total
-    setStatus((prev) => ({ ...prev, success: false })); //reset success message on every submit
-    setErrorMessage(""); //reset error message
-
+    e.preventDefault();
+    let error = false;
+    let debitTotal = 0;
+    let creditTotal = 0;
+    setStatus((prev) => ({ ...prev, success: false }));
+    setErrorMessage("");
+  
     try {
-      //creates object for storing entry data
       const entry = {
         user: user.displayName,
-        isApproved: user.role > 1 ? true : false, //if user is manager or admin, auto approve entry, else in pending state
+        isApproved: user.role > 1 ? true : false,
         isRejected: false,
         dateCreated: new Date(),
         comment: "",
         entries: [],
       };
-
-      //iterates through each debit transaction and checks for errors.
-      //if no errors, pushes the debit values into the entries array in the entry object and calculates total debits
-      debitsList.forEach((debit) => {
-        if (!debit.account) {
-          setErrorMessage("Must enter a debit account!");
-          error = true;
-          return; //returns from foreach loop
-        } else if (!debit.amount) {
-          setErrorMessage("Must enter an amount for debit!");
+  
+      // Function to generate a random 3-digit number
+      const generateRandomThreeDigits = () => {
+        return Math.floor(100 + Math.random() * 900);
+      };
+  
+      debitsList.forEach((debit, index) => {
+        if (!debit.account || !debit.amount) {
+          setErrorMessage("Must enter both an account and an amount for each debit entry!");
           error = true;
           return;
         }
+        const postRef = "DC" + generateRandomThreeDigits(); // Generate post reference for debit entry
         entry.entries.push({
           type: "debit",
           account: debit.account,
           amount: debit.amount,
+          postRef: postRef, // Include post reference in the entry object
         });
         debitTotal += parseFloat(debit.amount);
       });
-
-      //if no errors already exist, iterates through each credit transaction and checks for errors.
-      //if no errors, pushes the credit values into the entries array in the entry object and calculates total credits
+  
       if (!error) {
-        creditsList.forEach((credit) => {
-          if (!credit.account) {
-            setErrorMessage("Must enter a credit account!");
-            error = true;
-            return;
-          } else if (!credit.amount) {
-            setErrorMessage("Must enter an amount for credit!");
+        creditsList.forEach((credit, index) => {
+          if (!credit.account || !credit.amount) {
+            setErrorMessage("Must enter both an account and an amount for each credit entry!");
             error = true;
             return;
           }
+          const postRef = "CC" + generateRandomThreeDigits(); // Generate post reference for credit entry
           entry.entries.push({
             type: "credit",
             account: credit.account,
             amount: credit.amount,
+            postRef: postRef, // Include post reference in the entry object
           });
           creditTotal += parseFloat(credit.amount);
         });
       }
-
-      if (error) return; //checks if error has occured, if so, return from function.
-
-      //checks if total debits equals total credits(balances)
+  
+      if (error) return;
+  
       if (debitTotal !== creditTotal) {
-        setErrorMessage(
-          "Total debits must equal total credits! Current difference: " +
-            debitTotal +
-            " - " +
-            creditTotal +
-            " = " +
-            (debitTotal - creditTotal)
-        );
-        return; //if not, return from function
+        setErrorMessage("Total debits must equal total credits!");
+        return;
       }
-
-      //if no errors, shows confirm and cancel buttons
+  
       if (!status.submit) {
         setStatus((prev) => ({ ...prev, submit: true }));
         return;
       }
-
-      //if user chooses to cancel, resets all input fields
+  
       if (status.reset) {
         e.target.reset();
-        setDebitsList([{ account: "", amount: "" }]); //reset array with empty objects
+        setDebitsList([{ account: "", amount: "" }]);
         setCreditsList([{ account: "", amount: "" }]);
         setStatus((prev) => ({ ...prev, submit: false, reset: false }));
         return;
       }
-
+  
       if (adjustingEntry) {
         await updateDoc(doc(db, "journalEntries", adjustingEntry.id), {
           ...entry,
@@ -154,26 +140,26 @@ const Journalizing = ({ adjustingEntry, update }) => {
           isRejected: false,
         });
         update();
-      } else await setDoc(doc(collection(db, "journalEntries")), entry); //creates document with entry data
-
-      setStatus((prev) => ({ ...prev, success: true, submit: false })); //update state to display success message
-      e.target.reset(); //reset uncontrolled input fields
-      setDebitsList([{ account: "", amount: "" }]); //reset array with empty objects
+      } else await setDoc(doc(collection(db, "journalEntries")), entry);
+  
+      setStatus((prev) => ({ ...prev, success: true, submit: false }));
+      e.target.reset();
+      setDebitsList([{ account: "", amount: "" }]);
       setCreditsList([{ account: "", amount: "" }]);
     } catch (error) {
       console.log(error.message);
       reportError(error.message);
     }
-  };
+  };  
 
   const handleDebitAdd = () => {
-    setDebitsList([...debitsList, { account: "", amount: "" }]); //adds new empty object to array to create new account selection and input field when another entry is added
+    setDebitsList([...debitsList, { account: "", amount: "", postRef: "" }]); //adds new empty object to array to create new account selection and input field when another entry is added
     setErrorMessage(""); //resets error message
     setStatus((prev) => ({ ...prev, success: false, submit: false })); //resets success
   };
 
   const handleCreditAdd = () => {
-    setCreditsList([...creditsList, { account: "", amount: "" }]);
+    setCreditsList([...creditsList, { account: "", amount: "", postRef: "" }]);
     setErrorMessage("");
     setStatus((prev) => ({ ...prev, success: false, submit: false }));
   };
@@ -241,6 +227,7 @@ const Journalizing = ({ adjustingEntry, update }) => {
                     handleDebitChange(index, "amount", value)
                   }
                 />
+                <span>Post Ref: {debit.postRef}</span>
                 {debitsList.length > 1 && (
                   <button
                     type="button"
@@ -291,6 +278,7 @@ const Journalizing = ({ adjustingEntry, update }) => {
                     handleCreditChange(index, "amount", value)
                   }
                 />
+                <span>Post Ref: {credit.postRef}</span>
                 {creditsList.length > 1 && (
                   <button
                     type="button"
