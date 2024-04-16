@@ -12,27 +12,27 @@ const ShareReport = (reportName) => {
 
     useEffect(() => {
         const fetchUserEmails = async () => {
-            const emails = await fetchUsersFromYourBackend();
+            const emails = await fetchUsersEmails();
             setUserEmails(emails);
             if (emails.length > 0) {
-                setSelectedEmail(emails[0]); // Set the default email if available
+                setSelectedEmail(emails[0]);
             }
         };
         fetchUserEmails();
     }, []);
 
     const captureHtml = () => {
-        const input = document.getElementById('capture'); // ID of the element to capture
-        const htmlContent = input.innerHTML; // Getting the HTML content inside the div
+        const input = document.getElementById('capture');
+        const htmlContent = input.innerHTML;
         sendEmail(htmlContent);
-        setShowModal(false); // Close the modal after sending the email
+        setShowModal(false);
     };
 
     const sendEmail = (htmlContent) => {
         const serviceId = import.meta.env.VITE_REACT_EMAIL_SERVICE_ID;
         const templateId = import.meta.env.VITE_REACT_EMAIL_TEMPLATE_ID;
         const templateParams = {
-            email: selectedEmail, // Use the selected email
+            email: selectedEmail,
             report_name: reportName,
             content: htmlContent
         };
@@ -63,15 +63,14 @@ const ShareReport = (reportName) => {
 
 export default ShareReport;
 
-async function fetchUsersFromYourBackend() {
+async function fetchUsersEmails() {
     try {
-        // Assuming there is a collection named 'users' where each document corresponds to a user and has an 'email' field
         const usersCollectionRef = collection(db, "users");
         const querySnapshot = await getDocs(usersCollectionRef);
         const users = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         return users.filter(user => user.email).map(user => user.email); // Ensuring only users with an email are returned
     } catch (error) {
         console.error("Failed to fetch users:", error);
-        return []; // Return an empty array in case of error
+        return [];
     }
 }
