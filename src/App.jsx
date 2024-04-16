@@ -20,7 +20,8 @@ Journalizing,
 Entries,
 GeneralLedger,
 ChangeEventLog,
-BalanceSheet
+BalanceSheet,
+IncomeStatement
 } from "./components"
 
 
@@ -50,6 +51,7 @@ function App() {
         <Route path="generalLedger" element={<RequireUser><GeneralLedger/></RequireUser>} />
         <Route path="eventLog" element={<RequireUser><ChangeEventLog /></RequireUser>} />
         <Route path="balancesheet" element={<RequireUser><BalanceSheet/></RequireUser>} />
+        <Route path="incomestatement" element={<RequireUser><IncomeStatement/></RequireUser>} />
 
         {/* page not found */}
         <Route path="*" element={<PageNotFound />} />

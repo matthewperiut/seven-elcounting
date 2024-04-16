@@ -21,6 +21,7 @@ export { default as GeneralLedger } from "./reports/GeneralLedger";
 export { default as Entries } from "./reports/Entries";
 export { default as ChangeEventLog } from "./events/ChangeEventLog";
 export { default as BalanceSheet } from "./reports/BalanceSheet";
+export { default as IncomeStatement } from "./reports/IncomeStatement";
 
 {
   /* File for easily exporting all components */
