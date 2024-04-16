@@ -521,3 +521,24 @@ th {
 .total-row td:last-child {
   border-top: 2px solid #333333;
 }
+.table {
+  width: 60%; 
+  margin: 0 auto; 
+  border-collapse: collapse; 
+  border:none;
+}
+
+.table th,
+.table td {
+  text-align: left; 
+  padding: 8px; 
+  border: none; 
+
+}
+.bold-line {
+  border-top: 2px solid black; 
+}
+.bold-text {
+  font-weight: bold;
+  font-size: 18px;
+}
