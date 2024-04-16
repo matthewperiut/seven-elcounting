@@ -136,8 +136,6 @@ const GeneralLedger = ({ showSearchBar }) => {
                       <tr
                         className="entry"
                         key={index}
-                        onClick={(e) => handleEntryClick(entry.id, e)} // Attach click handler to the row
-                        style={{ cursor: "pointer" }} // Change cursor to pointer
                       >
                         {index === 0 && (
                           <>
