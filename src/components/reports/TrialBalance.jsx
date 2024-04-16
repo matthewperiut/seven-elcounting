@@ -57,7 +57,7 @@ const TrialBalance = () => {
             </tr>
           </thead>
           <tbody>
-            {sortedAccounts.map((account) => (
+            {sortedAccounts.sort((a, b) => a.accountNumber - b.accountNumber).map((account) => (
               <tr key={account.id}>
                 <td style={{ textAlign: "start", paddingRight: "10px" }}>{account.accountName}</td>
                 <td style={{ textAlign: "start", paddingRight: "10px" }}>{account.normalSide === "debit" ? `$${parseFloat(account.balance).toLocaleString()}` : ""}</td>

@@ -196,22 +196,15 @@ const EditAccounts = (showEdit) => {
   };
 
   const updateAccountInfo = async (updatedAccount) => {
-    // Use the account's id to get a reference to its document in Firestore
-    const accountRef = doc(db, "accounts", updatedAccount.id);
-
-    // Prepare the update object by omitting the 'id' field
-    // Firestore document references should not include the 'id' field as part of the document data
-    const { id, ...updateData } = updatedAccount;
-
     try {
       // Update the document in Firestore
-      await updateDoc(accountRef, updateData);
+      await updateDoc(doc(db, "accounts", updatedAccount.accountID), updatedAccount);
 
       // Optimistically update the local state without refetching all accounts
       // This approach assumes the update operation succeeds, making the UI more responsive
       setAccounts(
         accounts.map((account) =>
-          account.id === updatedAccount.id ? updatedAccount : account
+          account.accountID === updatedAccount.accountID ? updatedAccount : account
         )
       );
     } catch (error) {
