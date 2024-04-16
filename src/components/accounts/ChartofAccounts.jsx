@@ -4,7 +4,7 @@ import { db } from "../../firebase-config.js";
 import CustomCalendar from "../layouts/CustomCalendar.jsx";
 import Help from "../layouts/Help";
 
-const JournalEntriesModal = ({ isOpen, closeModal, selectedPR }) => {
+const PostRefModal = ({ isOpen, onClose, selectedPR }) => {
   const [journalEntries, setJournalEntries] = useState([]);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const JournalEntriesModal = ({ isOpen, closeModal, selectedPR }) => {
   return (
     <div className="modal-background">
       <div className="modal">
-        <p onClick={closeModal} className="closeButton">
+        <p onClick={onClose} className="closeButton">
           &times;
         </p>
         <h2>Journal Entries</h2>
@@ -66,15 +66,14 @@ function formatDate(timestamp) {
   return date.toLocaleDateString("en-US", options);
 }
 
-// Modal component
-const Modal = ({
+// Ledger component
+const Ledger = ({
   isOpen,
-  closeModal,
+  onClose,
   ledgerData,
   accountName,
   initialBalance,
   dateAccountAdded,
-  onPRClick,
 }) => {
   if (!isOpen) return null;
 
@@ -87,7 +86,7 @@ const Modal = ({
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const [showJournalEntriesModal, setShowJournalEntriesModal] = useState(false);
+  const [showPostRef, setShowPostRef] = useState(false);
   const [selectedPR, setSelectedPR] = useState(null);
 
   useEffect(() => {
@@ -96,9 +95,9 @@ const Modal = ({
 
   const handlePRClick = (pr) => {
     setSelectedPR(pr); // Set the selected PR
-    setShowJournalEntriesModal(true); // Open the JournalEntriesModal
+    setShowPostRef(true); // Open the PostRefModal
   };
-   
+
   const handleSearchAmountChange = (event) => {
     setSearchAmount(event.target.value);
     filterEntries(startDate, endDate, event.target.value);
@@ -138,119 +137,119 @@ const Modal = ({
 
   return (
     <>
-    <div onClick={closeModal} className="modal-background">
-      <div onClick={(e) => e.stopPropagation()} className="modal">
-        <p onClick={closeModal} className="closeButton">
-          &times;
-        </p>
-        <h2>Account Ledger for {accountName}</h2>
-        <div>
-          <button onClick={toggleFilters}>Filters</button>
-          {showFilters && (
-            <div style={{ display: "flex" }}>
-              <div>
-                <label>Search:</label>
-                <input
-                  type="text"
-                  placeholder="Search amount..."
-                  value={searchAmount}
-                  onChange={handleSearchAmountChange}
-                />
+      <div onClick={onClose} className="modal-background">
+        <div onClick={(e) => e.stopPropagation()} className="modal">
+          <p onClick={onClose} className="closeButton">
+            &times;
+          </p>
+          <h2>Account Ledger for {accountName}</h2>
+          <div>
+            <button onClick={toggleFilters}>Filters</button>
+            {showFilters && (
+              <div style={{ display: "flex" }}>
+                <div>
+                  <label>Search:</label>
+                  <input
+                    type="text"
+                    placeholder="Search amount..."
+                    value={searchAmount}
+                    onChange={handleSearchAmountChange}
+                  />
+                </div>
+                <div>
+                  <label>Start Date:</label>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={handleStartDateChange}
+                  />
+                </div>
+                <div>
+                  <label>End Date:</label>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={handleEndDateChange}
+                  />
+                </div>
               </div>
-              <div>
-                <label>Start Date:</label>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={handleStartDateChange}
-                />
-              </div>
-              <div>
-                <label>End Date:</label>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={handleEndDateChange}
-                />
-              </div>
+            )}
+          </div>
+          {filteredEntries && filteredEntries.length > 0 ? (
+            <div className="accountledger-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Entry No.</th>
+                    <th>Date</th>
+                    <th>Debit</th>
+                    <th>Credit</th>
+                    <th>Balance</th>
+                    <th> </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{filteredEntries.length > 0 ? "N/A" : 1}</td>
+                    <td>{formatDate(dateAccountAdded)}</td>
+                    <td></td>
+                    <td></td>
+                    <td>${parseFloat(initialBalance).toLocaleString()}</td>
+                    <td></td>
+                  </tr>
+                  {filteredEntries.map((entry) => {
+                    const relevantSubEntries = entry.entries.filter(
+                      (subEntry) => subEntry.account === accountName
+                    );
+                    return relevantSubEntries.map((subEntry, subIndex) => {
+                      entryNo += 1;
+                      // Adjust running balance based on the transaction type
+                      if (subEntry.type === "debit") {
+                        runningBalance += parseFloat(subEntry.amount);
+                      } else if (subEntry.type === "credit") {
+                        runningBalance -= parseFloat(subEntry.amount);
+                      }
+                      return (
+                        <tr key={subIndex}>
+                          <td>{entryNo}</td>
+                          <td>{formatDate(entry.dateCreated)}</td>
+                          <td>
+                            {subEntry.type === "debit"
+                              ? `$${parseFloat(
+                                  subEntry.amount
+                                ).toLocaleString()}`
+                              : ""}
+                          </td>
+                          <td>
+                            {subEntry.type === "credit"
+                              ? `$${parseFloat(
+                                  subEntry.amount
+                                ).toLocaleString()}`
+                              : ""}
+                          </td>
+                          <td>${runningBalance.toLocaleString()}</td>
+                          <td>
+                            <span
+                              onClick={() => handlePRClick(subEntry.postRef)}
+                            >
+                              PR
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    });
+                  })}
+                </tbody>
+              </table>
             </div>
+          ) : (
+            <p>No ledger entries found for this account.</p>
           )}
         </div>
-        {filteredEntries && filteredEntries.length > 0 ? (
-          <div className="accountledger-table">
-            <table>
-              <thead>
-                <tr>
-                  <th>Entry No.</th>
-                  <th>Date</th>
-                  <th>Debit</th>
-                  <th>Credit</th>
-                  <th>Balance</th>
-                  <th>Post Ref.</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{filteredEntries.length > 0 ? "N/A" : 1}</td>
-                  <td>{formatDate(dateAccountAdded)}</td>
-                  <td></td>
-                  <td></td>
-                  <td>${parseFloat(initialBalance).toLocaleString()}</td>
-                  <td></td>
-                </tr>
-                {filteredEntries.map((entry) => {
-                  const relevantSubEntries = entry.entries.filter(
-                    (subEntry) => subEntry.account === accountName
-                  );
-                  return relevantSubEntries.map((subEntry, subIndex) => {
-                    entryNo += 1;
-                    // Adjust running balance based on the transaction type
-                    if (subEntry.type === "debit") {
-                      runningBalance += parseFloat(subEntry.amount);
-                    } else if (subEntry.type === "credit") {
-                      runningBalance -= parseFloat(subEntry.amount);
-                    }
-                    return (
-                      <tr key={subIndex}>
-                        <td>{entryNo}</td>
-                        <td>{formatDate(entry.dateCreated)}</td>
-                        <td>
-                          {subEntry.type === "debit" ? (
-                          `$${parseFloat(subEntry.amount).toLocaleString()}`
-                          ) : (
-                          ""
-                          )}
-                        </td>
-                        <td>
-                          {subEntry.type === "credit" ? (
-                          `$${parseFloat(subEntry.amount).toLocaleString()}`
-                          ) : (
-                          ""
-                          )}
-                        </td>
-                        <td>${runningBalance.toLocaleString()}</td>
-                        <td>
-                          <button onClick={() => handlePRClick(subEntry.postRef)}>
-                            {subEntry.postRef}
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  });
-                })}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p style={{ textAlign: "center" }}>
-            No ledger entries found for this account.
-          </p>
-        )}
       </div>
-    </div>
-    <JournalEntriesModal
-        isOpen={showJournalEntriesModal}
-        closeModal={() => setShowJournalEntriesModal(false)}
+      <PostRefModal
+        isOpen={showPostRef}
+        onClose={() => setShowPostRef(false)}
         selectedPR={selectedPR}
       />
     </>
@@ -280,7 +279,6 @@ const ChartOfAccounts = () => {
   });
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState(null);
-
   const [showTooltip, setShowTooltip] = useState(false);
   const [isEntriesModalOpen, setIsEntriesModalOpen] = useState(false);
   const [selectedPR, setSelectedPR] = useState(null);
@@ -346,7 +344,6 @@ const ChartOfAccounts = () => {
   };
 
   const openModal = async (account) => {
-    console.log("Opening modal with account:", account);
     try {
       const querySnapshot = await getDocs(
         query(
@@ -365,7 +362,7 @@ const ChartOfAccounts = () => {
             (subEntry) => subEntry.account === account.accountName
           )
       );
-      // Pass dateAccountAdded to the Modal
+      // Pass dateAccountAdded to the Ledger
       setSelectedAccount({
         ...account,
         ledgerData: relatedEntries,
@@ -373,11 +370,11 @@ const ChartOfAccounts = () => {
         dateAccountAdded: account.DateAccountAdded, // Ensure this field is correctly named as per your database
       });
     } catch (error) {
-      console.error("Error fetching ledger data:", error);
+      console.error("Error fetching ledger data:", error.message);
     }
   };
 
-  const closeModal = () => {
+  const onClose = () => {
     setSelectedAccount(null);
   };
 
@@ -398,7 +395,7 @@ const ChartOfAccounts = () => {
           <div style={{ textAlign: "center", padding: "0 10px" }}>
             <h1>Chart of Accounts</h1>
             <div style={{ position: "absolute", right: "20px", top: "0" }}>
-              {showTooltip && (<div className="tooltip">Table Filters</div>)}
+              {showTooltip && <div className="tooltip">Table Filters</div>}
               <button
                 onClick={() => setShowDropdown(!showDropdown)}
                 title="Show or hide filters"
@@ -521,28 +518,18 @@ const ChartOfAccounts = () => {
           </table>
         )}
       </div>
-      <Modal
+      <Ledger
         isOpen={selectedAccount !== null}
-        closeModal={closeModal}
+        onClose={onClose}
         ledgerData={selectedAccount ? selectedAccount.ledgerData : []}
         accountName={selectedAccount ? selectedAccount.accountName : ""}
         initialBalance={selectedAccount ? selectedAccount.initialBalance : ""}
         dateAccountAdded={
           selectedAccount ? selectedAccount.dateAccountAdded : null
         }
-        onPRClick={handlePRClick}
       />
       {searchQuery && filteredAccounts.length === 0 && (
-        <div
-          style={{
-            textAlign: "center",
-            color: "red",
-            fontWeight: "bold",
-            fontSize: 18,
-          }}
-        >
-          No results found
-        </div>
+        <div className="error">No results found</div>
       )}
     </div>
   );
