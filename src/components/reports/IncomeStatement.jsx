@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase-config";
+import CustomCalendar from "../layouts/CustomCalendar";
+import ShareReport from "./ShareReport";
 
 const IncomeStatement = () => {
   const [accounts, setAccounts] = useState([]);
@@ -68,7 +70,10 @@ const IncomeStatement = () => {
   };
 
   return (
-    <div>
+    <div className="wrapper">
+      <CustomCalendar />
+      {ShareReport("Income Statement")}
+      <div id="capture">
       <h1 style={{ textAlign: 'center' }}>Income Statement</h1>
       <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid black' }}>
         <thead>
@@ -121,6 +126,8 @@ const IncomeStatement = () => {
           </tr>
         </tbody>
       </table>
+
+      </div>
     </div>
   );
 };

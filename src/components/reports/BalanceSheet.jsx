@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../firebase-config";
 import { collection, getDocs } from "firebase/firestore";
+import ShareReport from "./ShareReport";
+import CustomCalendar from "../layouts/CustomCalendar";
 
 const BalanceSheet = () => {
   const [assets, setAssets] = useState([]);
@@ -46,8 +48,11 @@ const BalanceSheet = () => {
   }, [assets, liabilities]);
 
   return (
-    <div className="balance-sheet-container">
-      <div className="balance-sheet-content">
+    <div className="wrapper">
+      <CustomCalendar />
+      {ShareReport("Balance Sheet")}
+      <div className="balance-sheet-container">
+      <div className="balance-sheet-content" id="capture">
         <h2>Balance Sheet</h2>
         <table>
           <thead>
@@ -92,6 +97,7 @@ const BalanceSheet = () => {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 };
