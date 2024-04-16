@@ -5,34 +5,7 @@ import CustomCalendar from "../layouts/CustomCalendar.jsx";
 import Help from "../layouts/Help";
 
 const PostRefModal = ({ isOpen, onClose, selectedPR }) => {
-  const [journalEntries, setJournalEntries] = useState([]);
-
-  useEffect(() => {
-    const fetchJournalEntries = async () => {
-      if (selectedPR) {
-        try {
-          const q = query(
-            collection(db, "journalEntries"),
-            where("entries.postRef", "==", selectedPR)
-          );
-          const querySnapshot = await getDocs(q);
-          const entries = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setJournalEntries(entries);
-        } catch (error) {
-          console.error("Error fetching journal entries:", error);
-        }
-      }
-    };
-
-    if (isOpen && selectedPR) {
-      fetchJournalEntries();
-    }
-  }, [isOpen, selectedPR]);
-
-  if (!isOpen || !selectedPR) return null;
+  if (!isOpen) return null;
 
   return (
     <div className="modal-background">
@@ -40,19 +13,29 @@ const PostRefModal = ({ isOpen, onClose, selectedPR }) => {
         <p onClick={onClose} className="closeButton">
           &times;
         </p>
-        <h2>Journal Entries</h2>
-        {journalEntries.length > 0 ? (
-          <div>
-            {journalEntries.map((entry) => (
-              <div key={entry.id}>
-                <p>Journal Entry Date: {entry.dateCreated}</p>
-                {/* Display other relevant entry details */}
-              </div>
+        <h2>Journal Entry Details</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Date Created</th>
+              <th>User</th>
+              <th>Account</th>
+              <th>Type</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {selectedPR.entries.map((entry, index) => (
+              <tr key={index}>
+                <td>{formatDate(selectedPR.dateCreated)}</td>
+                <td>{selectedPR.user}</td>
+                <td>{entry.account}</td>
+                <td>{entry.type}</td>
+                <td>{entry.amount}</td>
+              </tr>
             ))}
-          </div>
-        ) : (
-          <p>No journal entries found for the selected post reference.</p>
-        )}
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -229,11 +212,16 @@ const Ledger = ({
                           </td>
                           <td>${runningBalance.toLocaleString()}</td>
                           <td>
-                            <span
-                              onClick={() => handlePRClick(subEntry.postRef)}
+                            <a
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handlePRClick(entry);
+                              }}
+                              className="postRefLink"
                             >
-                              PR
-                            </span>
+                            {subEntry.postRef}
+                            </a>
                           </td>
                         </tr>
                       );
