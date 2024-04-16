@@ -151,10 +151,10 @@ const GeneralLedger = ({ showSearchBar }) => {
     <div className="wrapper">
       <CustomCalendar />
       <Help />
+      <h1>General Ledger </h1>
       <div>
         {showSearchBar && (
           <div>
-            <h2>General Ledger: </h2>
             <input
               type="text"
               placeholder="Search Account"
