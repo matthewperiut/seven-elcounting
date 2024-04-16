@@ -244,7 +244,7 @@ const EditAccounts = (showEdit) => {
       <div className="database-list">
         {filteredAccounts.map((account) => (
           <div
-            key={account.id}
+            key={account.accountID}
             className="database-item"
             style={{
               alignItems: "center",

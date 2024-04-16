@@ -18,44 +18,6 @@ function formatDate(timestamp) {
   return date.toLocaleDateString("en-US", options);
 }
 
-// Modal component similar to the one in ChartOfAccounts
-const LedgerModal = ({ isOpen, closeModal, selectedEntry }) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="modal-background">
-      <div className="modal">
-        <p onClick={closeModal} className="closeButton">
-          &times;
-        </p>
-        <h2>Journal Entry Details</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Date Created</th>
-              <th>User</th>
-              <th>Account</th>
-              <th>Type</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {selectedEntry.entries.map((entry, index) => (
-              <tr key={index}>
-                <td>{formatDate(selectedEntry.dateCreated)}</td>
-                <td>{selectedEntry.user}</td>
-                <td>{entry.account}</td>
-                <td>{entry.type}</td>
-                <td>{entry.amount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-};
-
 const GeneralLedger = ({ showSearchBar }) => {
   const [approvedEntries, setApprovedEntries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -63,8 +25,6 @@ const GeneralLedger = ({ showSearchBar }) => {
   const [dateFilter, setDateFilter] = useState("");
   const [showDateInput, setShowDateInput] = useState(false);
   const [filteredEntries, setFilteredEntries] = useState([]);
-  const [selectedEntry, setSelectedEntry] = useState(null); // State to store the selected entry
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchApprovedEntries = async () => {
@@ -124,29 +84,6 @@ const GeneralLedger = ({ showSearchBar }) => {
     setShowDateInput(false);
   };
 
-  const handleEntryClick = (entryId, e) => {
-    // Check if the click target is the post reference link
-    const isPostRefLink = e.target.classList.contains("postRefLink");
-    if (isPostRefLink) {
-      // If it's the post reference link, open the modal
-      const clickedEntry = approvedEntries.find((entry) => entry.id === entryId);
-      setSelectedEntry(clickedEntry);
-      setIsModalOpen(true);
-    }
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedEntry(null);
-  };
-
-  const handlePostRefClick = (entryId) => {
-    // Find the clicked entry from the entries data
-    const clickedEntry = approvedEntries.find((entry) => entry.id === entryId);
-    setSelectedEntry(clickedEntry);
-    setShowModal(true); // Open the modal
-  };
-
   return (
     <div className="wrapper">
       <CustomCalendar />
@@ -184,70 +121,54 @@ const GeneralLedger = ({ showSearchBar }) => {
               <thead>
                 <tr>
                   <th>Date Created</th>
-                  <th>Description</th> 
+                  <th>Description</th>
                   <th>User</th>
                   <th>Account</th>
                   <th>Debit</th>
                   <th>Credit</th>
-                  <th>Post Ref.</th> 
                 </tr>
               </thead>
               <tbody>
-                {filteredEntries.map((entry) =>
-                  entry.entries.map((subEntry, index) => (
-                    <tr
-                      className="entry"
-                      key={index}
-                      onClick={(e) => handleEntryClick(entry.id, e)}// Attach click handler to the row
-                      style={{ cursor: "pointer" }} // Change cursor to pointer
-                    >
-                      {index === 0 && (
-                        <>
-                          <td rowSpan={entry.entries.length}>
-                            {formatDate(entry.dateCreated)}
-                          </td>
-                          <td rowSpan={entry.entries.length}>{entry.description}</td>
-                          <td rowSpan={entry.entries.length}>{entry.user}</td>
-                        </>
-                      )}
-                      <td>{subEntry.account}</td>
-                      <td>
-                        {subEntry.type === "debit"
-                          ? "$" + parseFloat(subEntry.amount).toLocaleString()
-                          : ""}
-                      </td>
-                      <td>
-                        {subEntry.type === "credit"
-                          ? "$" + parseFloat(subEntry.amount).toLocaleString()
-                          : ""}
-                      </td>
-                      <td>
-                        <a
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handlePostRefClick(entry.id);
-                          }}
-                          className="postRefLink"
-                        >
-                          {subEntry.postRef}
-                        </a>
-                      </td>
-                    </tr>
-                  ))
-                )}
+                {filteredEntries
+                  .sort((a, b) => a.dateCreated - b.dateCreated)
+                  .map((entry) =>
+                    entry.entries.map((subEntry, index) => (
+                      <tr
+                        className="entry"
+                        key={index}
+                        onClick={(e) => handleEntryClick(entry.id, e)} // Attach click handler to the row
+                        style={{ cursor: "pointer" }} // Change cursor to pointer
+                      >
+                        {index === 0 && (
+                          <>
+                            <td rowSpan={entry.entries.length}>
+                              {formatDate(entry.dateCreated)}
+                            </td>
+                            <td rowSpan={entry.entries.length}>
+                              {entry.description}
+                            </td>
+                            <td rowSpan={entry.entries.length}>{entry.user}</td>
+                          </>
+                        )}
+                        <td>{subEntry.account}</td>
+                        <td>
+                          {subEntry.type === "debit"
+                            ? "$" + parseFloat(subEntry.amount).toLocaleString()
+                            : ""}
+                        </td>
+                        <td>
+                          {subEntry.type === "credit"
+                            ? "$" + parseFloat(subEntry.amount).toLocaleString()
+                            : ""}
+                        </td>
+                      </tr>
+                    ))
+                  )}
               </tbody>
             </table>
           </div>
         )}
       </div>
-      {isModalOpen && (
-        <LedgerModal
-          isOpen={isModalOpen}
-          closeModal={closeModal}
-          selectedEntry={selectedEntry}
-        />
-      )}
     </div>
   );
 };

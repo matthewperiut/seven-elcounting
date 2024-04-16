@@ -312,7 +312,7 @@ select {
 .modal {
   background-color: white;
   margin: 50px auto;
-  padding: 20px;
+  padding: 30px;
   width: 75%;
   max-height: 80vh;
   border-radius: 50px;
@@ -339,10 +339,6 @@ select {
   display: inline-block;
   text-align: left;
   width: 150px;
-}
-
-.editDB-form {
-  max-width: 80%; /* centers input boxes */
 }
 /* Modal */
 
@@ -467,9 +463,14 @@ select {
 .accountledger-table td {
   padding: 10px;
 }
+
+.post-ref-link {
+  cursor: pointer;
+  font-weight: bold;
+}
 /* Ledgers */
 
-/*Balance Sheet */
+/* Balance Sheet */
 .balance-sheet-container {
   display: flex;
   justify-content: center;

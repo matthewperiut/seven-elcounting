@@ -8,8 +8,8 @@ const PostRefModal = ({ isOpen, onClose, selectedPR }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-background">
-      <div className="modal">
+    <div onClick={onClose} className="modal-background">
+      <div onClick={(e) => e.stopPropagation()} className="modal">
         <p onClick={onClose} className="closeButton">
           &times;
         </p>
@@ -168,7 +168,7 @@ const Ledger = ({
                     <th>Debit</th>
                     <th>Credit</th>
                     <th>Balance</th>
-                    <th> </th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -180,53 +180,51 @@ const Ledger = ({
                     <td>${parseFloat(initialBalance).toLocaleString()}</td>
                     <td></td>
                   </tr>
-                  {filteredEntries.map((entry) => {
-                    const relevantSubEntries = entry.entries.filter(
-                      (subEntry) => subEntry.account === accountName
-                    );
-                    return relevantSubEntries.map((subEntry, subIndex) => {
-                      entryNo += 1;
-                      // Adjust running balance based on the transaction type
-                      if (subEntry.type === "debit") {
-                        runningBalance += parseFloat(subEntry.amount);
-                      } else if (subEntry.type === "credit") {
-                        runningBalance -= parseFloat(subEntry.amount);
-                      }
-                      return (
-                        <tr key={subIndex}>
-                          <td>{entryNo}</td>
-                          <td>{formatDate(entry.dateCreated)}</td>
-                          <td>
-                            {subEntry.type === "debit"
-                              ? `$${parseFloat(
-                                  subEntry.amount
-                                ).toLocaleString()}`
-                              : ""}
-                          </td>
-                          <td>
-                            {subEntry.type === "credit"
-                              ? `$${parseFloat(
-                                  subEntry.amount
-                                ).toLocaleString()}`
-                              : ""}
-                          </td>
-                          <td>${runningBalance.toLocaleString()}</td>
-                          <td>
-                            <a
-                              href="#"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handlePRClick(entry);
-                              }}
-                              className="postRefLink"
-                            >
-                            {subEntry.postRef}
-                            </a>
-                          </td>
-                        </tr>
+                  {filteredEntries
+                    .sort((a, b) => a.dateCreated - b.dateCreated)
+                    .map((entry) => {
+                      const relevantSubEntries = entry.entries.filter(
+                        (subEntry) => subEntry.account === accountName
                       );
-                    });
-                  })}
+                      return relevantSubEntries.map((subEntry, subIndex) => {
+                        entryNo += 1;
+                        // Adjust running balance based on the transaction type
+                        if (subEntry.type === "debit") {
+                          runningBalance += parseFloat(subEntry.amount);
+                        } else if (subEntry.type === "credit") {
+                          runningBalance -= parseFloat(subEntry.amount);
+                        }
+                        return (
+                          <tr key={subIndex}>
+                            <td>{entryNo}</td>
+                            <td>{formatDate(entry.dateCreated)}</td>
+                            <td>
+                              {subEntry.type === "debit"
+                                ? `$${parseFloat(
+                                    subEntry.amount
+                                  ).toLocaleString()}`
+                                : ""}
+                            </td>
+                            <td>
+                              {subEntry.type === "credit"
+                                ? `$${parseFloat(
+                                    subEntry.amount
+                                  ).toLocaleString()}`
+                                : ""}
+                            </td>
+                            <td>${runningBalance.toLocaleString()}</td>
+                            <td>
+                              <span
+                                onClick={() => handlePRClick(entry)}
+                                className="post-ref-link"
+                              >
+                                PR
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      });
+                    })}
                 </tbody>
               </table>
             </div>
