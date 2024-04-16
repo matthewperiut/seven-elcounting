@@ -163,9 +163,9 @@ const EditAccounts = (showEdit) => {
         (account.order &&
           typeof account.order === "string" &&
           account.order.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (account.accountSubcatagory &&
-          typeof account.accountSubcatagory === "string" &&
-          account.accountSubcatagory
+        (account.accountSubcategory &&
+          typeof account.accountSubcategory === "string" &&
+          account.accountSubcategory
             .toLowerCase()
             .includes(searchQuery.toLowerCase())) ||
         (account.accountCategory &&

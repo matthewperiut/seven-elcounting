@@ -26,8 +26,8 @@ export const AddAccounts = () => {
     { id: "accountNumber", label: "Account Number", type: "number" },
     { id: "order", label: "Order", type: "number" },
     { id: "accountDescription", label: "Account Description", type: "text" },
-    { id: "accountCatagory", label: "Account Category", type: "text" },
-    { id: "accountSubcatagory", label: "Account Subcategory", type: "text" },
+    { id: "accountCategory", label: "Account Category", type: "text" },
+    { id: "accountSubcategory", label: "Account Subcategory", type: "text" },
     { id: "UID", label: "User ID", type: "text" },
   ];
 

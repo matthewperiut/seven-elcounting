@@ -480,10 +480,10 @@ const ChartOfAccounts = () => {
                   )}
                   {visibleColumns.normalSide && <td>{account.normalSide}</td>}
                   {visibleColumns.category && (
-                    <td>{account.accountCatagory}</td>
+                    <td>{account.accountCategory}</td>
                   )}
                   {visibleColumns.subcategory && (
-                    <td>{account.accountSubcatagory}</td>
+                    <td>{account.accountSubcategory}</td>
                   )}
                   {visibleColumns.initialBalance && <td>{account.balance}</td>}
                   {visibleColumns.date && (
