@@ -160,6 +160,11 @@ select {
   width: 100%;
   border-radius: 15px;
 }
+
+.source-document-input {
+  position: relative;
+  margin-left: 60%;
+}
 /* Input fields */
 
 /* Dashboard/Banner */

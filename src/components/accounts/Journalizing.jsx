@@ -9,7 +9,8 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import CurrencyInput from "react-currency-input-field";
-import { db } from "../../firebase-config";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { db, storage } from "../../firebase-config";
 import { Context } from "../context/UserContext";
 import { reportError } from "../events/ErrorLogController";
 import CustomCalendar from "../layouts/CustomCalendar";
@@ -20,6 +21,7 @@ const Journalizing = ({ adjustingEntry, update }) => {
   const [accounts, setAccounts] = useState([]); //array to hold all active accounts
   const [debitsList, setDebitsList] = useState([{ account: "", amount: "" }]); //array of objects for creating new inputs and storing account and amount info
   const [creditsList, setCreditsList] = useState([{ account: "", amount: "" }]);
+  const [sourceDocs, setSourceDocs] = useState([{}]);
   const [errorMessage, setErrorMessage] = useState(""); //state for error handling and messages
   const [status, setStatus] = useState({
     success: false,
@@ -63,7 +65,6 @@ const Journalizing = ({ adjustingEntry, update }) => {
     let creditTotal = 0; //variable to track credits total
     setStatus((prev) => ({ ...prev, success: false })); //reset success message on every submit
     setErrorMessage(""); //reset error message
-
     try {
       //creates object for storing entry data
       const entry = {
@@ -72,6 +73,7 @@ const Journalizing = ({ adjustingEntry, update }) => {
         isRejected: false,
         dateCreated: new Date(),
         comment: "",
+        sourceDocs: [],
         entries: [],
       };
 
@@ -145,6 +147,15 @@ const Journalizing = ({ adjustingEntry, update }) => {
         setCreditsList([{ account: "", amount: "" }]);
         setStatus((prev) => ({ ...prev, submit: false, reset: false }));
         return;
+      }
+
+      // Upload files to Firebase Storage
+      for (let i = 0; i < sourceDocs.length; i++) {
+        const file = sourceDocs[i];
+        const storageRef = ref(storage, file.name); // Reference to the storage root and the file name
+        await uploadBytes(storageRef, file); // Upload the file bytes to Firebase Storage
+        const downloadURL = await getDownloadURL(storageRef); // Get the download URL of the uploaded file
+        entry.sourceDocs.push({ name: file.name, URL: downloadURL }); 
       }
 
       if (adjustingEntry) {
@@ -312,6 +323,13 @@ const Journalizing = ({ adjustingEntry, update }) => {
           </div>
         </div>
 
+        <input
+          multiple
+          type="file"
+          className="source-document-input"
+          accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.jpeg,.png"
+          onChange={(e) => setSourceDocs(e.target.files)}
+        />
         {errorMessage && <div className="error">{errorMessage}</div>}
         {status.success && <div className="success">Entry Submitted!</div>}
         <div>
