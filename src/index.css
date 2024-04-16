@@ -522,24 +522,36 @@ th {
 .total-row td:last-child {
   border-top: 2px solid #333333;
 }
-.table {
+/*for trial balance*/
+.trial-balance-table {
   width: 60%; 
   margin: 0 auto; 
   border-collapse: collapse; 
-  border:none;
+  border: none;
 }
 
-.table th,
-.table td {
+.trial-balance-table th,
+.trial-balance-table td {
   text-align: left; 
   padding: 8px; 
   border: none; 
-
 }
+.trial-balance-table th {
+  border-bottom: 2px solid black;
+}
+
 .bold-line {
   border-top: 2px solid black; 
 }
+
 .bold-text {
   font-weight: bold;
   font-size: 18px;
+}
+
+.trial-balance p {
+  font-family: "Times New Roman";
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
 }

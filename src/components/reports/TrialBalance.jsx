@@ -44,34 +44,32 @@ const TrialBalance = () => {
   });
 
   return (
-    <div className="wrapper">
-      <div className="trail-balance">
-        <h1 style={{ fontFamily: "Times New Roman", fontSize: "18px", fontWeight: "bold" }}>Trial Balance</h1>
-        <p style={{ fontFamily: "Times New Roman", fontSize: "18px", fontWeight: "bold", textAlign: "center" }}>As of {new Date().toLocaleDateString()}</p>
-        <table className="table">
-          <thead>
-            <tr style={{ borderBottom: "2px solid black" }}>
-              <th style={{ textAlign: "start", paddingRight: "10px" }}>Account Name</th>
-              <th style={{ textAlign: "start", paddingRight: "10px" }}>Debits</th>
-              <th style={{ textAlign: "start", paddingRight: "10px" }}>Credits</th>
+    <div className="wrapper trial-balance">
+      <h1>Trial Balance</h1>
+      <p>As of {new Date().toLocaleDateString()}</p>
+      <table className="trial-balance-table">
+        <thead>
+          <tr>
+            <th>Account Name</th>
+            <th>Debits</th>
+            <th>Credits</th>
+          </tr>
+        </thead>
+        <tbody>
+        {sortedAccounts.sort((a, b) => a.accountNumber - b.accountNumber).map((account) => (
+            <tr key={account.id}>
+              <td>{account.accountName}</td>
+              <td>{account.normalSide === "debit" ? `$${parseFloat(account.balance).toLocaleString()}` : ""}</td>
+              <td>{account.normalSide === "credit" ? `$${parseFloat(account.balance).toLocaleString()}` : ""}</td>
             </tr>
-          </thead>
-          <tbody>
-            {sortedAccounts.sort((a, b) => a.accountNumber - b.accountNumber).map((account) => (
-              <tr key={account.id}>
-                <td style={{ textAlign: "start", paddingRight: "10px" }}>{account.accountName}</td>
-                <td style={{ textAlign: "start", paddingRight: "10px" }}>{account.normalSide === "debit" ? `$${parseFloat(account.balance).toLocaleString()}` : ""}</td>
-                <td style={{ textAlign: "start", paddingRight: "10px" }}>{account.normalSide === "credit" ? `$${parseFloat(account.balance).toLocaleString()}` : ""}</td>
-              </tr>
-            ))}
-            <tr style={{ borderTop: "2px solid black", fontWeight: "bold" }}>
-              <td style={{ textAlign: "start", paddingRight: "10px" }}>Total</td>
-              <td style={{ textAlign: "start", paddingRight: "10px" }}>{`$${totalDebits.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</td>
-              <td style={{ textAlign: "start", paddingRight: "10px" }}>{`$${totalCredits.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+          ))}
+          <tr className="bold-line">
+            <td className="bold-text">Total</td>
+            <td className="bold-text">{`$${totalDebits.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</td>
+            <td className="bold-text">{`$${totalCredits.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 };
