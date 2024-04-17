@@ -503,6 +503,7 @@ th,
 td {
   padding: 12px;
   border-bottom: 1px solid #dddddd;
+  text-align: center
 }
 
 th {
@@ -522,6 +523,14 @@ th {
 .total-row td:last-child {
   border-top: 2px solid #333333;
 }
+.balanced {
+  color: green;
+}
+
+.unbalanced {
+  color: red;
+}
+
 /*for trial balance*/
 .trial-balance-table {
   width: 60%; 

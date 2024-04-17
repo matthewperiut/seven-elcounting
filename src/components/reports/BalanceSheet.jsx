@@ -7,6 +7,8 @@ import ReportToolSuite from "./ReportToolSuite";
 const BalanceSheet = () => {
   const [assets, setAssets] = useState([]);
   const [liabilities, setLiabilities] = useState([]);
+  const [equities, setEquities] = useState([]);
+  const [isBalanced, setIsBalanced] = useState(false);
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -14,6 +16,7 @@ const BalanceSheet = () => {
         const accountsSnapshot = await getDocs(collection(db, "accounts"));
         const assetAccounts = [];
         const liabilityAccounts = [];
+        const equityAccounts = [];
 
         accountsSnapshot.forEach((doc) => {
           const account = doc.data();
@@ -21,11 +24,14 @@ const BalanceSheet = () => {
             assetAccounts.push(account);
           } else if (account.accountCategory === "liabilities") {
             liabilityAccounts.push(account);
+          } else if (account.accountCategory === "equity") {
+            equityAccounts.push(account);
           }
         });
 
         setAssets(assetAccounts);
         setLiabilities(liabilityAccounts);
+        setEquities(equityAccounts);
       } catch (error) {
         console.error("Error fetching accounts:", error);
       }
@@ -34,10 +40,15 @@ const BalanceSheet = () => {
     fetchAccounts();
   }, []);
 
+  useEffect(() => {
+    const totalAssets = calculateTotal(assets);
+    const totalLiabilities = calculateTotal(liabilities);
+    const totalEquity = calculateTotal(equities);
+    setIsBalanced(totalAssets === totalLiabilities + totalEquity);
+  }, [assets, liabilities, equities]);
+
   const calculateTotal = (accounts) => {
-    return accounts.reduce((total, account) => {
-      return total + parseFloat(account.balance || 0);
-    }, 0);
+    return accounts.reduce((total, account) => total + parseFloat(account.balance || 0), 0);
   };
 
   return (
@@ -47,6 +58,9 @@ const BalanceSheet = () => {
       <div className="balance-sheet-container">
         <div className="balance-sheet-content" id="capture">
           <h2>Balance Sheet</h2>
+          <div className={`status-message ${isBalanced ? 'balanced' : 'unbalanced'}`}>
+            {isBalanced ? 'The balance sheet is balanced.' : 'The balance sheet is not balanced.'}
+          </div>
           <table>
             <thead>
               <tr>
@@ -86,6 +100,22 @@ const BalanceSheet = () => {
                 <td></td>
                 <td>Total Liabilities</td>
                 <td>${calculateTotal(liabilities).toLocaleString()}</td>
+              </tr>
+
+              {/* Render Equity Accounts */}
+              {equities.map((equity) => (
+                <tr key={equity.accountID}>
+                  <td>Equity</td>
+                  <td>{equity.accountName}</td>
+                  <td>${parseFloat(equity.balance).toLocaleString()}</td>
+                </tr>
+              ))}
+
+              {/* Total Equity Row */}
+              <tr className="total-row">
+                <td></td>
+                <td>Total Equity</td>
+                <td>${calculateTotal(equities).toLocaleString()}</td>
               </tr>
             </tbody>
           </table>
