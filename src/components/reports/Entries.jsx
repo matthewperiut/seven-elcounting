@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   query,
   updateDoc,
@@ -79,9 +80,34 @@ const Table = ({ entries, isPending, fetchEntries }) => {
 
   //approves entry
   const handleApproval = async (entry) => {
-    await updateDoc(doc(db, "journalEntries", entry.id), {
-      isApproved: true,
-    });
+    const journalEntryRef = doc(db, "journalEntries", entry.id);
+    const journalDocSnap = await getDoc(journalEntryRef);
+    const journalData = journalDocSnap.data();
+
+    for(let i = 0; i < journalData.entries.length; i++) {
+      let entryData = journalData.entries[i];
+      console.log(entryData);
+      const accountEntryRef = doc(db, "accounts", entryData.accountID);
+      const accountDocSnap = await getDoc(accountEntryRef);
+      const accountData = accountDocSnap.data();
+      let addition = entryData.type === accountData.side;
+      let new_bal = 0;
+      if (addition) {
+        new_bal = parseFloat(accountData.balance) + parseFloat(entryData.amount);
+      } else {
+        new_bal = parseFloat(accountData.balance) - parseFloat(entryData.amount);
+      }
+      await updateDoc(accountEntryRef, {
+        balance: new_bal,
+      });
+    }
+
+    if (journalDocSnap.exists() && journalDocSnap.data().isActivated === false) {
+      await updateDoc(journalEntryRef, {
+        isApproved: true,
+      });
+    }
+    
     fetchEntries(); //function to rerender tables(update approved/rejected list after decision is made on pending entry)
   };
 
