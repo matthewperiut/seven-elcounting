@@ -266,9 +266,6 @@ const ChartOfAccounts = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [showTooltip, setShowTooltip] = useState(false);
-  const [isEntriesModalOpen, setIsEntriesModalOpen] = useState(false);
-  const [selectedPR, setSelectedPR] = useState(null);
-  const [entries, setEntries] = useState([]);
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -283,29 +280,6 @@ const ChartOfAccounts = () => {
     };
     fetchAccounts();
   }, []);
-  const handlePRClick = (pr) => {
-    setSelectedPR(pr); // Set the selected PR
-    setIsEntriesModalOpen(true); // Open the EntriesModal
-  };
-
-  // Fetch entries by PR when the modal opens
-  useEffect(() => {
-    const fetchEntriesByPR = async () => {
-      if (selectedPR) {
-        // Fetch entries by PR and update the entries state
-        try {
-          // Your code to fetch entries by PR from the database
-          const entries = await getEntriesByPR(selectedPR); // Example function
-          setEntries(entries);
-        } catch (error) {
-          console.error("Error fetching entries:", error);
-        }
-      }
-    };
-    if (isEntriesModalOpen) {
-      fetchEntriesByPR();
-    }
-  }, [isEntriesModalOpen, selectedPR]);
 
   useEffect(() => {
     // Filter accounts based on the search query or other filters
@@ -352,7 +326,7 @@ const ChartOfAccounts = () => {
       setSelectedAccount({
         ...account,
         ledgerData: relatedEntries,
-        initialBalance: account.balance,
+        initialBalance: account.initialBalance,
         dateAccountAdded: account.DateAccountAdded, // Ensure this field is correctly named as per your database
       });
     } catch (error) {
