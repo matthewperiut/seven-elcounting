@@ -69,7 +69,7 @@ const Journalizing = ({ adjustingEntry, update }) => {
       //creates object for storing entry data
       const entry = {
         user: user.displayName,
-        isApproved: user.role > 1 ? true : false, //if user is manager or admin, auto approve entry, else in pending state
+        isApproved: false, //if user is manager or admin, auto approve entry, else in pending state
         isRejected: false,
         dateCreated: new Date(),
         comment: "",
@@ -167,8 +167,8 @@ const Journalizing = ({ adjustingEntry, update }) => {
           isRejected: false,
         });
         update();
-      } else await setDoc(doc(collection(db, "journalEntries")), entry); //creates document with entry data
-
+      } else await setDoc(doc(collection(db, "journalEntries")), entry); //creates document with entry data 
+      
       setStatus((prev) => ({ ...prev, success: true, submit: false })); //update state to display success message
       e.target.reset(); //reset uncontrolled input fields
       setDebitsList([{ account: "", amount: "" }]); //reset array with empty objects
