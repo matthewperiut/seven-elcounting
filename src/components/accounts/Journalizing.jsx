@@ -21,7 +21,7 @@ const Journalizing = ({ adjustingEntry, update }) => {
   const [accounts, setAccounts] = useState([]); //array to hold all active accounts
   const [debitsList, setDebitsList] = useState([{ account: "", amount: "" }]); //array of objects for creating new inputs and storing account and amount info
   const [creditsList, setCreditsList] = useState([{ account: "", amount: "" }]);
-  const [sourceDocs, setSourceDocs] = useState([{}]);
+  const [sourceDocs, setSourceDocs] = useState([]);
   const [errorMessage, setErrorMessage] = useState(""); //state for error handling and messages
   const [status, setStatus] = useState({
     success: false,
@@ -148,14 +148,16 @@ const Journalizing = ({ adjustingEntry, update }) => {
         setStatus((prev) => ({ ...prev, submit: false, reset: false }));
         return;
       }
-
-      // Upload files to Firebase Storage
-      for (let i = 0; i < sourceDocs.length; i++) {
-        const file = sourceDocs[i];
-        const storageRef = ref(storage, file.name); // Reference to the storage root and the file name
-        await uploadBytes(storageRef, file); // Upload the file bytes to Firebase Storage
-        const downloadURL = await getDownloadURL(storageRef); // Get the download URL of the uploaded file
-        entry.sourceDocs.push({ name: file.name, URL: downloadURL }); 
+      
+      if (sourceDocs.length > 0) {
+        // Upload files to Firebase Storage
+        for (let i = 0; i < sourceDocs.length; i++) {
+          const file = sourceDocs[i];
+          const storageRef = ref(storage, file.name); // Reference to the storage root and the file name
+          await uploadBytes(storageRef, file); // Upload the file bytes to Firebase Storage
+          const downloadURL = await getDownloadURL(storageRef); // Get the download URL of the uploaded file
+          entry.sourceDocs.push({ name: file.name, URL: downloadURL });
+        }
       }
 
       if (adjustingEntry) {
