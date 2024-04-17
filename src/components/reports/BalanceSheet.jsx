@@ -17,9 +17,9 @@ const BalanceSheet = () => {
 
         accountsSnapshot.forEach((doc) => {
           const account = doc.data();
-          if (account.accountCategory === "asset") {
+          if (account.accountCategory === "assets") {
             assetAccounts.push(account);
-          } else if (account.accountCategory === "liability") {
+          } else if (account.accountCategory === "liabilities") {
             liabilityAccounts.push(account);
           }
         });
