@@ -9,6 +9,7 @@ const ShareReport = (reportName) => {
     const [showModal, setShowModal] = useState(false);
     const [userEmails, setUserEmails] = useState([]);
     const [selectedEmail, setSelectedEmail] = useState('');
+    const [error, setError] = useState("");
 
     useEffect(() => {
         const fetchUserEmails = async () => {
@@ -24,8 +25,9 @@ const ShareReport = (reportName) => {
     const captureHtml = () => {
         const input = document.getElementById('capture');
         const htmlContent = input.innerHTML;
-        sendEmail(htmlContent);
-        setShowModal(false);
+        if (sendEmail(htmlContent)) {
+            setShowModal(false);
+        }
     };
 
     const sendEmail = (htmlContent) => {
@@ -36,10 +38,23 @@ const ShareReport = (reportName) => {
             report_name: reportName,
             content: htmlContent
         };
-    
+    try {
         emailjs.send(serviceId, templateId, templateParams)
-            .then(response => console.log('Email successfully sent!', response))
-            .catch(err => console.error('Failed to send email:', err));
+        .then(response => console.log('Email successfully sent!', response))
+        .catch(err => (console.error('Failed to send email:', err) && setError('Failed to send email:' + err)));
+    } catch (e) {
+        if (e.includes("user ID is required"))
+        {
+            setError(e + "\n **Developer Note: Update your .env file, see #resources in discord");
+        }
+        else {
+            setError(e);
+        }
+        return false;
+    }
+
+    return true;
+        
     };
 
     return (
@@ -54,6 +69,7 @@ const ShareReport = (reportName) => {
                         ))}
                     </select>
                     <button onClick={captureHtml}>Confirm</button>
+                    <p style={{ color: "red" }}>{error}</p>
                     <button onClick={() => setShowModal(false)}>Cancel</button>
                 </div>
             )}
