@@ -56,17 +56,33 @@ const TrialBalance = () => {
           </tr>
         </thead>
         <tbody>
-        {sortedAccounts.sort((a, b) => a.accountNumber - b.accountNumber).map((account) => (
-            <tr key={account.id}>
-              <td>{account.accountName}</td>
-              <td>{account.normalSide === "debit" ? `$${parseFloat(account.balance).toLocaleString()}` : ""}</td>
-              <td>{account.normalSide === "credit" ? `$${parseFloat(account.balance).toLocaleString()}` : ""}</td>
-            </tr>
-          ))}
+          {sortedAccounts
+            .sort((a, b) => a.accountNumber - b.accountNumber)
+            .map((account) => (
+              <tr key={account.id}>
+                <td>{account.accountName}</td>
+                <td>
+                  {account.normalSide === "debit"
+                    ? `$${parseFloat(account.balance).toLocaleString()}`
+                    : ""}
+                </td>
+                <td>
+                  {account.normalSide === "credit"
+                    ? `$${parseFloat(account.balance).toLocaleString()}`
+                    : ""}
+                </td>
+              </tr>
+            ))}
           <tr className="bold-line">
             <td className="bold-text">Total</td>
-            <td className="bold-text">{`$${totalDebits.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</td>
-            <td className="bold-text">{`$${totalCredits.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</td>
+            <td className="bold-text">{`$${totalDebits.toLocaleString(
+              undefined,
+              { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+            )}`}</td>
+            <td className="bold-text">{`$${totalCredits.toLocaleString(
+              undefined,
+              { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+            )}`}</td>
           </tr>
         </tbody>
       </table>
