@@ -86,11 +86,10 @@ const Table = ({ entries, isPending, fetchEntries }) => {
 
     for(let i = 0; i < journalData.entries.length; i++) {
       let entryData = journalData.entries[i];
-      console.log(entryData);
       const accountEntryRef = doc(db, "accounts", entryData.accountID);
       const accountDocSnap = await getDoc(accountEntryRef);
       const accountData = accountDocSnap.data();
-      let addition = entryData.type === accountData.side;
+      let addition = entryData.type === accountData.normalSide;
       let new_bal = 0;
       if (addition) {
         new_bal = parseFloat(accountData.balance) + parseFloat(entryData.amount);
@@ -102,11 +101,9 @@ const Table = ({ entries, isPending, fetchEntries }) => {
       });
     }
 
-    if (journalDocSnap.exists() && journalDocSnap.data().isActivated === false) {
-      await updateDoc(journalEntryRef, {
+      await updateDoc(doc(db, "journalEntries", entry.id), {
         isApproved: true,
       });
-    }
     
     fetchEntries(); //function to rerender tables(update approved/rejected list after decision is made on pending entry)
   };
