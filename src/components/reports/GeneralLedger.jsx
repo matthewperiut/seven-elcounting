@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import CustomCalendar from "../layouts/CustomCalendar";
+import ReportToolSuite from "./ReportToolSuite";
 import Help from "../layouts/Help";
 
 /**
@@ -87,7 +88,9 @@ const GeneralLedger = ({ showSearchBar }) => {
   return (
     <div className="wrapper">
       <CustomCalendar />
+      {ReportToolSuite("General Ledger")}
       <Help />
+      <div id="capture">
       <h1>General Ledger </h1>
       <div>
         {showSearchBar && (
@@ -166,6 +169,7 @@ const GeneralLedger = ({ showSearchBar }) => {
             </table>
           </div>
         )}
+      </div>
       </div>
     </div>
   );

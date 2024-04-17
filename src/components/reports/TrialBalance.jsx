@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase-config.js";
 import CustomCalendar from "../layouts/CustomCalendar.jsx"
-import ShareReport from "./ShareReport.jsx"
+import ReportToolSuite from "./ReportToolSuite.jsx";
 
 const TrialBalance = () => {
   const [accounts, setAccounts] = useState([]);
@@ -48,7 +48,7 @@ const TrialBalance = () => {
   return (
     <div className="wrapper trial-balance">
       <CustomCalendar />
-      { ShareReport("Trial Balance") }
+      { ReportToolSuite("Trial Balance") }
       <div id="capture">
       <h1>Trial Balance</h1>
       <p>As of {new Date().toLocaleDateString()}</p>
