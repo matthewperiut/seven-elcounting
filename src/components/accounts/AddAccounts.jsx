@@ -89,7 +89,7 @@ export const AddAccounts = () => {
 
   const handleValueChange = (value) => {
     if (!isNaN(value)) {
-      setAccountInfo(prev => ({ ...prev, balance: value }));
+      setAccountInfo(prev => ({ ...prev, initialBalance: value, balance: value }));
     }
   };
 
