@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { db } from "../../firebase-config";
 import { collection, getDocs } from "firebase/firestore";
 import CustomCalendar from "../layouts/CustomCalendar";
@@ -48,8 +48,16 @@ const BalanceSheet = () => {
   }, [assets, liabilities, equities]);
 
   const calculateTotal = (accounts) => {
-    return accounts.reduce((total, account) => total + parseFloat(account.balance || 0), 0);
+    return accounts.reduce(
+      (total, account) => total + parseFloat(account.balance || 0),
+      0
+    );
   };
+
+  const assetsTotal = calculateTotal(assets);
+  const liabilitiesTotal = calculateTotal(liabilities);
+  const equityTotal = calculateTotal(equities);
+  const liabilitiesPlusEquity = liabilitiesTotal + equityTotal;
 
   return (
     <div className="wrapper">
@@ -58,8 +66,14 @@ const BalanceSheet = () => {
       <div className="balance-sheet-container">
         <div className="balance-sheet-content" id="capture">
           <h2>Balance Sheet</h2>
-          <div className={`status-message ${isBalanced ? 'balanced' : 'unbalanced'}`}>
-            {isBalanced ? 'The balance sheet is balanced.' : 'The balance sheet is not balanced.'}
+          <div
+            className={`status-message ${
+              isBalanced ? "balanced" : "unbalanced"
+            }`}
+          >
+            {isBalanced
+              ? "The balance sheet is balanced."
+              : "The balance sheet is not balanced."}
           </div>
           <table>
             <thead>
@@ -78,14 +92,12 @@ const BalanceSheet = () => {
                   <td>${parseFloat(asset.balance).toLocaleString()}</td>
                 </tr>
               ))}
-
               {/* Total Assets Row */}
               <tr className="total-row">
                 <td></td>
                 <td>Total Assets</td>
-                <td>${calculateTotal(assets).toLocaleString()}</td>
+                <td>${assetsTotal.toLocaleString()}</td>
               </tr>
-
               {/* Render Liability Accounts */}
               {liabilities.map((liability) => (
                 <tr key={liability.accountID}>
@@ -94,14 +106,11 @@ const BalanceSheet = () => {
                   <td>${parseFloat(liability.balance).toLocaleString()}</td>
                 </tr>
               ))}
-
-              {/* Total Liabilities Row */}
               <tr className="total-row">
                 <td></td>
                 <td>Total Liabilities</td>
-                <td>${calculateTotal(liabilities).toLocaleString()}</td>
+                <td>${liabilitiesTotal.toLocaleString()}</td>
               </tr>
-
               {/* Render Equity Accounts */}
               {equities.map((equity) => (
                 <tr key={equity.accountID}>
@@ -110,12 +119,17 @@ const BalanceSheet = () => {
                   <td>${parseFloat(equity.balance).toLocaleString()}</td>
                 </tr>
               ))}
-
               {/* Total Equity Row */}
               <tr className="total-row">
                 <td></td>
                 <td>Total Equity</td>
-                <td>${calculateTotal(equities).toLocaleString()}</td>
+                <td>${equityTotal.toLocaleString()}</td>
+              </tr>
+              {/* Liabilities + Equity Row */}
+              <tr className="total-row">
+                <td></td>
+                <td>Total Liabilities + Total Equity</td>
+                <td>${liabilitiesPlusEquity.toLocaleString()}</td>
               </tr>
             </tbody>
           </table>
