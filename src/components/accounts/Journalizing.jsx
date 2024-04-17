@@ -93,6 +93,7 @@ const Journalizing = ({ adjustingEntry, update }) => {
           type: "debit",
           account: debit.account,
           amount: debit.amount,
+          accountId: findAccountId(debit.account)
         });
         debitTotal += parseFloat(debit.amount);
       });
@@ -114,6 +115,7 @@ const Journalizing = ({ adjustingEntry, update }) => {
             type: "credit",
             account: credit.account,
             amount: credit.amount,
+            accountId: findAccountId(credit.account)
           });
           creditTotal += parseFloat(credit.amount);
         });
@@ -214,6 +216,16 @@ const Journalizing = ({ adjustingEntry, update }) => {
     updatedEntry[index][field] = value;
     setCreditsList(updatedEntry);
   };
+
+  const findAccountId = (accountName) => {
+    for (let i = 0; i < accounts.length; i++) {
+      console.log (accounts[i].accountName + " " + accountName);
+      if (accounts[i].accountName === accountName) {
+        return accounts[i].accountID;
+      }
+    }
+    return null;
+  }
 
   return (
     <div className="wrapper">
