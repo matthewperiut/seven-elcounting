@@ -17,7 +17,6 @@ const BalanceSheet = () => {
 
         accountsSnapshot.forEach((doc) => {
           const account = doc.data();
-          console.log(account);
           if (account.accountCategory === "asset") {
             assetAccounts.push(account);
           } else if (account.accountCategory === "liability") {
@@ -40,13 +39,6 @@ const BalanceSheet = () => {
       return total + parseFloat(account.balance || 0);
     }, 0);
   };
-
-  useEffect(() => {
-    const totalAssets = calculateTotal(assets);
-    const totalLiabilities = calculateTotal(liabilities);
-    console.log("Total Assets:", totalAssets);
-    console.log("Total Liabilities:", totalLiabilities);
-  }, [assets, liabilities]);
 
   return (
     <div className="wrapper">
