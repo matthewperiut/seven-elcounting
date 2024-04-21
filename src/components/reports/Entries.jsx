@@ -32,15 +32,46 @@ const Modal = ({ isOpen, closeModal, fetchEntries, isAdjusting, entry }) => {
   const [comment, setComment] = useState(""); //state to hold comment
   if (!isOpen) return null; //is isOpen state is false, nothing gets returned(modal closed)
 
-  //rejects entry and stores comment
-  const handleSubmit = async () => {
-    !isAdjusting &&
-      (await updateDoc(doc(db, "journalEntries", entry.id), {
-        isRejected: true,
-        comment: comment,
-      }));
+
+  const update = () => {
     fetchEntries(); //function to rerender tables(update approved/rejected list after decision is made on pending entry)
     closeModal();
+  }
+
+
+  //rejects entry and stores comment
+  const handleSubmit = async () => {
+    await updateDoc(doc(db, "journalEntries", entry.id), {
+      isRejected: true,
+      comment: comment,
+    });
+    update();
+  };
+
+  const handleAdjustment = async () => {
+    const journalDocSnap = await getDoc(doc(db, "journalEntries", entry.id));
+    const journalData = journalDocSnap.data();
+    if (journalData.isApproved) {
+      for (let i = 0; i < journalData.entries.length; i++) {
+        let entryData = journalData.entries[i];
+        const accountDocSnap = await getDoc(
+          doc(db, "accounts", entryData.accountID)
+        );
+        const accountData = accountDocSnap.data();
+        let addition = entryData.type === accountData.normalSide;
+        let new_bal = 0;
+        if (addition) {
+          new_bal =
+            parseFloat(accountData.balance) - parseFloat(entryData.amount);
+        } else {
+          new_bal =
+            parseFloat(accountData.balance) + parseFloat(entryData.amount);
+        }
+        await updateDoc(doc(db, "accounts", entryData.accountID), {
+          balance: new_bal,
+        });
+      }
+    }
   };
 
   return (
@@ -51,7 +82,7 @@ const Modal = ({ isOpen, closeModal, fetchEntries, isAdjusting, entry }) => {
         </p>
         <br />
         {isAdjusting ? (
-          <Journalizing adjustingEntry={entry} update={handleSubmit} />
+          <Journalizing adjustingEntry={entry} adjust={handleAdjustment} update={update}/>
         ) : (
           <>
             <div>User: {entry.user}</div>
@@ -84,7 +115,7 @@ const Table = ({ entries, isPending, fetchEntries }) => {
     const journalDocSnap = await getDoc(journalEntryRef);
     const journalData = journalDocSnap.data();
 
-    for(let i = 0; i < journalData.entries.length; i++) {
+    for (let i = 0; i < journalData.entries.length; i++) {
       let entryData = journalData.entries[i];
       const accountEntryRef = doc(db, "accounts", entryData.accountID);
       const accountDocSnap = await getDoc(accountEntryRef);
@@ -92,19 +123,21 @@ const Table = ({ entries, isPending, fetchEntries }) => {
       let addition = entryData.type === accountData.normalSide;
       let new_bal = 0;
       if (addition) {
-        new_bal = parseFloat(accountData.balance) + parseFloat(entryData.amount);
+        new_bal =
+          parseFloat(accountData.balance) + parseFloat(entryData.amount);
       } else {
-        new_bal = parseFloat(accountData.balance) - parseFloat(entryData.amount);
+        new_bal =
+          parseFloat(accountData.balance) - parseFloat(entryData.amount);
       }
       await updateDoc(accountEntryRef, {
         balance: new_bal,
       });
     }
 
-      await updateDoc(doc(db, "journalEntries", entry.id), {
-        isApproved: true,
-      });
-    
+    await updateDoc(doc(db, "journalEntries", entry.id), {
+      isApproved: true,
+    });
+
     fetchEntries(); //function to rerender tables(update approved/rejected list after decision is made on pending entry)
   };
 
@@ -156,7 +189,9 @@ const Table = ({ entries, isPending, fetchEntries }) => {
               <button onClick={() => toggleModal(entry, false)}>Reject</button>
             </>
           )}
-          <button onClick={() => toggleModal(entry, true)}>Adjust</button>
+          {!isPending && (
+            <button onClick={() => toggleModal(entry, true)}>Adjust</button>
+          )}
         </div>
       ))}
       {isModal && (

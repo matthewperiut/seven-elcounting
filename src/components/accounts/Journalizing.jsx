@@ -16,7 +16,7 @@ import { reportError } from "../events/ErrorLogController";
 import CustomCalendar from "../layouts/CustomCalendar";
 import Help from "../layouts/Help";
 
-const Journalizing = ({ adjustingEntry, update }) => {
+const Journalizing = ({ adjustingEntry, adjust, update }) => {
   const { user } = Context(); //pull user context for user ID
   const [accounts, setAccounts] = useState([]); //array to hold all active accounts
   const [debitsList, setDebitsList] = useState([{ account: "", amount: "" }]); //array of objects for creating new inputs and storing account and amount info
@@ -163,6 +163,7 @@ const Journalizing = ({ adjustingEntry, update }) => {
       }
 
       if (adjustingEntry) {
+        await adjust();
         await updateDoc(doc(db, "journalEntries", adjustingEntry.id), {
           ...entry,
           isApproved: false,
