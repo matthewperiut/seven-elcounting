@@ -447,7 +447,19 @@ const ChartOfAccounts = () => {
                     </button>
                   </td>
                   {visibleColumns.accountNumber && (
-                    <td>{account.accountNumber}</td>
+                  <td>
+                    <button 
+                      onClick={() => openModal(account)} 
+                      style={{
+                        border: "none",
+                        background: "none",
+                        color: "black",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {account.accountNumber}
+                    </button>
+                  </td>
                   )}
                   {visibleColumns.accountDescription && (
                     <td>{account.accountDescription}</td>
