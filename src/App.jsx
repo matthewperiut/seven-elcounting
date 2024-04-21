@@ -22,7 +22,8 @@ GeneralLedger,
 ChangeEventLog,
 BalanceSheet,
 IncomeStatement, 
-TrialBalance
+TrialBalance,
+RetainedEarnings
 } from "./components"
 
 
@@ -53,8 +54,8 @@ function App() {
         <Route path="eventLog" element={<RequireUser><ChangeEventLog /></RequireUser>} />
         <Route path="balancesheet" element={<RequireUser><BalanceSheet/></RequireUser>} />
         <Route path="incomestatement" element={<RequireUser><IncomeStatement/></RequireUser>} />
-        <Route path="trialBalance" element={<RequireUser><TrialBalance/></RequireUser>} />
-
+        <Route path="trialbalance" element={<RequireUser><TrialBalance/></RequireUser>} />
+        <Route path="retainedearnings" element={<RequireUser><RetainedEarnings/></RequireUser>} />
 
         {/* page not found */}
         <Route path="*" element={<PageNotFound />} />

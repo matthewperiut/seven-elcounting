@@ -23,6 +23,7 @@ export { default as ChangeEventLog } from "./events/ChangeEventLog";
 export { default as BalanceSheet } from "./reports/BalanceSheet";
 export { default as IncomeStatement } from "./reports/IncomeStatement";
 export { default as TrialBalance } from "./reports/TrialBalance";
+export { default as RetainedEarnings } from "./reports/RetainedEarnings";
 
 {
   /* File for easily exporting all components */

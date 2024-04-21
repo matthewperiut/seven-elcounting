@@ -24,6 +24,7 @@ const Reports = () => {
             <Link to="/balancesheet"><li>Balance Sheet</li></Link>
             <Link to="/trialbalance"><li>Trial Balance</li></Link>
             <Link to="/incomestatement"><li>Income Statement</li></Link>
+            <Link to="/retainedearnings"><li>Retained Earnings Statement</li></Link>
             <Link to="/journalentries"><li>Journal Entries</li></Link>
             {(user && user.role === 3) && <Link to="/eventLog"><li>Event Log</li></Link>}
           </ul>
