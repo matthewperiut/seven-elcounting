@@ -17,44 +17,16 @@ const IncomeStatement = () => {
         const accountSnapshot = await getDocs(accountsQuery);
         const accountsData = accountSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        const entriesQuery = query(collection(db, "journalEntries"), where("isApproved", "==", true));
-        const entriesSnapshot = await getDocs(entriesQuery);
-        const entries = entriesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        accountsData.sort((a, b) => a.accountCategory.localeCompare(b.accountCategory));
 
-        // Map to hold final balances
-        const accountBalances = {};
-
-        // Initialize balances to zero
-        accountsData.forEach(account => {
-          accountBalances[account.id] = parseFloat(account.initialBalance) || 0;
-        });
-
-        // Calculate new balances from entries
-        entries.forEach(entry => {
-          entry.entries.forEach(item => {
-            const account = accountsData.find(acc => acc.id === item.accountID);
-            if (account) {
-              let effect = item.type === account.normalSide ? item.amount : -item.amount;
-              accountBalances[account.id] += parseFloat(effect);
-            }
-          });
-        });
-
-        // Set states for revenues and expenses based on specified accounts
-        const fetchedRevenues = accountsData.filter(acc => (
-          acc.accountName === 'Cost of Goods Sold' || 
-          acc.accountName === 'Sales Revenue' || 
-          acc.accountName === 'Sales Returns'
-        )).map(acc => ({
+        const fetchedRevenues = accountsData.filter(acc => acc.accountCategory === 'revenues').map(acc => ({
           ...acc,
-          amount: accountBalances[acc.id]
+          amount: parseFloat(acc.initialBalance) || 0
         }));
 
-        const fetchedExpenses = accountsData.filter(acc => (
-          acc.accountName === 'Salaries Expense'
-        )).map(acc => ({
+        const fetchedExpenses = accountsData.filter(acc => acc.accountCategory === 'expenses' && acc.accountName !== 'Cost of Goods Sold').map(acc => ({
           ...acc,
-          amount: accountBalances[acc.id]
+          amount: parseFloat(acc.initialBalance) || 0
         }));
 
         setAccounts(accountsData);
@@ -69,13 +41,15 @@ const IncomeStatement = () => {
     fetchAccountsAndEntries();
   }, []);
 
-  // Calculate total revenues, total expenses, and net income
-  const totalRevenues = revenues.reduce((sum, account) => sum + (account.amount || 0), 0);
+  // Calculates gross profit, net income, total expenses, and taxes
+  const costOfGoodsSold = expenses.find(expense => expense.accountName === 'Cost of Goods Sold')?.amount || 0;
+  const salesRevenue = revenues.reduce((sum, account) => sum + (account.amount || 0), 0);
+  const grossProfit = salesRevenue - costOfGoodsSold;
   const totalExpenses = expenses.reduce((sum, account) => sum + (account.amount || 0), 0);
-  const incomeBeforeTaxes = totalRevenues - totalExpenses;
+  const netIncome = grossProfit - totalExpenses;
+  const incomeBeforeTaxes = grossProfit - totalExpenses;
   const taxRate = 0.2; // Place holder for taxes
   const taxes = incomeBeforeTaxes * taxRate;
-  const netIncome = incomeBeforeTaxes - taxes;
 
   // Styles
   const headerStyle = {
@@ -99,21 +73,6 @@ const IncomeStatement = () => {
     backgroundColor: '#EEEEFF'
   };
 
-  const incomeBeforeTaxRowStyle ={
-    ...rowStyle,
-    fontWeight: 'bold',
-    borderTop: '2px solid black'
-  }
-  
-  const taxRowStyle ={
-    ...rowStyle,
-    fontWeight: 'bold',
-  }
-  const netIncomeRowStyle = {
-    ...headerStyle,
-    borderTop: '2px solid black'
-  };
-
   return (
     <div className="wrapper">
       <CustomCalendar />
@@ -124,56 +83,53 @@ const IncomeStatement = () => {
           <thead>
             <tr>
               <th style={headerStyle}>Revenue</th>
-              <th style={headerStyle}>Amount</th>
+              <th style={headerStyle}></th>
             </tr>
           </thead>
           <tbody>
-            {/* Revenue Rows */}
             {revenues.map((revenue, index) => (
               <tr key={index}>
                 <td style={rowStyle}>{revenue.accountName}</td>
-                <td style={rowStyle}>${revenue.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td style={rowStyle}>${revenue.amount.toLocaleString()}</td>
               </tr>
             ))}
-            {/* Total Revenue Row */}
             <tr>
-              <td style={totalRowStyle}>Total Revenue</td>
-              <td style={totalRowStyle}>${totalRevenues.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td style={rowStyle}>Cost of Goods Sold</td>
+              <td style={rowStyle}>${costOfGoodsSold.toLocaleString()}</td>
             </tr>
-            </tbody>
-            <thead>
+            <tr>
+              <td style={totalRowStyle}>Gross Profit</td>
+              <td style={totalRowStyle}>${grossProfit.toLocaleString()}</td>
+            </tr>
+          </tbody>
+          <thead>
             <tr>
               <th style={headerStyle}>Expenses</th>
-              <th style={headerStyle}>Amount</th>
+              <th style={headerStyle}></th>
             </tr>
           </thead>
           <tbody>
-            {/* Expense Rows */}
             {expenses.map((expense, index) => (
               <tr key={index}>
                 <td style={rowStyle}>{expense.accountName}</td>
-                <td style={rowStyle}>${expense.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td style={rowStyle}>${expense.amount.toLocaleString()}</td>
               </tr>
             ))}
-            {/* Total Expenses Row */}
             <tr>
-              <td style={totalRowStyle}>Total Expenses</td>
-              <td style={totalRowStyle}>${totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td style={headerStyle}>Total Expenses (excluding cost of goods sold)</td>
+              <td style={headerStyle}>${totalExpenses.toLocaleString()}</td>
             </tr>
-            {/* Income Before Taxes Row */}
             <tr>
-              <td style={incomeBeforeTaxRowStyle}>Income Before Taxes</td>
-              <td style={incomeBeforeTaxRowStyle}>${incomeBeforeTaxes.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td style={totalRowStyle}>Income before taxes</td>
+              <td style={totalRowStyle}>${incomeBeforeTaxes.toLocaleString()}</td>
             </tr>
-            {/* Taxes Row */}
             <tr>
-              <td style={taxRowStyle}>Taxes</td>
-              <td style={taxRowStyle}>${taxes.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td style={totalRowStyle}>Taxes</td>
+              <td style={totalRowStyle}>${taxes.toLocaleString()}</td>
             </tr>
-            {/* Net Income Row */}
             <tr>
-              <td style={netIncomeRowStyle}>Net Income</td>
-              <td style={netIncomeRowStyle}>${netIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <th style={headerStyle}>Net Income</th>
+              <th style={headerStyle}>${netIncome.toLocaleString()}</th>
             </tr>
           </tbody>
         </table>
