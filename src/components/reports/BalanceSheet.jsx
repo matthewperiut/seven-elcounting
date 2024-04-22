@@ -62,7 +62,7 @@ const BalanceSheet = () => {
   return (
     <div className="wrapper">
       <CustomCalendar />
-      <div className="balance-sheet-container">
+      <div className="balance-sheet-container" id = "capture">
         <div className="balance-sheet-content">
           <h2>Balance Sheet</h2>
           <p className={isBalanced ? "success" : "error"}>
