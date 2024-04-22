@@ -90,7 +90,7 @@ const GeneralLedger = ({ showSearchBar }) => {
       <CustomCalendar />
       <Help />
       <div id="capture">
-      <h1>General Ledger </h1>
+      <h1>General Ledger</h1>
       <div>
         {showSearchBar && (
           <div>

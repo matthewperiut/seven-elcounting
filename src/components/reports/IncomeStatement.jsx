@@ -5,34 +5,43 @@ import CustomCalendar from "../layouts/CustomCalendar";
 import ReportToolSuite from "./ReportToolSuite";
 
 const IncomeStatement = () => {
-  const [accounts, setAccounts] = useState([]);
-  const [revenues, setRevenues] = useState([]);
+  const [revenue, setRevenue] = useState([]);
   const [expenses, setExpenses] = useState([]);
+  const [costOfGoodsSold, setCostOfGoodsSold] = useState([]);
 
   useEffect(() => {
     const fetchAccountsAndEntries = async () => {
       try {
         // Fetch accounts and classify them as revenues or expenses
-        const accountsQuery = query(collection(db, "accounts"), where("isActivated", "==", true));
-        const accountSnapshot = await getDocs(accountsQuery);
-        const accountsData = accountSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-        accountsData.sort((a, b) => a.accountCategory.localeCompare(b.accountCategory));
-
-        const fetchedRevenues = accountsData.filter(acc => acc.accountCategory === 'revenues').map(acc => ({
-          ...acc,
-          amount: parseFloat(acc.initialBalance) || 0
-        }));
-
-        const fetchedExpenses = accountsData.filter(acc => acc.accountCategory === 'expenses' && acc.accountName !== 'Cost of Goods Sold').map(acc => ({
-          ...acc,
-          amount: parseFloat(acc.initialBalance) || 0
-        }));
-
-        setAccounts(accountsData);
-        setRevenues(fetchedRevenues);
-        setExpenses(fetchedExpenses);
-
+        const revenueAccount = await getDocs(
+          query(
+            collection(db, "accounts"),
+            where("isActivated", "==", true),
+            where("accountCategory", "==", "revenues")
+          )
+        );
+        const costOfGoodsSoldAccount = await getDocs(
+          query(
+            collection(db, "accounts"),
+            where("isActivated", "==", true),
+            where("accountName", "==", "Cost of Goods Sold")
+          )
+        );
+        const expenseAccounts = await getDocs(
+          query(
+            collection(db, "accounts"),
+            where("isActivated", "==", true),
+            where("accountCategory", "==", "expenses")
+          )
+        );
+        const expensesData = expenseAccounts.docs
+          .filter((doc) => doc.data().accountName !== "Cost of Goods Sold")
+          .map((doc) => ({
+            ...doc.data(),
+          }));
+        setRevenue(revenueAccount.docs[0].data());
+        setCostOfGoodsSold(costOfGoodsSoldAccount.docs[0].data());
+        setExpenses(expensesData);
       } catch (error) {
         console.error("Error fetching accounts: ", error);
       }
@@ -41,94 +50,71 @@ const IncomeStatement = () => {
     fetchAccountsAndEntries();
   }, []);
 
-  // Calculates gross profit, net income, total expenses, and taxes
-  const costOfGoodsSold = expenses.find(expense => expense.accountName === 'Cost of Goods Sold')?.amount || 0;
-  const salesRevenue = revenues.reduce((sum, account) => sum + (account.amount || 0), 0);
-  const grossProfit = salesRevenue - costOfGoodsSold;
-  const totalExpenses = expenses.reduce((sum, account) => sum + (account.amount || 0), 0);
-  const netIncome = grossProfit - totalExpenses;
-  const incomeBeforeTaxes = grossProfit - totalExpenses;
-  const taxRate = 0.2; // Place holder for taxes
-  const taxes = incomeBeforeTaxes * taxRate;
-
-  // Styles
-  const headerStyle = {
-    backgroundColor: '#CCCCFF',
-    fontWeight: 'bold',
-    textAlign: 'left',
-    padding: '10px',
-    border: '1px solid black',
-    borderTop: '2px solid black'
-  };
-
-  const rowStyle = {
-    textAlign: 'left',
-    padding: '10px',
-    border: '1px solid black'
-  };
-
-  const totalRowStyle = {
-    ...rowStyle,
-    fontWeight: 'bold',
-    backgroundColor: '#EEEEFF'
-  };
+  const totalExpenses = expenses.reduce(
+    (total, expense) => total + parseFloat(expense.balance),
+    0
+  );
 
   return (
     <div className="wrapper">
       <CustomCalendar />
       <div id="capture">
-        <h1 style={{ textAlign: 'center' }}>Income Statement</h1>
-        <table style={{ width: '100%', borderCollapse: 'collapse', border: '2px solid black' }}>
+        <h1>Income Statement</h1>
+        <table className="statement-table">
           <thead>
             <tr>
-              <th style={headerStyle}>Revenue</th>
-              <th style={headerStyle}></th>
+              <th>Account Name</th>
+              <th>Amount ($)</th>
             </tr>
           </thead>
           <tbody>
-            {revenues.map((revenue, index) => (
-              <tr key={index}>
-                <td style={rowStyle}>{revenue.accountName}</td>
-                <td style={rowStyle}>${revenue.amount.toLocaleString()}</td>
+            <tr>
+              <td>{revenue.accountName}</td>
+              <td>${revenue.balance}</td>
+            </tr>
+            <tr>
+              <td>{costOfGoodsSold.accountName}</td>
+              <td>${costOfGoodsSold.balance}</td>
+            </tr>
+            <tr className="statement-total">
+              <td>Gross Profit</td>
+              <td>${revenue.balance - costOfGoodsSold.balance}</td>
+            </tr>
+            <tr className="statement-category">
+              <td>Expenses</td>
+              <td></td>
+            </tr>
+            {expenses.map((expense) => (
+              <tr key={expense.accountID}>
+                <td>{expense.accountName}</td>
+                <td>${expense.balance}</td>
               </tr>
             ))}
-            <tr>
-              <td style={rowStyle}>Cost of Goods Sold</td>
-              <td style={rowStyle}>${costOfGoodsSold.toLocaleString()}</td>
+            <tr className="statement-total">
+              <td>Total Expenses</td>
+              <td>${totalExpenses}</td>
+            </tr>
+            <tr className="statement-total">
+              <td>Income Before Taxes</td>
+              <td>
+                ${revenue.balance - costOfGoodsSold.balance - totalExpenses}
+              </td>
             </tr>
             <tr>
-              <td style={totalRowStyle}>Gross Profit</td>
-              <td style={totalRowStyle}>${grossProfit.toLocaleString()}</td>
+              <td>Taxes</td>
+              <td>
+                $
+                {(revenue.balance - costOfGoodsSold.balance - totalExpenses) *
+                  0.2}
+              </td>
             </tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th style={headerStyle}>Expenses</th>
-              <th style={headerStyle}></th>
-            </tr>
-          </thead>
-          <tbody>
-            {expenses.map((expense, index) => (
-              <tr key={index}>
-                <td style={rowStyle}>{expense.accountName}</td>
-                <td style={rowStyle}>${expense.amount.toLocaleString()}</td>
-              </tr>
-            ))}
-            <tr>
-              <td style={headerStyle}>Total Expenses (excluding cost of goods sold)</td>
-              <td style={headerStyle}>${totalExpenses.toLocaleString()}</td>
-            </tr>
-            <tr>
-              <td style={totalRowStyle}>Income before taxes</td>
-              <td style={totalRowStyle}>${incomeBeforeTaxes.toLocaleString()}</td>
-            </tr>
-            <tr>
-              <td style={totalRowStyle}>Taxes</td>
-              <td style={totalRowStyle}>${taxes.toLocaleString()}</td>
-            </tr>
-            <tr>
-              <th style={headerStyle}>Net Income</th>
-              <th style={headerStyle}>${netIncome.toLocaleString()}</th>
+            <tr className="statement-total">
+              <td>Net Income</td>
+              <td>
+                $
+                {(revenue.balance - costOfGoodsSold.balance - totalExpenses) *
+                  0.8}
+              </td>
             </tr>
           </tbody>
         </table>

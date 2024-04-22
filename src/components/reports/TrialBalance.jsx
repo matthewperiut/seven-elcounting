@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase-config.js";
-import CustomCalendar from "../layouts/CustomCalendar.jsx"
-import ReportToolSuite from "./ReportToolSuite.jsx";
+import CustomCalendar from "../layouts/CustomCalendar";
+import ReportToolSuite from "./ReportToolSuite";
 
 const TrialBalance = () => {
   const [accounts, setAccounts] = useState([]);
@@ -46,50 +46,50 @@ const TrialBalance = () => {
   });
 
   return (
-    <div className="wrapper trial-balance">
+    <div className="wrapper">
       <CustomCalendar />
       <div id="capture">
-      <h1>Trial Balance</h1>
-      <p>As of {new Date().toLocaleDateString()}</p>
-      <table className="trial-balance-table">
-        <thead>
-          <tr>
-            <th>Account Name</th>
-            <th>Debits</th>
-            <th>Credits</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortedAccounts
-            .sort((a, b) => a.accountNumber - b.accountNumber)
-            .map((account) => (
-              <tr key={account.id}>
-                <td>{account.accountName}</td>
-                <td>
-                  {account.normalSide === "debit"
-                    ? `$${parseFloat(account.balance).toLocaleString()}`
-                    : ""}
-                </td>
-                <td>
-                  {account.normalSide === "credit"
-                    ? `$${parseFloat(account.balance).toLocaleString()}`
-                    : ""}
-                </td>
-              </tr>
-            ))}
-          <tr className="bold-line">
-            <td className="bold-text">Total</td>
-            <td className="bold-text">{`$${totalDebits.toLocaleString(
-              undefined,
-              { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-            )}`}</td>
-            <td className="bold-text">{`$${totalCredits.toLocaleString(
-              undefined,
-              { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-            )}`}</td>
-          </tr>
-        </tbody>
-      </table>
+        <h1>Trial Balance</h1>
+        <p>As of {new Date().toLocaleDateString()}</p>
+        <table className="statement-table">
+          <thead>
+            <tr>
+              <th>Account Name</th>
+              <th>Debits</th>
+              <th>Credits</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sortedAccounts
+              .sort((a, b) => a.accountNumber - b.accountNumber)
+              .map((account) => (
+                <tr key={account.id}>
+                  <td>{account.accountName}</td>
+                  <td>
+                    {account.normalSide === "debit"
+                      ? `$${parseFloat(account.balance).toLocaleString()}`
+                      : ""}
+                  </td>
+                  <td>
+                    {account.normalSide === "credit"
+                      ? `$${parseFloat(account.balance).toLocaleString()}`
+                      : ""}
+                  </td>
+                </tr>
+              ))}
+            <tr className="statement-total">
+              <td>Total</td>
+              <td>{`$${totalDebits.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}`}</td>
+              <td>{`$${totalCredits.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}`}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       {ReportToolSuite("Trial Balance")}
     </div>

@@ -24,7 +24,7 @@ const RetainedEarnings = () => {
             where("accountCategory", "==", "revenues")
           )
         );
-        const expensesAccounts = await getDocs(
+        const expenses = await getDocs(
           query(
             collection(db, "accounts"),
             where("accountCategory", "==", "expenses")
@@ -39,8 +39,8 @@ const RetainedEarnings = () => {
 
         setRetainedEarnings(retainedEarningsAccount.docs[0].data().balance);
         let totalExpenses = 0;
-        expensesAccounts.forEach((doc) => {
-          totalExpenses += doc.data().balance;
+        expenses.forEach((doc) => {
+          totalExpenses += parseFloat(doc.data().balance);
         });
         setIncome(
           (salesRevenueAccount.docs[0].data().balance - totalExpenses) * 0.8
@@ -54,40 +54,35 @@ const RetainedEarnings = () => {
     fetchRetainedEarnings();
   }, []);
 
-  const afterIncome = parseFloat(retainedEarnings + income);
-  const earnings = parseFloat(afterIncome - dividends);
-
   return (
     <div className="wrapper">
       <CustomCalendar />
-      <div className="balance-sheet-container">
-        <div className="balance-sheet-content">
-          <h2>Retained Earnings Statement</h2>
-          <table>
-            <tbody>
-              <tr>
-                <th>Retained earnings</th>
-                <td>${retainedEarnings}</td>
-              </tr>
-              <tr>
-                <th>Net income</th>
-                <td>${income}</td>
-              </tr>
-              <tr className="total-row">
-                <td></td>
-                <td>${afterIncome}</td>
-              </tr>
-              <tr>
-                <th>Dividends</th>
-                <td>${dividends}</td>
-              </tr>
-              <tr className="total-row">
-                <td></td>
-                <td>${earnings}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div id="capture">
+        <h1>Retained Earnings Statement</h1>
+        <table className="statement-table">
+          <tbody>
+            <tr>
+              <td>Retained earnings</td>
+              <td>${retainedEarnings}</td>
+            </tr>
+            <tr>
+              <td>Net income</td>
+              <td>${income}</td>
+            </tr>
+            <tr className="statement-total">
+              <td></td>
+              <td>${parseFloat(retainedEarnings + income)}</td>
+            </tr>
+            <tr>
+              <td>Dividends</td>
+              <td>${dividends}</td>
+            </tr>
+            <tr className="statement-total">
+              <td></td>
+              <td>${parseFloat(retainedEarnings + income - dividends)}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       {ReportToolSuite("Retained Earnings Statement")}
     </div>
