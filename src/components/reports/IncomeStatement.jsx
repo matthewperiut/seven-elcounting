@@ -76,7 +76,6 @@ const IncomeStatement = () => {
   return (
     <div className="wrapper">
       <CustomCalendar />
-      {ReportToolSuite("Income Statement")}
       <div id="capture">
         <h1 style={{ textAlign: 'center' }}>Income Statement</h1>
         <table style={{ width: '100%', borderCollapse: 'collapse', border: '2px solid black' }}>
@@ -134,6 +133,7 @@ const IncomeStatement = () => {
           </tbody>
         </table>
       </div>
+      {ReportToolSuite("Income Statement")}
     </div>
   );
 };

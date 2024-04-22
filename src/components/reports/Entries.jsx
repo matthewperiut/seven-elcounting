@@ -32,12 +32,10 @@ const Modal = ({ isOpen, closeModal, fetchEntries, isAdjusting, entry }) => {
   const [comment, setComment] = useState(""); //state to hold comment
   if (!isOpen) return null; //is isOpen state is false, nothing gets returned(modal closed)
 
-
   const update = () => {
     fetchEntries(); //function to rerender tables(update approved/rejected list after decision is made on pending entry)
     closeModal();
-  }
-
+  };
 
   //rejects entry and stores comment
   const handleSubmit = async () => {
@@ -82,7 +80,11 @@ const Modal = ({ isOpen, closeModal, fetchEntries, isAdjusting, entry }) => {
         </p>
         <br />
         {isAdjusting ? (
-          <Journalizing adjustingEntry={entry} adjust={handleAdjustment} update={update}/>
+          <Journalizing
+            adjustingEntry={entry}
+            adjust={handleAdjustment}
+            update={update}
+          />
         ) : (
           <>
             <div>User: {entry.user}</div>
@@ -189,9 +191,7 @@ const Table = ({ entries, isPending, fetchEntries }) => {
               <button onClick={() => toggleModal(entry, false)}>Reject</button>
             </>
           )}
-          {!isPending && (
-            <button onClick={() => toggleModal(entry, true)}>Adjust</button>
-          )}
+          <button onClick={() => toggleModal(entry, true)}>Adjust</button>
         </div>
       ))}
       {isModal && (

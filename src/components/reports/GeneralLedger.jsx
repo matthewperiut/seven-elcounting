@@ -88,7 +88,6 @@ const GeneralLedger = ({ showSearchBar }) => {
   return (
     <div className="wrapper">
       <CustomCalendar />
-      {ReportToolSuite("General Ledger")}
       <Help />
       <div id="capture">
       <h1>General Ledger </h1>
@@ -171,6 +170,7 @@ const GeneralLedger = ({ showSearchBar }) => {
         )}
       </div>
       </div>
+      {ReportToolSuite("General Ledger")}
     </div>
   );
 };

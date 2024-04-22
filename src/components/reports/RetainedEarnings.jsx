@@ -42,7 +42,9 @@ const RetainedEarnings = () => {
         expensesAccounts.forEach((doc) => {
           totalExpenses += doc.data().balance;
         });
-        setIncome((salesRevenueAccount.docs[0].data().balance - totalExpenses) * 0.8);
+        setIncome(
+          (salesRevenueAccount.docs[0].data().balance - totalExpenses) * 0.8
+        );
         setDividends(dividendsAccount.docs[0].data().balance);
       } catch (error) {
         console.error(error.message);
@@ -52,15 +54,13 @@ const RetainedEarnings = () => {
     fetchRetainedEarnings();
   }, []);
 
-
   const afterIncome = parseFloat(retainedEarnings + income);
   const earnings = parseFloat(afterIncome - dividends);
-
 
   return (
     <div className="wrapper">
       <CustomCalendar />
-      {ReportToolSuite("Retained Earnings Statement")}
+      <div className="balance-sheet-container">
         <div className="balance-sheet-content">
           <h2>Retained Earnings Statement</h2>
           <table>
@@ -88,6 +88,8 @@ const RetainedEarnings = () => {
             </tbody>
           </table>
         </div>
+      </div>
+      {ReportToolSuite("Retained Earnings Statement")}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getDocs, collection } from "firebase/firestore";
 import emailjs from 'emailjs-com';
-import { auth, db } from "../../firebase-config";
+import { db } from "../../firebase-config";
 
 emailjs.init(import.meta.env.VITE_REACT_PUBLIC_EMAIL_KEY);
 
@@ -58,10 +58,10 @@ const ShareReport = (reportName) => {
     };
 
     return (
-        <div style={{ paddingTop: '60px' }} >
+        <div style={{ paddingTop: '50px' }}>
             <button onClick={() => setShowModal(true)}>Capture and Send Email</button>
             {showModal && (
-                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: '20px', zIndex: 1000 }}>
+                <div>
                     <p>Select an email to send to: </p>
                     <select onChange={(e) => setSelectedEmail(e.target.value)} value={selectedEmail}>
                         {userEmails.map(email => (
@@ -69,7 +69,7 @@ const ShareReport = (reportName) => {
                         ))}
                     </select>
                     <button onClick={captureHtml}>Confirm</button>
-                    <p style={{ color: "red" }}>{error}</p>
+                    <p className='error'>{error}</p>
                     <button onClick={() => setShowModal(false)}>Cancel</button>
                 </div>
             )}

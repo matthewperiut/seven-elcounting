@@ -62,72 +62,65 @@ const BalanceSheet = () => {
   return (
     <div className="wrapper">
       <CustomCalendar />
-      {ReportToolSuite("Balance Sheet")}
       <div className="balance-sheet-container">
-        <div className="balance-sheet-content" id="capture">
+        <div className="balance-sheet-content">
           <h2>Balance Sheet</h2>
-          <div
-            className={`status-message ${
-              isBalanced ? "balanced" : "unbalanced"
-            }`}
-          >
+          <p className={isBalanced ? "success" : "error"}>
             {isBalanced
-              ? "The balance sheet is balanced."
-              : "The balance sheet is not balanced."}
-          </div>
+              ? "Balanced"
+              : "Not Balanced"}
+          </p>
           <table>
             <thead>
               <tr>
-                <th>Category</th>
                 <th>Account Name</th>
                 <th>Amount ($)</th>
               </tr>
             </thead>
             <tbody>
               {/* Render Asset Accounts */}
-              {assets.map((asset) => (
-                <tr key={asset.accountID}>
-                  <td>Assets</td>
-                  <td>{asset.accountName}</td>
-                  <td>${parseFloat(asset.balance).toLocaleString()}</td>
-                </tr>
-              ))}
+              {assets
+                .sort((a, b) => a.accountNumber - b.accountNumber)
+                .map((asset) => (
+                  <tr key={asset.accountID}>
+                    <td>{asset.accountName}</td>
+                    <td>${parseFloat(asset.balance).toLocaleString()}</td>
+                  </tr>
+                ))}
               {/* Total Assets Row */}
               <tr className="total-row">
-                <td></td>
                 <td>Total Assets</td>
                 <td>${assetsTotal.toLocaleString()}</td>
               </tr>
               {/* Render Liability Accounts */}
-              {liabilities.map((liability) => (
-                <tr key={liability.accountID}>
-                  <td>Liabilities</td>
-                  <td>{liability.accountName}</td>
-                  <td>${parseFloat(liability.balance).toLocaleString()}</td>
-                </tr>
-              ))}
+              {liabilities
+                .sort((a, b) => a.accountNumber - b.accountNumber)
+                .map((liability) => (
+                  <tr key={liability.accountID}>
+                    <td>{liability.accountName}</td>
+                    <td>${parseFloat(liability.balance).toLocaleString()}</td>
+                  </tr>
+                ))}
               <tr className="total-row">
-                <td></td>
                 <td>Total Liabilities</td>
                 <td>${liabilitiesTotal.toLocaleString()}</td>
               </tr>
               {/* Render Equity Accounts */}
-              {equities.map((equity) => (
-                <tr key={equity.accountID}>
-                  <td>Equity</td>
-                  <td>{equity.accountName}</td>
-                  <td>${parseFloat(equity.balance).toLocaleString()}</td>
-                </tr>
-              ))}
+              {equities
+                .sort((a, b) => a.accountNumber - b.accountNumber)
+                .map((equity) => (
+                  <tr key={equity.accountID}>
+                    <td>{equity.accountName}</td>
+                    <td>${parseFloat(equity.balance).toLocaleString()}</td>
+                  </tr>
+                ))}
               {/* Total Equity Row */}
               <tr className="total-row">
-                <td></td>
                 <td>Total Equity</td>
                 <td>${equityTotal.toLocaleString()}</td>
               </tr>
               {/* Liabilities + Equity Row */}
               <tr className="total-row">
-                <td></td>
                 <td>Total Liabilities + Total Equity</td>
                 <td>${liabilitiesPlusEquity.toLocaleString()}</td>
               </tr>
@@ -135,6 +128,7 @@ const BalanceSheet = () => {
           </table>
         </div>
       </div>
+      {ReportToolSuite("Balance Sheet")}
     </div>
   );
 };

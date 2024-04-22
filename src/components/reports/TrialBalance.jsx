@@ -48,7 +48,6 @@ const TrialBalance = () => {
   return (
     <div className="wrapper trial-balance">
       <CustomCalendar />
-      { ReportToolSuite("Trial Balance") }
       <div id="capture">
       <h1>Trial Balance</h1>
       <p>As of {new Date().toLocaleDateString()}</p>
@@ -92,6 +91,7 @@ const TrialBalance = () => {
         </tbody>
       </table>
       </div>
+      {ReportToolSuite("Trial Balance")}
     </div>
   );
 };

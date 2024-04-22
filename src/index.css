@@ -523,15 +523,9 @@ th {
 .total-row td:last-child {
   border-top: 2px solid #333333;
 }
-.balanced {
-  color: green;
-}
+/* Balance Sheet */
 
-.unbalanced {
-  color: red;
-}
-
-/*for trial balance*/
+/* Trial Balance */
 .trial-balance-table {
   width: 60%; 
   margin: 0 auto; 
@@ -564,3 +558,4 @@ th {
   font-weight: bold;
   text-align: center;
 }
+/* Trial Balance */
