@@ -3,45 +3,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase-config.js";
 import CustomCalendar from "../layouts/CustomCalendar.jsx";
 import Help from "../layouts/Help";
-
-const PostRefModal = ({ isOpen, onClose, selectedPR }) => {
-  if (!isOpen) return null;
-
-  return (
-    <div onClick={onClose} className="modal-background">
-      <div onClick={(e) => e.stopPropagation()} className="modal">
-        <p onClick={onClose} className="closeButton">
-          &times;
-        </p>
-        <h2>Journal Entry Details</h2>
-        <div className="accountledger-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Date Created</th>
-                <th>User</th>
-                <th>Account</th>
-                <th>Type</th>
-                <th>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {selectedPR.entries.map((entry, index) => (
-                <tr key={index}>
-                  <td>{formatDate(selectedPR.dateCreated)}</td>
-                  <td>{selectedPR.user}</td>
-                  <td>{entry.account}</td>
-                  <td>{entry.type}</td>
-                  <td>{entry.amount}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
-};
+import formatNumber from "../tools/formatNumber.jsx";
 
 function formatDate(timestamp) {
   if (!timestamp) return "";
@@ -52,30 +14,18 @@ function formatDate(timestamp) {
 }
 
 // Ledger component
-const Ledger = ({
-  isOpen,
-  onClose,
-  ledgerData,
-  accountName,
-  initialBalance,
-  dateAccountAdded,
-}) => {
+const Ledger = ({ isOpen, onClose, account }) => {
   if (!isOpen) return null;
 
-  // Initial balance is now directly used from props
-  let runningBalance = parseFloat(initialBalance) || 0;
+  let runningBalance = account.initialBalance;
   let entryNo = 0; // Initialize entry no.
 
-  const [filteredEntries, setFilteredEntries] = useState(ledgerData);
+  const [filteredEntries, setFilteredEntries] = useState(account.ledgerData);
   const [searchAmount, setSearchAmount] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [showPostRef, setShowPostRef] = useState(false);
   const [selectedPR, setSelectedPR] = useState(null);
-
-  useEffect(() => {
-    setFilteredEntries(ledgerData);
-  }, [ledgerData]);
 
   const handlePRClick = (pr) => {
     setSelectedPR(pr); // Set the selected PR
@@ -98,7 +48,7 @@ const Ledger = ({
   };
 
   const filterEntries = (start, end, amount) => {
-    let filtered = ledgerData.filter((entry) => {
+    let filtered = account.ledgerData.filter((entry) => {
       const date = new Date(entry.dateCreated);
       return (
         (!start || date >= new Date(start)) && (!end || date <= new Date(end))
@@ -106,11 +56,12 @@ const Ledger = ({
     });
 
     if (amount) {
-      filtered = filtered.filter((entry) => {
-        return entry.entries.some((subEntry) =>
+      filtered = filtered.filter((entry) =>
+        entry.entries.some((subEntry) =>
           subEntry.amount.toString().includes(amount)
-        );
-      });
+        )
+      );
+      return filtered;
     }
     setFilteredEntries(filtered);
   };
@@ -122,82 +73,121 @@ const Ledger = ({
           <p onClick={onClose} className="closeButton">
             &times;
           </p>
-          <h2>Account Ledger for {accountName}</h2>
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchAmount}
-            onChange={handleSearchAmountChange}
-          />
-          <div>
-            <input
-              type="text"
-              placeholder="Start Date..."
-              value={startDate}
-              onChange={handleStartDateChange}
-            />
-            <input
-              type="text"
-              placeholder="End Date..."
-              value={endDate}
-              onChange={handleEndDateChange}
-            />
-          </div>
-          {filteredEntries && filteredEntries.length > 0 ? (
-            <div className="accountledger-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Entry No.</th>
-                    <th>Date</th>
-                    <th>Debit</th>
-                    <th>Credit</th>
-                    <th>Balance</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{filteredEntries.length > 0 ? "N/A" : 1}</td>
-                    <td>{formatDate(dateAccountAdded)}</td>
-                    <td></td>
-                    <td></td>
-                    <td>${parseFloat(initialBalance).toLocaleString()}</td>
-                    <td></td>
-                  </tr>
-                  {filteredEntries
-                    .sort((a, b) => a.dateCreated - b.dateCreated)
-                    .map((entry) => {
-                      const relevantSubEntries = entry.entries.filter(
-                        (subEntry) => subEntry.account === accountName
-                      );
-                      return relevantSubEntries.map((subEntry, subIndex) => {
-                        entryNo += 1;
-                        // Adjust running balance based on the transaction type
-                        if (subEntry.type === "debit") {
-                          runningBalance += parseFloat(subEntry.amount);
-                        } else if (subEntry.type === "credit") {
-                          runningBalance -= parseFloat(subEntry.amount);
-                        }
-                        return (
-                          <tr key={subIndex}>
-                            <td>{entryNo}</td>
+          {showPostRef ? (
+            <>
+              <p
+                onClick={() => setShowPostRef(false)}
+                className="closeButton"
+                style={{ float: "left" }}
+              >
+                &larr;
+              </p>
+              <h2>Journal Entry Details</h2>
+              <div className="accountledger-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Date Created</th>
+                      <th>User</th>
+                      <th>Account</th>
+                      <th>Type</th>
+                      <th>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedPR.entries.map((entry, index) => (
+                      <tr key={index}>
+                        <td>{formatDate(selectedPR.dateCreated)}</td>
+                        <td>{selectedPR.user}</td>
+                        <td>{entry.account}</td>
+                        <td>{entry.type}</td>
+                        <td>{entry.amount}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          ) : (
+            <>
+              <h2>Account Ledger for {account.accountName}</h2>
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchAmount}
+                onChange={handleSearchAmountChange}
+              />
+              <div>
+                <input
+                  type="text"
+                  placeholder="Start Date..."
+                  value={startDate}
+                  onChange={handleStartDateChange}
+                />
+                <input
+                  type="text"
+                  placeholder="End Date..."
+                  value={endDate}
+                  onChange={handleEndDateChange}
+                />
+              </div>
+              {filteredEntries && filteredEntries.length > 0 ? (
+                <div className="accountledger-table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Entry No.</th>
+                        <th>Date</th>
+                        <th>Debit</th>
+                        <th>Credit</th>
+                        <th>Balance</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{filteredEntries.length > 0 ? "N/A" : 1}</td>
+                        <td>{formatDate(account.dateAccountAdded)}</td>
+                        <td></td>
+                        <td></td>
+                        <td>{formatNumber(account.initialBalance)}</td>
+                        <td></td>
+                      </tr>
+                      {filteredEntries
+                        .sort((a, b) => a.dateCreated - b.dateCreated)
+                        .map((entry) => (
+                          <tr key={entry.id}>
+                            <td>{entryNo++}</td>
                             <td>{formatDate(entry.dateCreated)}</td>
                             <td>
-                              {subEntry.type === "debit"
-                                ? `$${parseFloat(
-                                    subEntry.amount
-                                  ).toLocaleString()}`
-                                : ""}
+                              {entry.entries
+                                .filter(
+                                  (subEntry) =>
+                                    subEntry.account === account.accountName
+                                )
+                                .map((subEntry, index) => (
+                                  <span key={index}>
+                                    {subEntry.type === "debit" && (
+                                      <>{formatNumber(subEntry.amount)}</>
+                                    )}
+                                  </span>
+                                ))}
                             </td>
                             <td>
-                              {subEntry.type === "credit"
-                                ? `$${parseFloat(
-                                    subEntry.amount
-                                  ).toLocaleString()}`
-                                : ""}
+                              {entry.entries
+                                .filter(
+                                  (subEntry) =>
+                                    subEntry.account === account.accountName
+                                )
+                                .map((subEntry, index) => (
+                                  <span key={index}>
+                                    {subEntry.type === "credit" && (
+                                      <>{formatNumber(subEntry.amount)}</>
+                                    )}
+                                  </span>
+                                ))}
                             </td>
-                            <td>${runningBalance.toLocaleString()}</td>
+                            <td>{formatNumber(runningBalance)}</td>
                             <td>
                               <span
                                 onClick={() => handlePRClick(entry)}
@@ -207,22 +197,17 @@ const Ledger = ({
                               </span>
                             </td>
                           </tr>
-                        );
-                      });
-                    })}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p>No ledger entries found for this account.</p>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p>No ledger entries found for this account.</p>
+              )}
+            </>
           )}
         </div>
       </div>
-      <PostRefModal
-        isOpen={showPostRef}
-        onClose={() => setShowPostRef(false)}
-        selectedPR={selectedPR}
-      />
     </>
   );
 };
@@ -254,14 +239,18 @@ const ChartOfAccounts = () => {
 
   useEffect(() => {
     const fetchAccounts = async () => {
-      const querySnapshot = await getDocs(
-        query(collection(db, "accounts"), where("isActivated", "==", true))
-      ); //grabs all active accounts
-      const fetchedAccounts = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setAccounts(fetchedAccounts);
+      try {
+        const querySnapshot = await getDocs(
+          query(collection(db, "accounts"), where("isActivated", "==", true))
+        ); //grabs all active accounts
+        const fetchedAccounts = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setAccounts(fetchedAccounts);
+      } catch (error) {
+        console.log(error.message);
+      }
     };
     fetchAccounts();
   }, []);
@@ -311,8 +300,6 @@ const ChartOfAccounts = () => {
       setSelectedAccount({
         ...account,
         ledgerData: relatedEntries,
-        initialBalance: account.initialBalance,
-        dateAccountAdded: account.DateAccountAdded,
       });
     } catch (error) {
       console.error("Error fetching ledger data:", error.message);
@@ -419,31 +406,21 @@ const ChartOfAccounts = () => {
               {filteredAccounts.map((account) => (
                 <tr key={account.id}>
                   <td>
-                    <button
+                    <span
                       onClick={() => openModal(account)}
-                      style={{
-                        border: "none",
-                        background: "none",
-                        color: "black",
-                        cursor: "pointer",
-                      }}
+                      className="clickableAccount"
                     >
                       {account.accountName}
-                    </button>
+                    </span>
                   </td>
                   {visibleColumns.accountNumber && (
                     <td>
-                      <button
+                      <span
                         onClick={() => openModal(account)}
-                        style={{
-                          border: "none",
-                          background: "none",
-                          color: "black",
-                          cursor: "pointer",
-                        }}
+                        className="clickableAccount"
                       >
                         {account.accountNumber}
-                      </button>
+                      </span>
                     </td>
                   )}
                   {visibleColumns.accountDescription && (
@@ -478,12 +455,7 @@ const ChartOfAccounts = () => {
       <Ledger
         isOpen={selectedAccount !== null}
         onClose={onClose}
-        ledgerData={selectedAccount ? selectedAccount.ledgerData : []}
-        accountName={selectedAccount ? selectedAccount.accountName : ""}
-        initialBalance={selectedAccount ? selectedAccount.initialBalance : ""}
-        dateAccountAdded={
-          selectedAccount ? selectedAccount.dateAccountAdded : null
-        }
+        account={selectedAccount}
       />
       {searchQuery && filteredAccounts.length === 0 && (
         <div className="error">No results found</div>

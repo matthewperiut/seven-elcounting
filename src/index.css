@@ -376,6 +376,16 @@ select {
   border-collapse: collapse;
   border: 2px solid black;
 }
+
+.accounts-table table td,
+.accounts-table table th {
+    padding: 15px;
+}
+
+.clickableAccount:hover {
+    font-weight: bold;
+    cursor: pointer;
+}
 /* Chart of Accounts */
 
 /* Journalizing */
