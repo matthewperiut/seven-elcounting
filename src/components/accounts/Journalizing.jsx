@@ -263,7 +263,7 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
                   decimalsLimit={2}
                   maxLength={12}
                   onValueChange={(value) =>
-                    handleDebitChange(index, "amount", value)
+                    handleDebitChange(index, "amount", parseFloat(value))
                   }
                 />
                 {debitsList.length > 1 && (
@@ -313,7 +313,7 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
                   decimalsLimit={2}
                   maxLength={12}
                   onValueChange={(value) =>
-                    handleCreditChange(index, "amount", value)
+                    handleCreditChange(index, "amount", parseFloat(value))
                   }
                 />
                 {creditsList.length > 1 && (

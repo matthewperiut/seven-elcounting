@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { db } from "../../firebase-config";
 import { collection, getDocs } from "firebase/firestore";
 import CustomCalendar from "../layouts/CustomCalendar";
-import ReportToolSuite from "./ReportToolSuite";
+import ReportToolSuite from "../tools/ReportToolSuite";
+import formatNumber from "../tools/formatNumber";
 
 const BalanceSheet = () => {
   const [assets, setAssets] = useState([]);
@@ -49,7 +50,7 @@ const BalanceSheet = () => {
 
   const calculateTotal = (accounts) => {
     return accounts.reduce(
-      (total, account) => total + parseFloat(account.balance || 0),
+      (total, account) => total + account.balance,
       0
     );
   };
@@ -71,7 +72,7 @@ const BalanceSheet = () => {
           <thead>
             <tr>
               <th>Account Name</th>
-              <th>Amount ($)</th>
+              <th>Amount</th>
             </tr>
           </thead>
           <tbody>
@@ -84,12 +85,12 @@ const BalanceSheet = () => {
               .map((asset) => (
                 <tr key={asset.accountID}>
                   <td>{asset.accountName}</td>
-                  <td>${parseFloat(asset.balance).toLocaleString()}</td>
+                  <td>{formatNumber(asset.balance)}</td>
                 </tr>
               ))}
             <tr className="statement-total">
               <td>Total Assets</td>
-              <td>${assetsTotal.toLocaleString()}</td>
+              <td>{formatNumber(assetsTotal)}</td>
             </tr>
             <tr className="statement-category">
               <td>Liabilities</td>
@@ -100,12 +101,12 @@ const BalanceSheet = () => {
               .map((liability) => (
                 <tr key={liability.accountID}>
                   <td>{liability.accountName}</td>
-                  <td>${parseFloat(liability.balance).toLocaleString()}</td>
+                  <td>{formatNumber(liability.balance)}</td>
                 </tr>
               ))}
             <tr className="statement-total">
               <td>Total Liabilities</td>
-              <td>${liabilitiesTotal.toLocaleString()}</td>
+              <td>{formatNumber(liabilitiesTotal)}</td>
             </tr>
             <tr className="statement-category">
               <td>Stockholder's Equity</td>
@@ -116,16 +117,16 @@ const BalanceSheet = () => {
               .map((equity) => (
                 <tr key={equity.accountID}>
                   <td>{equity.accountName}</td>
-                  <td>${parseFloat(equity.balance).toLocaleString()}</td>
+                  <td>{formatNumber(equity.balance)}</td>
                 </tr>
               ))}
             <tr className="statement-total">
               <td>Total Equity</td>
-              <td>${equityTotal.toLocaleString()}</td>
+              <td>{formatNumber(equityTotal)}</td>
             </tr>
             <tr className="statement-total">
               <td>Total Liabilities + Total Equity</td>
-              <td>${liabilitiesPlusEquity.toLocaleString()}</td>
+              <td>{formatNumber(liabilitiesPlusEquity)}</td>
             </tr>
           </tbody>
         </table>

@@ -508,7 +508,8 @@ select {
   padding: 12px;
 }
 
-.statement-table td:last-child {
+.statement-table td:last-child,
+.statement-table th:last-child {
     text-align: center;
 }
 

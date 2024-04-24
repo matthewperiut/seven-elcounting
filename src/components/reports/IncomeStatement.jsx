@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import CustomCalendar from "../layouts/CustomCalendar";
-import ReportToolSuite from "./ReportToolSuite";
+import ReportToolSuite from "../tools/ReportToolSuite";
+import formatNumber from "../tools/formatNumber";
 
 const IncomeStatement = () => {
   const [revenue, setRevenue] = useState([]);
@@ -51,7 +52,7 @@ const IncomeStatement = () => {
   }, []);
 
   const totalExpenses = expenses.reduce(
-    (total, expense) => total + parseFloat(expense.balance),
+    (total, expense) => total + expense.balance,
     0
   );
 
@@ -64,21 +65,21 @@ const IncomeStatement = () => {
           <thead>
             <tr>
               <th>Account Name</th>
-              <th>Amount ($)</th>
+              <th>Amount</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>{revenue.accountName}</td>
-              <td>${revenue.balance}</td>
+              <td>{formatNumber(parseFloat(revenue.balance))}</td>
             </tr>
             <tr>
               <td>{costOfGoodsSold.accountName}</td>
-              <td>${costOfGoodsSold.balance}</td>
+              <td>{formatNumber(parseFloat(costOfGoodsSold.balance))}</td>
             </tr>
             <tr className="statement-total">
               <td>Gross Profit</td>
-              <td>${revenue.balance - costOfGoodsSold.balance}</td>
+              <td>{formatNumber(revenue.balance - costOfGoodsSold.balance)}</td>
             </tr>
             <tr className="statement-category">
               <td>Expenses</td>
@@ -87,33 +88,37 @@ const IncomeStatement = () => {
             {expenses.map((expense) => (
               <tr key={expense.accountID}>
                 <td>{expense.accountName}</td>
-                <td>${expense.balance}</td>
+                <td>{formatNumber(parseFloat(expense.balance))}</td>
               </tr>
             ))}
             <tr className="statement-total">
               <td>Total Expenses</td>
-              <td>${totalExpenses}</td>
+              <td>{formatNumber(totalExpenses)}</td>
             </tr>
             <tr className="statement-total">
               <td>Income Before Taxes</td>
               <td>
-                ${revenue.balance - costOfGoodsSold.balance - totalExpenses}
+                {formatNumber(
+                  revenue.balance - costOfGoodsSold.balance - totalExpenses
+                )}
               </td>
             </tr>
             <tr>
               <td>Taxes</td>
               <td>
-                $
-                {(revenue.balance - costOfGoodsSold.balance - totalExpenses) *
-                  0.2}
+                {formatNumber(
+                  (revenue.balance - costOfGoodsSold.balance - totalExpenses) *
+                    0.2
+                )}
               </td>
             </tr>
             <tr className="statement-total">
               <td>Net Income</td>
               <td>
-                $
-                {(revenue.balance - costOfGoodsSold.balance - totalExpenses) *
-                  0.8}
+                {formatNumber(
+                  (revenue.balance - costOfGoodsSold.balance - totalExpenses) *
+                    0.8
+                )}
               </td>
             </tr>
           </tbody>

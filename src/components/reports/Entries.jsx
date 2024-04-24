@@ -13,6 +13,7 @@ import { Context } from "../context/UserContext";
 import CustomCalendar from "../layouts/CustomCalendar";
 import Help from "../layouts/Help";
 import Journalizing from "../accounts/Journalizing";
+import formatNumber from "../tools/formatNumber";
 
 /**
  * Formats a Firestore timestamp to a readable date string.
@@ -171,14 +172,12 @@ const Table = ({ entries, isPending, fetchEntries }) => {
                     )}
                     <td>{subEntry.account}</td>
                     <td>
-                      {subEntry.type === "debit"
-                        ? "$" + parseFloat(subEntry.amount).toLocaleString()
-                        : ""}
+                      {subEntry.type === "debit" &&
+                        formatNumber(subEntry.amount)}
                     </td>
                     <td>
-                      {subEntry.type === "credit"
-                        ? "$" + parseFloat(subEntry.amount).toLocaleString()
-                        : ""}
+                      {subEntry.type === "credit" &&
+                        formatNumber(subEntry.amount)}
                     </td>
                   </tr>
                 ))}
@@ -276,7 +275,9 @@ const Entries = () => {
         return (
           subEntry.account.toLowerCase().includes(searchTerm.toLowerCase()) ||
           subEntry.amount.toString().includes(searchTerm) ||
-          formatDate(entry.dateCreated).toLowerCase().includes(searchTerm.toLowerCase())
+          formatDate(entry.dateCreated)
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
         );
       });
     });

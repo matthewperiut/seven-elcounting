@@ -10,9 +10,9 @@ import {
 } from "firebase/firestore";
 import CurrencyInput from "react-currency-input-field";
 import CustomCalendar from "../layouts/CustomCalendar";
-import Help from '../layouts/Help';
+import Help from "../layouts/Help";
 import { reportError } from "../events/ErrorLogController.jsx";
-import { logEventCreation} from "../events/EventLogController.jsx";
+import { logEventCreation } from "../events/EventLogController.jsx";
 import { Context } from "../context/UserContext.jsx";
 
 export const AddAccounts = () => {
@@ -44,10 +44,10 @@ export const AddAccounts = () => {
       ...accountInfo,
       DateAccountAdded: new Date(),
       isActivated: true,
-      accountID: account.id
-    }
+      accountID: account.id,
+    };
     //Sets document with account information
-    await setDoc(account, data)
+    await setDoc(account, data);
     await logEventCreation("account", accountInfo.accountName, data, user);
   };
 
@@ -89,7 +89,11 @@ export const AddAccounts = () => {
 
   const handleValueChange = (value) => {
     if (!isNaN(value)) {
-      setAccountInfo(prev => ({ ...prev, initialBalance: value, balance: value }));
+      setAccountInfo((prev) => ({
+        ...prev,
+        initialBalance: value,
+        balance: value,
+      }));
     }
   };
 
@@ -100,15 +104,21 @@ export const AddAccounts = () => {
       <h1>Add an Account</h1>
       <form className="input-form" onSubmit={handleSubmit}>
         {inputFields.map(({ id, label, type }) => (
-            <div key={id} className="input-label">
-              <div className="label-container">
-                <label htmlFor={id} key={id}>
-                  {label}:
-                </label>
-              </div>
-              <input required id={id} name={id} type={type} onChange={handleChange} />
+          <div key={id} className="input-label">
+            <div className="label-container">
+              <label htmlFor={id} key={id}>
+                {label}:
+              </label>
             </div>
-          ))}
+            <input
+              required
+              id={id}
+              name={id}
+              type={type}
+              onChange={handleChange}
+            />
+          </div>
+        ))}
         <div className="input-label">
           <div className="label-container">
             <label htmlFor="initialBalance">Initial Balance:</label>
@@ -121,14 +131,19 @@ export const AddAccounts = () => {
             name="initialBalance"
             decimalsLimit={2}
             maxLength={12}
-            onValueChange={(value) => handleValueChange(value)}
+            onValueChange={(value) => handleValueChange(parseFloat(value))}
           />
         </div>
         <div className="input-label">
           <div className="label-container">
             <label htmlFor="normalSide">Normal Side:</label>
           </div>
-          <select required name="normalSide" defaultValue="" onChange={handleChange}>
+          <select
+            required
+            name="normalSide"
+            defaultValue=""
+            onChange={handleChange}
+          >
             <option disabled />
             <option value="credit">Credit</option>
             <option value="debit">Debit</option>
@@ -138,7 +153,12 @@ export const AddAccounts = () => {
           <div className="label-container">
             <label htmlFor="statement">Financial Statement:</label>
           </div>
-          <select required name="statement" defaultValue="" onChange={handleChange}>
+          <select
+            required
+            name="statement"
+            defaultValue=""
+            onChange={handleChange}
+          >
             <option disabled />
             <option value="Income_Statement">Income Statement</option>
             <option value="Balance_Sheet">Balance Sheet</option>

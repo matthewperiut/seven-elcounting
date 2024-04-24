@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import CustomCalendar from "../layouts/CustomCalendar";
-import ReportToolSuite from "./ReportToolSuite";
+import ReportToolSuite from "../tools/ReportToolSuite";
 import Help from "../layouts/Help";
+import formatNumber from "../tools/formatNumber";
 
 function formatDate(timestamp) {
   if (!timestamp) return "";
@@ -156,14 +157,12 @@ const GeneralLedger = ({ showSearchBar }) => {
                         )}
                         <td>{subEntry.account}</td>
                         <td>
-                          {subEntry.type === "debit"
-                            ? "$" + parseFloat(subEntry.amount).toLocaleString()
-                            : ""}
+                          {subEntry.type === "debit" &&
+                            formatNumber(subEntry.amount)}
                         </td>
                         <td>
-                          {subEntry.type === "credit"
-                            ? "$" + parseFloat(subEntry.amount).toLocaleString()
-                            : ""}
+                          {subEntry.type === "credit" &&
+                            formatNumber(subEntry.amount)}
                         </td>
                       </tr>
                     ))
