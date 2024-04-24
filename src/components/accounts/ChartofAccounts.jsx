@@ -14,28 +14,30 @@ const PostRefModal = ({ isOpen, onClose, selectedPR }) => {
           &times;
         </p>
         <h2>Journal Entry Details</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Date Created</th>
-              <th>User</th>
-              <th>Account</th>
-              <th>Type</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {selectedPR.entries.map((entry, index) => (
-              <tr key={index}>
-                <td>{formatDate(selectedPR.dateCreated)}</td>
-                <td>{selectedPR.user}</td>
-                <td>{entry.account}</td>
-                <td>{entry.type}</td>
-                <td>{entry.amount}</td>
+        <div className="accountledger-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Date Created</th>
+                <th>User</th>
+                <th>Account</th>
+                <th>Type</th>
+                <th>Amount</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {selectedPR.entries.map((entry, index) => (
+                <tr key={index}>
+                  <td>{formatDate(selectedPR.dateCreated)}</td>
+                  <td>{selectedPR.user}</td>
+                  <td>{entry.account}</td>
+                  <td>{entry.type}</td>
+                  <td>{entry.amount}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
@@ -68,7 +70,6 @@ const Ledger = ({
   const [searchAmount, setSearchAmount] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
   const [showPostRef, setShowPostRef] = useState(false);
   const [selectedPR, setSelectedPR] = useState(null);
 
@@ -94,10 +95,6 @@ const Ledger = ({
   const handleEndDateChange = (event) => {
     setEndDate(event.target.value);
     filterEntries(startDate, event.target.value, searchAmount);
-  };
-
-  const toggleFilters = () => {
-    setShowFilters(!showFilters); // Toggle the visibility of filters
   };
 
   const filterEntries = (start, end, amount) => {
@@ -126,37 +123,25 @@ const Ledger = ({
             &times;
           </p>
           <h2>Account Ledger for {accountName}</h2>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchAmount}
+            onChange={handleSearchAmountChange}
+          />
           <div>
-            <button onClick={toggleFilters}>Filters</button>
-            {showFilters && (
-              <div style={{ display: "flex" }}>
-                <div>
-                  <label>Search:</label>
-                  <input
-                    type="text"
-                    placeholder="Search amount..."
-                    value={searchAmount}
-                    onChange={handleSearchAmountChange}
-                  />
-                </div>
-                <div>
-                  <label>Start Date:</label>
-                  <input
-                    type="date"
-                    value={startDate}
-                    onChange={handleStartDateChange}
-                  />
-                </div>
-                <div>
-                  <label>End Date:</label>
-                  <input
-                    type="date"
-                    value={endDate}
-                    onChange={handleEndDateChange}
-                  />
-                </div>
-              </div>
-            )}
+            <input
+              type="text"
+              placeholder="Start Date..."
+              value={startDate}
+              onChange={handleStartDateChange}
+            />
+            <input
+              type="text"
+              placeholder="End Date..."
+              value={endDate}
+              onChange={handleEndDateChange}
+            />
           </div>
           {filteredEntries && filteredEntries.length > 0 ? (
             <div className="accountledger-table">
@@ -327,7 +312,7 @@ const ChartOfAccounts = () => {
         ...account,
         ledgerData: relatedEntries,
         initialBalance: account.initialBalance,
-        dateAccountAdded: account.DateAccountAdded, // Ensure this field is correctly named as per your database
+        dateAccountAdded: account.DateAccountAdded,
       });
     } catch (error) {
       console.error("Error fetching ledger data:", error.message);
@@ -447,19 +432,19 @@ const ChartOfAccounts = () => {
                     </button>
                   </td>
                   {visibleColumns.accountNumber && (
-                  <td>
-                    <button 
-                      onClick={() => openModal(account)} 
-                      style={{
-                        border: "none",
-                        background: "none",
-                        color: "black",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {account.accountNumber}
-                    </button>
-                  </td>
+                    <td>
+                      <button
+                        onClick={() => openModal(account)}
+                        style={{
+                          border: "none",
+                          background: "none",
+                          color: "black",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {account.accountNumber}
+                      </button>
+                    </td>
                   )}
                   {visibleColumns.accountDescription && (
                     <td>{account.accountDescription}</td>

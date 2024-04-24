@@ -492,14 +492,18 @@ select {
   padding: 12px;
 }
 
+.statement-table td:last-child {
+    text-align: center;
+}
+
 .statement-table td + td, .statement-table th + th {
   border-left: 2px solid #000;
 }
 
 .statement-total td {
-  border-top: 1px solid black; 
   font-weight: bold;
   color: #423b3b;
+  border-top: 1px solid black; 
 }
 
 .statement-category {
