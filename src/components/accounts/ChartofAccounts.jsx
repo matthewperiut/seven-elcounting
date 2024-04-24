@@ -187,7 +187,26 @@ const Ledger = ({ isOpen, onClose, account }) => {
                                   </span>
                                 ))}
                             </td>
-                            <td>{formatNumber(runningBalance)}</td>
+                            <td>
+                              {formatNumber(entry.entries
+                                .filter(
+                                  (subEntry) =>
+                                    subEntry.account === account.accountName
+                                )
+                                .reduce((balance, subEntry) => {
+                                  let amount = parseFloat(subEntry.amount);
+                                  let addition =
+                                    subEntry.type === account.normalSide;
+
+                                  if (addition) {
+                                    balance += amount;
+                                  } else {
+                                    balance -= amount;
+                                  }
+                                  runningBalance = balance;
+                                  return balance;
+                                }, runningBalance))}
+                            </td>
                             <td>
                               <span
                                 onClick={() => handlePRClick(entry)}

@@ -208,13 +208,13 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
 
   const handleDebitChange = (index, field, value) => {
     const updatedEntry = [...debitsList]; //stores array in local updatedEntry array
-    updatedEntry[index][field] = value; //sets the field at the specified index to the value brought in
+    updatedEntry[index][field] = value|| ""; //sets the field at the specified index to the value brought in
     setDebitsList(updatedEntry); //sets list with new value
   };
 
   const handleCreditChange = (index, field, value) => {
     const updatedEntry = [...creditsList];
-    updatedEntry[index][field] = value;
+    updatedEntry[index][field] = value || "";
     setCreditsList(updatedEntry);
   };
 
