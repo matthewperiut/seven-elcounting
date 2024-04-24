@@ -340,6 +340,22 @@ select {
   text-align: left;
   width: 150px;
 }
+
+.viewDB-label {
+  text-align: left;
+  margin: 10px;
+  margin-left: 470px; /* Center labels */
+}
+
+.viewDB-label label{
+  display: inline-block;
+  width: 200px;
+}
+
+.viewDB-label span,
+.viewDB-label label {
+  font-size: 20px;
+}
 /* Modal */
 
 /* Chart of Accounts */

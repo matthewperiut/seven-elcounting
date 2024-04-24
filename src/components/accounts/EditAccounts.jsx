@@ -75,7 +75,7 @@ const Modal = ({ isOpen, account, closeModal, isEdit, updateAccount }) => {
           <option value="debit">Debit</option>
           <option value="credit">Credit</option>
         </select>
-      )
+      );
     }
 
     return (
@@ -105,7 +105,7 @@ const Modal = ({ isOpen, account, closeModal, isEdit, updateAccount }) => {
                     key !== "isActivated"
                 )
                 .map((key) => (
-                  <div className="editDB-form" key={key}>
+                  <div key={key}>
                     <label className="editDB-label">{key}: </label>
                     {customInput(key, currentAccount[key])}
                   </div>
@@ -113,16 +113,19 @@ const Modal = ({ isOpen, account, closeModal, isEdit, updateAccount }) => {
             </>
           ) : (
             <>
-              {Object.keys(currentAccount).map((key) => (
-                <div className="editDB-form" key={key}>
-                  <label className="editDB-label">{key}: </label>
-                  <span>
-                    {typeof currentAccount[key]?.toDate === "function"
-                      ? formatDate(currentAccount[key])
-                      : currentAccount[key]}
-                  </span>
-                </div>
-              ))}
+              {Object.keys(currentAccount).map(
+                (key) =>
+                  key !== "isActivated" && (
+                    <div key={key} className="viewDB-label">
+                      <label>{key}: </label>
+                      <span>
+                        {typeof currentAccount[key]?.toDate === "function"
+                          ? formatDate(currentAccount[key])
+                          : currentAccount[key]}
+                      </span>
+                    </div>
+                  )
+              )}
             </>
           )}
           <button onClick={saveChanges}>
@@ -198,13 +201,18 @@ const EditAccounts = (showEdit) => {
   const updateAccountInfo = async (updatedAccount) => {
     try {
       // Update the document in Firestore
-      await updateDoc(doc(db, "accounts", updatedAccount.accountID), updatedAccount);
+      await updateDoc(
+        doc(db, "accounts", updatedAccount.accountID),
+        updatedAccount
+      );
 
       // Optimistically update the local state without refetching all accounts
       // This approach assumes the update operation succeeds, making the UI more responsive
       setAccounts(
         accounts.map((account) =>
-          account.accountID === updatedAccount.accountID ? updatedAccount : account
+          account.accountID === updatedAccount.accountID
+            ? updatedAccount
+            : account
         )
       );
     } catch (error) {
@@ -217,15 +225,8 @@ const EditAccounts = (showEdit) => {
     <div className="wrapper">
       <CustomCalendar />
       <Help />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <h1>{showEdit ? "Edit" : "View"} Accounts</h1>
+      <div>
+        <h1>Accounts</h1>
         <input
           type="text"
           placeholder="Search accounts..."
@@ -236,34 +237,11 @@ const EditAccounts = (showEdit) => {
 
       <div className="database-list">
         {filteredAccounts.map((account) => (
-          <div
-            key={account.accountID}
-            className="database-item"
-            style={{
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: "10px",
-              padding: "10px",
-              boxShadow: "0 2px 4px rgba(0,0,0,.1)",
-            }}
-          >
-            <p style={{ margin: 0 }}>{account.accountName}</p>
+          <div key={account.accountID} className="database-item">
+            <p>{account.accountName}</p>
             <div>
-              <button
-                className="button-view"
-                onClick={() => toggleModal(account, false)}
-                style={{ marginRight: "5px" }}
-              >
-                View
-              </button>
-              {showEdit && (
-                <button
-                  className="button-edit"
-                  onClick={() => toggleModal(account, true)}
-                >
-                  Edit
-                </button>
-              )}
+              <button onClick={() => toggleModal(account, false)}>View</button>
+              <button onClick={() => toggleModal(account, true)}>Edit</button>
             </div>
           </div>
         ))}
