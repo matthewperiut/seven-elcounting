@@ -215,7 +215,6 @@ const Entries = () => {
     rejected: [],
   });
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterType, setFilterType] = useState("account");
   const [viewType, setViewType] = useState("3");
 
   const fetchEntries = async () => {
@@ -242,7 +241,7 @@ const Entries = () => {
       )
     );
 
-    //maps data in snapshot documents into array of objects to make data accessable
+    //maps data in snapshot documents into array of objects to make data accessible
     const pendingEntries = pendingSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -264,7 +263,7 @@ const Entries = () => {
     });
   };
 
-  //run fetchEntries() everytime the component is rendered
+  //run fetchEntries() every time the component is rendered
   useEffect(() => {
     fetchEntries();
   }, []);
@@ -274,18 +273,11 @@ const Entries = () => {
 
     return entries.filter((entry) => {
       return entry.entries.some((subEntry) => {
-        switch (filterType) {
-          case "account":
-            return subEntry.account
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase());
-          case "amount":
-            return Number(subEntry.amount) === Number(searchTerm);
-          case "date":
-            return formatDate(entry.dateCreated).includes(searchTerm);
-          default:
-            return true;
-        }
+        return (
+          subEntry.account.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          subEntry.amount.toString().includes(searchTerm) ||
+          formatDate(entry.dateCreated).toLowerCase().includes(searchTerm.toLowerCase())
+        );
       });
     });
   };
@@ -295,28 +287,22 @@ const Entries = () => {
       <CustomCalendar />
       <Help />
       <div>
-        <label>Search by: </label>
-        <select onChange={(e) => setFilterType(e.target.value)}>
-          <option value="account">Account</option>
-          <option value="amount">Amount</option>
-          <option value="date">Date</option>
-        </select>
         <input
           type="text"
-          placeholder="Enter search term..."
+          placeholder="Search by account, amount, or date..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <p>
-          <label>View: </label>
-          <select onChange={(e) => setViewType(e.target.value)}>
-            <option value={3}>All</option>
-            <option value={0}>Pending</option>
-            <option value={1}>Approved</option>
-            <option value={2}>Rejected</option>
-          </select>
-        </p>
       </div>
+      <p>
+        <label>View: </label>
+        <select onChange={(e) => setViewType(e.target.value)}>
+          <option value={3}>All</option>
+          <option value={0}>Pending</option>
+          <option value={1}>Approved</option>
+          <option value={2}>Rejected</option>
+        </select>
+      </p>
       {viewType === "3" || viewType === "0" ? (
         <div>
           <h2>Pending</h2>
