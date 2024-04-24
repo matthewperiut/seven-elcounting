@@ -14,20 +14,17 @@ function formatDate(timestamp) {
   return date.toLocaleDateString("en-US", options);
 }
 
-const GeneralLedger = ({ showSearchBar }) => {
+const GeneralLedger = () => {
   const [approvedEntries, setApprovedEntries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchAccount, setSearchAccount] = useState("");
-  const [searchType, setSearchType] = useState("");
-  const [dateFilter, setDateFilter] = useState("");
-  const [showDateInput, setShowDateInput] = useState(true);
   const [filteredEntries, setFilteredEntries] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchApprovedEntries = async () => {
       setLoading(true);
 
-      const approvedSnapshot = await getDocs(
+      const querySnapshot = await getDocs(
         query(
           collection(db, "journalEntries"),
           where("isApproved", "==", true),
@@ -35,12 +32,12 @@ const GeneralLedger = ({ showSearchBar }) => {
         )
       );
 
-      const approvedEntriesData = approvedSnapshot.docs.map((doc) => ({
+      const entriesData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
 
-      setApprovedEntries(approvedEntriesData);
+      setApprovedEntries(entriesData);
       setLoading(false);
     };
 
@@ -48,48 +45,31 @@ const GeneralLedger = ({ showSearchBar }) => {
   }, []);
 
   useEffect(() => {
-    let filtered = approvedEntries;
-
-    // Filter entries based on the search criteria (account, type, and date)
-    filtered = filtered.filter((entry) => {
-      const lowerCaseAccount = searchAccount.toLowerCase();
-      const lowerCaseType = searchType.toLowerCase();
-      const lowerCaseDateFilter = dateFilter.toLowerCase();
-
-      const matchesDate =
-        !dateFilter ||
-        formatDate(entry.dateCreated)
-          .toLowerCase()
-          .includes(lowerCaseDateFilter);
+    const filtered = approvedEntries.filter((entry) => {
+      const formattedDate = formatDate(entry.dateCreated).toLowerCase();
+      const formattedUser = entry.user.toLowerCase();
+      const searchTermLower = searchTerm.toLowerCase();
 
       return (
-        matchesDate &&
+        formattedDate.includes(searchTermLower) ||
+        formattedUser.includes(searchTermLower) ||
         entry.entries.some((subEntry) => {
-          const { account, type } = subEntry;
-          const lowerCaseEntryAccount = account.toLowerCase();
-          const lowerCaseEntryType = type.toLowerCase();
+          const formattedAccount = subEntry.account.toLowerCase();
+          const formattedType = subEntry.type.toLowerCase();
 
           return (
-            lowerCaseEntryAccount.includes(lowerCaseAccount) ||
-            lowerCaseEntryType.includes(lowerCaseType)
+            formattedAccount.includes(searchTermLower) ||
+            formattedType.includes(searchTermLower)
           );
         })
       );
     });
 
     setFilteredEntries(filtered);
-  }, [searchAccount, searchType, dateFilter, approvedEntries]);
+  }, [approvedEntries, searchTerm]);
 
-  const handleSearchAccountChange = (event) => {
-    setSearchAccount(event.target.value);
-  };
-
-  const handleSearchTypeChange = (event) => {
-    setSearchType(event.target.value);
-  };
-
-  const handleDateFilterChange = (event) => {
-    setDateFilter(event.target.value);
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
   };
 
   return (
@@ -99,79 +79,59 @@ const GeneralLedger = ({ showSearchBar }) => {
       <div id="capture">
         <h1>General Ledger</h1>
         <div>
-          {showSearchBar && (
-            <div>
-              <input
-                type="text"
-                placeholder="Search Account"
-                value={searchAccount}
-                onChange={handleSearchAccountChange}
-              />
-              <input
-                type="text"
-                placeholder="Search Type"
-                value={searchType}
-                onChange={handleSearchTypeChange}
-              />
-            </div>
-          )}
-          {showDateInput && (
-            <div>
-              <input
-                type="text"
-                placeholder="Enter Date (e.g., January 1, 2023)"
-                value={dateFilter}
-                onChange={handleDateFilterChange}
-              />
-            </div>
-          )}
-          {loading ? (
-            <p>Loading...</p>
-          ) : (
-            <div className="entries-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Date Created</th>
-                    <th>Description</th>
-                    <th>User</th>
-                    <th>Account</th>
-                    <th>Debit</th>
-                    <th>Credit</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredEntries.map((entry) =>
-                    entry.entries.map((subEntry, index) => (
-                      <tr className="entry" key={index}>
-                        {index === 0 && (
-                          <>
-                            <td rowSpan={entry.entries.length}>
-                              {formatDate(entry.dateCreated)}
-                            </td>
-                            <td rowSpan={entry.entries.length}>
-                              {entry.description}
-                            </td>
-                            <td rowSpan={entry.entries.length}>{entry.user}</td>
-                          </>
-                        )}
-                        <td>{subEntry.account}</td>
-                        <td>
-                          {subEntry.type === "debit" &&
-                            formatNumber(subEntry.amount)}
-                        </td>
-                        <td>
-                          {subEntry.type === "credit" &&
-                            formatNumber(subEntry.amount)}
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
+          <input
+            type="text"
+            placeholder="Search Table..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
         </div>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <div className="entries-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date Created</th>
+                  <th>Description</th>
+                  <th>User</th>
+                  <th>Account</th>
+                  <th>Debit</th>
+                  <th>Credit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredEntries.map((entry) =>
+                  entry.entries.map((subEntry, index) => (
+                    <tr className="entry" key={`${entry.id}-${index}`}>
+                      {index === 0 && (
+                        <>
+                          <td rowSpan={entry.entries.length}>
+                            {formatDate(entry.dateCreated)}
+                          </td>
+                          <td rowSpan={entry.entries.length}>
+                            {entry.description}
+                          </td>
+                          <td rowSpan={entry.entries.length}>{entry.user}</td>
+                        </>
+                      )}
+                      <td>{subEntry.account}</td>
+                      <td>
+                        {subEntry.type === "debit" &&
+                          formatNumber(subEntry.amount)}
+                      </td>
+                      <td>
+                        {subEntry.type === "credit" &&
+                          formatNumber(subEntry.amount)}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
       {ReportToolSuite("General Ledger")}
     </div>

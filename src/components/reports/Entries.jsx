@@ -277,7 +277,7 @@ const Entries = () => {
           subEntry.amount.toString().includes(searchTerm) ||
           formatDate(entry.dateCreated)
             .toLowerCase()
-            .includes(searchTerm.toLowerCase())
+            .includes(searchTerm.toLowerCase()) 
         );
       });
     });
