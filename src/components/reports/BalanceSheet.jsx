@@ -4,6 +4,7 @@ import { collection, getDocs } from "firebase/firestore";
 import CustomCalendar from "../tools/CustomCalendar";
 import ReportToolSuite from "../tools/ReportToolSuite";
 import formatNumber from "../tools/formatNumber";
+import Help from "../layouts/Help";
 
 const BalanceSheet = () => {
   const [assets, setAssets] = useState([]);
@@ -49,10 +50,7 @@ const BalanceSheet = () => {
   }, [assets, liabilities, equities]);
 
   const calculateTotal = (accounts) => {
-    return accounts.reduce(
-      (total, account) => total + account.balance,
-      0
-    );
+    return accounts.reduce((total, account) => total + account.balance, 0);
   };
 
   const assetsTotal = calculateTotal(assets);
@@ -63,6 +61,7 @@ const BalanceSheet = () => {
   return (
     <div className="wrapper">
       <CustomCalendar />
+      <Help componentName="BalanceSheet" />
       <div id="capture">
         <h1>Balance Sheet</h1>
         <p className={isBalanced ? "success" : "error"}>

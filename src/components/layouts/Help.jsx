@@ -1,10 +1,120 @@
 import { useState } from "react";
 
-const Help = () => {
+const Help = ({ componentName }) => {
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => setShowModal(!showModal);
 
   const [showTooltip, setShowTooltip] = useState(false);
+
+  const getModalContent = () => {
+    switch (componentName) {
+      case "ChartOfAccounts":
+        return (
+          <div className="help-content">
+            <h1>Chart of Accounts</h1>
+            <p>
+              The Chart of Accounts component displays a list of all accounts
+              used in the accounting system. Each account has specific details
+              including account name, number, description, category, and
+              balance. This component is fundamental for managing financial data
+              and generating reports.
+            </p>
+          </div>
+        );
+      case "Journalizing":
+        return (
+          <div className="help-content">
+            <h1>Journalizing</h1>
+            <p>
+              The Journalizing component is used to record financial
+              transactions into journal entries. Each entry captures details
+              such as date, user, accounts affected, transaction type, and
+              amounts. This component is essential for maintaining an accurate
+              and auditable record of financial activities.
+            </p>
+          </div>
+        );
+      case "GeneralLedger":
+        return (
+          <div className="help-content">
+            <h1>General Ledger</h1>
+            <p>General Ledger bs idek</p>
+          </div>
+        );
+      case "BalanceSheet":
+        return (
+          <div className="help-content">
+            <h1>Balance Sheet</h1>
+            <p>Balance Sheet bs</p>
+          </div>
+        );
+      case "TrialBalancee":
+        return (
+          <div className="help-content">
+            <h1>Trial Balance</h1>
+            <p>Trial Balance bs</p>
+          </div>
+        );
+      case "IncomeStatement":
+        return (
+          <div className="help-content">
+            <h1>Income Statement</h1>
+            <p>Income Statement bs</p>
+          </div>
+        );
+      case "RetainedEarnings":
+        return (
+          <div className="help-content">
+            <h1>Retained Earnings</h1>
+            <p>Retained Earnings bs</p>
+          </div>
+        );
+      case "JournalEntries":
+        return (
+          <div className="help-content">
+            <h1>Journal Entries</h1>
+            <p>Journal Entries bs</p>
+          </div>
+        );
+      case "EventLog":
+        return (
+          <div className="help-content">
+            <h1>Event Log</h1>
+            <p>Event Log bs</p>
+          </div>
+        );
+      case "AddAccounts":
+        return (
+          <div className="help-content">
+            <h1>Add Accounts</h1>
+            <p>Add Accounts</p>
+          </div>
+        );
+      case "EditAccounts":
+        return (
+          <div className="help-content">
+            <h1>Edit Accounts</h1>
+            <p>Edit Accounts</p>
+          </div>
+        );
+      case "DeactivateAccounts":
+        return (
+          <div className="help-content">
+            <h1>Deactivate Accounts</h1>
+            <p>EDeactivate Accounts</p>
+          </div>
+        );
+      case "RoleManagement":
+        return (
+          <div className="help-content">
+            <h1>Role Management</h1>
+            <p>Role Management</p>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="help-container">
@@ -19,44 +129,9 @@ const Help = () => {
       {showModal && (
         <div className="modal-background" onClick={toggleModal}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="help-content">
-              <h1>Add Accounts</h1>
-              <p>
-                The user who is logged in is able to create an account for their
-                accounting needs. Every account needs the following: Account
-                name, number and description, Normal Side, Account Category,
-                Account subcategory, initial balance, debit, credit, balance,
-                userID, order, statement, and any comments.
-              </p>
-              <hr />
-              <h1>View Accounts</h1>
-              <p>
-                The user who is logged in is able to view the accounts created
-                for their accounting needs. The user will be able to view all
-                the statements of each account allowing for better overall
-                management of the product. This feature enhances the user's
-                ability to track their financial activities, analyze trends, and
-                make informed decisions regarding their finances.
-              </p>
-              <hr />
-              <h1>Edit Accounts</h1>
-              <p>
-                Based on the user level type (Admin or Normal), the user can
-                edit any of the input values to the accounts such as the Account
-                Name or the Credit and Debit Value. Editing is a primary feature
-                for the admin level only. Non-Admin users will not be able to
-                access this feature.
-              </p>
-              <hr />
-              <h1>Deactivate Accounts</h1>
-              <p>
-                Based on the user level type (Admin or Normal), the user can
-                edit any of the input values to the accounts such as the Account
-                Name or the Credit and Debit Value. Editing is a primary feature
-                for the admin level only. Non-Admin users will not be able to
-                access this feature.
-              </p>
-            </div>
+            {getModalContent()}
+            <hr />
+            <p>7ELcounting</p>
           </div>
         </div>
       )}

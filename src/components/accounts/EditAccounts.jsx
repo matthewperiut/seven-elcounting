@@ -224,7 +224,7 @@ const EditAccounts = (showEdit) => {
   return (
     <div className="wrapper">
       <CustomCalendar />
-      <Help />
+      <Help componentName="EditAccounts" />
       <div>
         <h1>Accounts</h1>
         <input

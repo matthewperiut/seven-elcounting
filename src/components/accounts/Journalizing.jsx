@@ -93,7 +93,7 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
           type: "debit",
           account: debit.account,
           amount: debit.amount,
-          accountID: findAccountID(debit.account)
+          accountID: findAccountID(debit.account),
         });
         debitTotal += parseFloat(debit.amount);
       });
@@ -115,7 +115,7 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
             type: "credit",
             account: credit.account,
             amount: credit.amount,
-            accountID: findAccountID(credit.account)
+            accountID: findAccountID(credit.account),
           });
           creditTotal += parseFloat(credit.amount);
         });
@@ -150,7 +150,7 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
         setStatus((prev) => ({ ...prev, submit: false, reset: false }));
         return;
       }
-      
+
       if (sourceDocs.length > 0) {
         // Upload files to Firebase Storage
         for (let i = 0; i < sourceDocs.length; i++) {
@@ -170,8 +170,8 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
           isRejected: false,
         });
         update();
-      } else await setDoc(doc(collection(db, "journalEntries")), entry); //creates document with entry data 
-      
+      } else await setDoc(doc(collection(db, "journalEntries")), entry); //creates document with entry data
+
       setStatus((prev) => ({ ...prev, success: true, submit: false })); //update state to display success message
       e.target.reset(); //reset uncontrolled input fields
       setDebitsList([{ account: "", amount: "" }]); //reset array with empty objects
@@ -208,7 +208,7 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
 
   const handleDebitChange = (index, field, value) => {
     const updatedEntry = [...debitsList]; //stores array in local updatedEntry array
-    updatedEntry[index][field] = value|| ""; //sets the field at the specified index to the value brought in
+    updatedEntry[index][field] = value || ""; //sets the field at the specified index to the value brought in
     setDebitsList(updatedEntry); //sets list with new value
   };
 
@@ -225,14 +225,14 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
       }
     }
     return null;
-  }
+  };
 
   return (
     <div className="wrapper">
       {!adjustingEntry && (
         <>
           <CustomCalendar />
-          <Help />
+          <Help componentName="Journalizing" />
         </>
       )}
       <h1>Journalizing</h1>

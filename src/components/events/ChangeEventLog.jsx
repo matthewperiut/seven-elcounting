@@ -55,7 +55,7 @@ const ChangeEventLog = () => {
   return (
       <div className='wrapper'>
         <CustomCalendar />
-        <Help />
+        <Help componentName="EventLog" />
         <h1>Event Log</h1>
         <table className="event-log-table">
           <thead>

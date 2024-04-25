@@ -100,7 +100,7 @@ export const AddAccounts = () => {
   return (
     <div className="wrapper">
       <CustomCalendar />
-      <Help />
+      <Help componentName="AddAccounts" />
       <h1>Add an Account</h1>
       <form className="input-form" onSubmit={handleSubmit}>
         {inputFields.map(({ id, label, type }) => (

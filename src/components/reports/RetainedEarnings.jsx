@@ -4,6 +4,7 @@ import formatNumber from "../tools/formatNumber";
 import CustomCalendar from "../tools/CustomCalendar";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase-config";
+import Help from "../layouts/Help";
 
 const RetainedEarnings = () => {
   const [retainedEarnings, setRetainedEarnings] = useState(null);
@@ -57,6 +58,7 @@ const RetainedEarnings = () => {
   return (
     <div className="wrapper">
       <CustomCalendar />
+      <Help componentName="RetainedEarnings" />
       <div id="capture">
         <h1>Retained Earnings Statement</h1>
         <table className="statement-table">

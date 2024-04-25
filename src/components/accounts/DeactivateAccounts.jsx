@@ -41,7 +41,7 @@ const DeactivateAccounts = () => {
   return (
     <div className='wrapper'>
       <CustomCalendar />
-      <Help />
+      <Help componentName="DeactivateAccounts" />
       <h1>Deactivate an Account</h1>
       <h3>Active Accounts</h3>
       <div className="database-list">

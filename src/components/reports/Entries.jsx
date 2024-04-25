@@ -286,7 +286,7 @@ const Entries = () => {
   return (
     <div className="wrapper">
       <CustomCalendar />
-      <Help />
+      <Help componentName="JournalEntries" />
       <div>
         <input
           type="text"

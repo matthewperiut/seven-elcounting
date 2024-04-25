@@ -75,7 +75,7 @@ const GeneralLedger = () => {
   return (
     <div className="wrapper">
       <CustomCalendar />
-      <Help />
+      <Help componentName="GeneralLedger" />
       <div id="capture">
         <h1>General Ledger</h1>
         <div>

@@ -4,6 +4,7 @@ import { db } from "../../firebase-config";
 import CustomCalendar from "../tools/CustomCalendar";
 import ReportToolSuite from "../tools/ReportToolSuite";
 import formatNumber from "../tools/formatNumber";
+import Help from "../layouts/Help";
 
 const IncomeStatement = () => {
   const [revenue, setRevenue] = useState([]);
@@ -59,6 +60,7 @@ const IncomeStatement = () => {
   return (
     <div className="wrapper">
       <CustomCalendar />
+      <Help componentName="IncomeStatement" />
       <div id="capture">
         <h1>Income Statement</h1>
         <table className="statement-table">

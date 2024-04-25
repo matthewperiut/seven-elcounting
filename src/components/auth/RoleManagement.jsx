@@ -125,7 +125,7 @@ export const RoleManagement = () => {
   return (
     <div className="wrapper">
       <CustomCalendar />
-      <Help />
+      <Help componentName="RoleManagement" />
       <h2>User Role Management</h2>
       <div className="database-list">
         {users.map((user) => (

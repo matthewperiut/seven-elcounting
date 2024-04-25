@@ -61,7 +61,6 @@ const Ledger = ({ isOpen, onClose, account }) => {
           subEntry.amount.toString().includes(amount)
         )
       );
-      return filtered;
     }
     setFilteredEntries(filtered);
   };
@@ -344,7 +343,7 @@ const ChartOfAccounts = () => {
       {!selectedAccount && (
         <>
           <CustomCalendar />
-          <Help />
+          <Help componentName="ChartOfAccounts" />
           <div style={{ textAlign: "center", padding: "0 10px" }}>
             <h1>Chart of Accounts</h1>
             <div style={{ position: "absolute", right: "20px", top: "0" }}>
