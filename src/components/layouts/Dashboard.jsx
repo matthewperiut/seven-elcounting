@@ -21,8 +21,8 @@ const Dashboard = () => {
   const [currentAssetsTotal, setCurrentAssetsTotal] = useState(0);
   const [income, setIncome] = useState(0);
   const [sales, setSales] = useState(0);
-  const [liquidityRatio, setLiquidityRatio] = useState(0);
-  const [profitRatio, setProfitRatio] = useState(0);
+  const [liquidityRatio, setLiquidityRatio] = useState(1);
+  const [profitRatio, setProfitRatio] = useState(1);
 
   const fetch = async () => {
     const pendingSnapshot = await getDocs(
@@ -123,8 +123,8 @@ const Dashboard = () => {
       )}
       {user.role > 1 && pendingEntries > 0 && (
         <p>
-          there {pendingEntries === 1 ? "is" : "are"} {pendingEntries} pending
-          journal {pendingEntries === 1 ? "entry" : "entries"}...
+          there {pendingEntries === 1 ? "is" : "are"} {pendingEntries} journal{" "}
+          {pendingEntries === 1 ? "entry" : "entries"} pending for approval...
         </p>
       )}
 
