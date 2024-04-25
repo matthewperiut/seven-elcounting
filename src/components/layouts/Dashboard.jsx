@@ -21,8 +21,8 @@ const Dashboard = () => {
   const [currentAssetsTotal, setCurrentAssetsTotal] = useState(0);
   const [income, setIncome] = useState(0);
   const [sales, setSales] = useState(0);
-  const [liquidityRatio, setLiquidityRatio] = useState(1);
-  const [profitRatio, setProfitRatio] = useState(1);
+  const [liquidityRatio, setLiquidityRatio] = useState(undefined);
+  const [profitRatio, setProfitRatio] = useState(undefined);
 
   const fetch = async () => {
     const pendingSnapshot = await getDocs(
@@ -82,28 +82,33 @@ const Dashboard = () => {
     setCurrentAssetsTotal(currentAssetsTotal);
     setCurrentLiabilitiesTotal(currentLiabilitiesTotal);
 
+    
+  };
+
+  useEffect(() => {
     const currentRatio = currentAssetsTotal / currentLiabilitiesTotal;
     if (currentRatio >= 1.5) setLiquidityRatio(1);
     else if (currentRatio < 1.5 && currentRatio >= 1) setLiquidityRatio(2);
     else if (currentRatio < 1) setLiquidityRatio(3);
 
-    const profitMargin = income / sales;
-    if (profitMargin > 0.1) setProfitRatio(1);
-    else if (profitMargin < 0.1 && profitMargin >= 0.05) setProfitRatio(2);
-    else if (profitMargin < 0.05) setProfitRatio(3);
-  };
+    const profitMargin = parseFloat(income / sales);
+    if (profitMargin >= 0.1) setProfitRatio(1);
+    else if (profitMargin >= 0.05 && profitMargin < 0.1) setProfitRatio(2);
+    else setProfitRatio(3);
+
+  }, [income, sales, currentAssetsTotal, currentLiabilitiesTotal]);
 
   useEffect(() => {
     fetch();
   }, []);
 
   const liquidityData = [
-    { name: "Current Assets", value: currentAssetsTotal },
-    { name: "Current Liabilities", value: currentLiabilitiesTotal },
+    { name: "Current Assets", value: currentAssetsTotal.toFixed(2) },
+    { name: "Current Liabilities", value: currentLiabilitiesTotal.toFixed(2) },
   ];
   const profitData = [
-    { name: "Net Income", value: income },
-    { name: "Net Sales", value: sales },
+    { name: "Net Income", value: income.toFixed(2) },
+    { name: "Net Sales", value: sales.toFixed(2) },
   ];
   const formatYAxis = (tickItem) => `$${tickItem}`;
 
@@ -150,7 +155,8 @@ const Dashboard = () => {
                 : "error"
             }
           >
-            Current Ratio: {(currentAssetsTotal / currentLiabilitiesTotal).toFixed(2)}
+            Current Ratio:{" "}
+            {(currentAssetsTotal / currentLiabilitiesTotal).toFixed(2)}
           </p>
           <div className="dashboard-chart">
             <ResponsiveContainer>
