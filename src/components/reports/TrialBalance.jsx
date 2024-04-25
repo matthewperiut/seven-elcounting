@@ -4,16 +4,35 @@ import { db } from "../../firebase-config.js";
 import CustomCalendar from "../tools/CustomCalendar.jsx";
 import ReportToolSuite from "../tools/ReportToolSuite";
 import formatNumber from "../tools/formatNumber";
+import Help from "../layouts/Help";
 
 const TrialBalance = () => {
   const [accounts, setAccounts] = useState([]);
   const [totalCredits, setTotalCredits] = useState(0);
   const [totalDebits, setTotalDebits] = useState(0);
 
+  const [selectedDate, setSelectedDate] = useState(null);
+  const handleDateSelection = (value) => {
+    setSelectedDate(value);
+  };
+  const handleResetDateFilter = () => {
+    setSelectedDate(null);
+  };
+
   const fetchAllAccounts = async () => {
-    const querySnapshot = await getDocs(collection(db, "accounts"));
+    let queryRef = collection(db, "accounts");
+    if (selectedDate) {
+      const [startDate, endDate] = selectedDate;
+      if (endDate) {
+        queryRef = query(queryRef, where("dateCreated", ">=", startDate), where("dateCreated", "<=", endDate));
+      } else {
+      queryRef = query(queryRef, where("dateCreated", "==", startDate));
+    }
+  }
+    const querySnapshot = await getDocs(queryRef);
     const fetchedAccounts = querySnapshot.docs.map((doc) => ({
       ...doc.data(),
+      id: doc.id,
     }));
     setAccounts(fetchedAccounts);
   };
@@ -34,13 +53,21 @@ const TrialBalance = () => {
     setTotalCredits(credits);
     setTotalDebits(debits);
   }, [accounts]);
+  
+  useEffect(() => {
+    fetchAllAccounts();
+  }, [selectedDate])
 
   return (
     <div className="wrapper">
-      <CustomCalendar />
+      <CustomCalendar 
+        handleDateSelection={handleDateSelection}
+        handleResetDateFilter={handleResetDateFilter} 
+      />
+      <Help componentName="TrialBalance" />
       <div id="capture">
         <h1>Trial Balance</h1>
-        <p>As of {new Date().toLocaleDateString()}</p>
+        <p>As of {selectedDate ? (selectedDate.length > 1 ? `${selectedDate[0].toLocaleDateString()} - ${selectedDate[1].toLocaleDateString()}` : selectedDate[0].toLocaleDateString()) : new Date().toLocaleDateString()}</p>
         <table className="statement-table">
           <thead>
             <tr>
