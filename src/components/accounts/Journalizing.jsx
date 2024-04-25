@@ -94,7 +94,7 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
         entry.entries.push({
           type: "debit",
           account: debit.account,
-          amount: debit.amount,
+          amount: parseFloat(debit.amount),
           accountID: findAccountID(debit.account),
         });
         debitTotal += parseFloat(debit.amount);
@@ -116,7 +116,7 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
           entry.entries.push({
             type: "credit",
             account: credit.account,
-            amount: credit.amount,
+            amount: parseFloat(credit.amount),
             accountID: findAccountID(credit.account),
           });
           creditTotal += parseFloat(credit.amount);
@@ -265,7 +265,7 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
                   decimalsLimit={2}
                   maxLength={12}
                   onValueChange={(value) =>
-                    handleDebitChange(index, "amount", parseFloat(value))
+                    handleDebitChange(index, "amount", value)
                   }
                 />
                 {debitsList.length > 1 && (
@@ -289,7 +289,7 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
             >
               Add Entry
               {showTooltip && (
-              <div className="tooltip" style={{ position: 'absolute', top: '15%', left: 100 }}>
+              <div className="tooltip" style={{ position: 'absolute', top: '15%', left: 90 }}>
                 New debit entry
               </div>
               )}
@@ -323,7 +323,7 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
                   decimalsLimit={2}
                   maxLength={12}
                   onValueChange={(value) =>
-                    handleCreditChange(index, "amount", parseFloat(value))
+                    handleCreditChange(index, "amount", value)
                   }
                 />
                 {creditsList.length > 1 && (
@@ -347,7 +347,7 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
             >
               Add Entry
               {showTooltipC && (
-              <div className="tooltip" style={{ position: 'absolute', top: '15%', left: 100 }}>
+              <div className="tooltip" style={{ position: 'absolute', top: '15%', left: 90 }}>
                 New credit entry
               </div>
               )}
