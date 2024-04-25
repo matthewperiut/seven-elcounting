@@ -8,6 +8,22 @@ const CustomCalendar = () => {
 
   const [showTooltip, setShowTooltip] = useState(false);
 
+  // Function to process dates further
+  const processDates = (startDate, endDate) => {
+    // Here you can call another function or perform actions with the dates
+    console.log("Start Date:", startDate, "End Date:", endDate);
+    // For example, calling another function: sendDatesSomewhere(startDate, endDate);
+  };
+
+  const handleDateSelection = (range) => {
+    if (range.length === 2) { // Ensure both dates are selected
+      const startDate = range[0].toDate();
+      const endDate = range[1].toDate();
+      // Pass the dates to the processDates function
+      processDates(startDate, endDate);
+    }
+  };
+
   return (
     <div className="calendar-container">
       <button
@@ -24,7 +40,7 @@ const CustomCalendar = () => {
       )}
       {showCalendar && (
         <div className="calendar">
-          <Calendar />
+          <Calendar selectRange={true} onChange={handleDateSelection} />
         </div>
       )}
     </div>

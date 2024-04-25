@@ -11,31 +11,35 @@ const BalanceSheet = () => {
   const [liabilities, setLiabilities] = useState([]);
   const [equities, setEquities] = useState([]);
   const [isBalanced, setIsBalanced] = useState(false);
+  const [accountsSnapshot, setAccountsSnapshot] = useState(null);
 
   useEffect(() => {
     const fetchAccounts = async () => {
-      try {
-        const accountsSnapshot = await getDocs(collection(db, "accounts"));
-        const assetAccounts = [];
-        const liabilityAccounts = [];
-        const equityAccounts = [];
+      if (!accountsSnapshot) { // Only fetch if accountsSnapshot is null
+        try {
+          const snapshot = await getDocs(collection(db, "accounts"));
+          setAccountsSnapshot(snapshot); // Set the snapshot to state
+          const assetAccounts = [];
+          const liabilityAccounts = [];
+          const equityAccounts = [];
 
-        accountsSnapshot.forEach((doc) => {
-          const account = doc.data();
-          if (account.accountCategory === "assets") {
-            assetAccounts.push(account);
-          } else if (account.accountCategory === "liabilities") {
-            liabilityAccounts.push(account);
-          } else if (account.accountCategory === "equity") {
-            equityAccounts.push(account);
-          }
-        });
+          snapshot.forEach((doc) => {
+            const account = doc.data();
+            if (account.accountCategory === "assets") {
+              assetAccounts.push(account);
+            } else if (account.accountCategory === "liabilities") {
+              liabilityAccounts.push(account);
+            } else if (account.accountCategory === "equity") {
+              equityAccounts.push(account);
+            }
+          });
 
-        setAssets(assetAccounts);
-        setLiabilities(liabilityAccounts);
-        setEquities(equityAccounts);
-      } catch (error) {
-        console.error("Error fetching accounts:", error);
+          setAssets(assetAccounts);
+          setLiabilities(liabilityAccounts);
+          setEquities(equityAccounts);
+        } catch (error) {
+          console.error("Error fetching accounts:", error);
+        }
       }
     };
 
