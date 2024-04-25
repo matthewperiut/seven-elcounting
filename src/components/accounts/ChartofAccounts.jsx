@@ -4,6 +4,7 @@ import { db } from "../../firebase-config.js";
 import CustomCalendar from "../tools/CustomCalendar.jsx";
 import Help from "../layouts/Help";
 import formatNumber from "../tools/formatNumber.jsx";
+import EmailAdminsOrManagers from "../tools/EmailAdminsOrManagers.jsx";
 
 function formatDate(timestamp) {
   if (!timestamp) return "";
@@ -480,6 +481,8 @@ const ChartOfAccounts = () => {
       {searchQuery && filteredAccounts.length === 0 && (
         <div className="error">No results found</div>
       )}
+      {/* Don't remove this func below, this is literally required by 3.3, don't @ me - matthew*/}
+      <EmailAdminsOrManagers />
     </div>
   );
 };
