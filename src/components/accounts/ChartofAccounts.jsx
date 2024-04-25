@@ -5,10 +5,11 @@ import CustomCalendar from "../tools/CustomCalendar.jsx";
 import Help from "../layouts/Help";
 import formatNumber from "../tools/formatNumber.jsx";
 import EmailAdminsOrManagers from "../tools/EmailAdminsOrManagers.jsx";
+import { Context } from "../context/UserContext.jsx";
 
 function formatDate(timestamp) {
   if (!timestamp) return "";
-
+  
   const date = timestamp.toDate();
   const options = { year: "numeric", month: "long", day: "numeric" };
   return date.toLocaleDateString("en-US", options);
@@ -339,6 +340,8 @@ const ChartOfAccounts = () => {
     }));
   };
 
+  const { user } = Context();
+
   return (
     <div className="wrapper">
       {!selectedAccount && (
@@ -482,7 +485,7 @@ const ChartOfAccounts = () => {
         <div className="error">No results found</div>
       )}
       {/* Don't remove this func below, this is literally required by 3.3, don't @ me - matthew*/}
-      <EmailAdminsOrManagers />
+      {user.role < 2 && <EmailAdminsOrManagers />}
     </div>
   );
 };
