@@ -2,27 +2,11 @@ import { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
-const CustomCalendar = () => {
+const CustomCalendar = ({handleDateSelection}) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const toggleCalendar = () => setShowCalendar(!showCalendar);
 
   const [showTooltip, setShowTooltip] = useState(false); //For tooltip
-
-  // Function to process dates further
-  const processDates = (startDate, endDate) => {
-    // Here you can call another function or perform actions with the dates
-    console.log("Start Date:", startDate, "End Date:", endDate);
-    // For example, calling another function: sendDatesSomewhere(startDate, endDate);
-  };
-
-  const handleDateSelection = (range) => {
-    if (range.length === 2) { // Ensure both dates are selected
-      const startDate = range[0].toDate();
-      const endDate = range[1].toDate();
-      // Pass the dates to the processDates function
-      processDates(startDate, endDate);
-    }
-  };
 
   return (
     <div className="calendar-container">
