@@ -112,11 +112,11 @@ const Dashboard = () => {
       <CustomCalendar />
       <Help />
       {user.role === 3 ? (
-        <p>Administrator {user && user.displayName}</p>
+        <h1>Administrator {user && user.displayName}</h1>
       ) : user.role === 2 ? (
-        <p>Manager {user && user.displayName}</p>
+        <h1>Manager {user && user.displayName}</h1>
       ) : user.role === 1 ? (
-        <p>Welcome, accountant {user && user.displayName}</p>
+        <h1>Welcome, accountant {user && user.displayName}</h1>
       ) : (
         <p>
           You do not have access to the system yet, please wait for
