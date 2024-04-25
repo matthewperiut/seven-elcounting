@@ -2,7 +2,7 @@ import { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
-const CustomCalendar = ({handleDateSelection}) => {
+const CustomCalendar = ({handleDateSelection, isRange}) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarValue, setCalendarValue] = useState(null); 
   const toggleCalendar = () => setShowCalendar(!showCalendar);
@@ -25,12 +25,10 @@ const CustomCalendar = ({handleDateSelection}) => {
       {showCalendar && (
         <>
           <div className="calendar">
-            <Calendar
-              selectRange={true}
-              onChange={onDateChange}
-              value={calendarValue} // Set the Calendar's value
-            />
-          </div>
+          {!isRange ?
+          (<Calendar selectRange={false} onChange={onDateChange} value={calendarValue} />) :
+          (<Calendar selectRange={true} onChange={onDateChange} value={calendarValue} />) }
+        </div>
           <button onClick={resetDateFilter}>Reset</button>
         </>
       )}

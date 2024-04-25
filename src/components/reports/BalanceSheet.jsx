@@ -17,6 +17,7 @@ const BalanceSheet = () => {
   const [equities, setEquities] = useState([]);
   const [isBalanced, setIsBalanced] = useState(false);
   const [dates, setDates] = useState(null);
+  const [accounts, setAccounts] = useState(null);
 
   useEffect(() => {
     const fetchAccounts = async() => {
@@ -39,27 +40,19 @@ const BalanceSheet = () => {
             });
 
             // Here we go, create accounts, start with bal 0 if not existing, add or subtract
-            let accounts = [];
+            let accountsTemp = accounts;
+            accountsTemp.forEach((account) => {
+              account.balance = 0;
+            });
+
             for (let i = 0; i < relevantEntries.length; i++) {
               let currentEntry = relevantEntries[i];
               let foundAccount = null;
               let foundAccIndex = -1;
-              for (let j = 0; j < accounts.length; j++) {
-                if (currentEntry.account === accounts[j].accountName) {
-                  foundAccount = accounts[j].accountName
+              for (let j = 0; j < accountsTemp.length; j++) {
+                if (currentEntry.account === accountsTemp[j].accountName) {
+                  foundAccount = accountsTemp[j].accountName
                   foundAccIndex = j;
-                }
-              }
-              if (!foundAccount) {
-                const accDocRef = doc(db, "accounts", currentEntry.accountID);
-                const docSnap = await getDoc(accDocRef);
-                if (docSnap.exists()) {
-                  let accData = docSnap.data();
-                  accData.balance = 0;
-                  foundAccIndex = accounts.length;
-                  accounts.push(accData);
-                } else {
-                  console.warn( currentEntry.accountName + " DNE???");
                 }
               }
 
@@ -67,19 +60,19 @@ const BalanceSheet = () => {
               let new_bal = 0;
               if (addition) {
                 new_bal =
-                accounts[foundAccIndex].balance + parseFloat(currentEntry.amount);
+                accountsTemp[foundAccIndex].balance + parseFloat(currentEntry.amount);
               } else {
                 new_bal =
-                  accounts[foundAccIndex].balance - parseFloat(currentEntry.amount);
+                accountsTemp[foundAccIndex].balance - parseFloat(currentEntry.amount);
               }
-              accounts[foundAccIndex].balance = new_bal;
+              accountsTemp[foundAccIndex].balance = new_bal;
             }
-            console.log(accounts);
+            console.log(accountsTemp);
 
             const assetAccounts = [];
             const liabilityAccounts = [];
             const equityAccounts = [];
-            accounts.forEach((account) => {
+            accountsTemp.forEach((account) => {
               if (account.accountCategory === "assets") {
                 assetAccounts.push(account);
               } else if (account.accountCategory === "liabilities") {
@@ -100,25 +93,34 @@ const BalanceSheet = () => {
           
         } else {
           try {
-            const snapshot = await getDocs(collection(db, "accounts"));
-            const assetAccounts = [];
-            const liabilityAccounts = [];
-            const equityAccounts = [];
-  
-            snapshot.forEach((doc) => {
-              const account = doc.data();
-              if (account.accountCategory === "assets") {
-                assetAccounts.push(account);
-              } else if (account.accountCategory === "liabilities") {
-                liabilityAccounts.push(account);
-              } else if (account.accountCategory === "equity") {
-                equityAccounts.push(account);
-              }
-            });
-  
-            setAssets(assetAccounts);
-            setLiabilities(liabilityAccounts);
-            setEquities(equityAccounts);
+            if (!accounts) {
+              const snapshot = await getDocs(collection(db, "accounts"));
+              let accountsTemp = [];
+              const assetAccounts = [];
+              const liabilityAccounts = [];
+              const equityAccounts = [];
+    
+              snapshot.forEach((doc) => {
+                const account = doc.data();
+                accountsTemp.push(account);
+              });
+
+              setAccounts(accountsTemp);
+
+              accountsTemp.forEach((account) => {
+                if (account.accountCategory === "assets") {
+                  assetAccounts.push(account);
+                } else if (account.accountCategory === "liabilities") {
+                  liabilityAccounts.push(account);
+                } else if (account.accountCategory === "equity") {
+                  equityAccounts.push(account);
+                }
+              })
+    
+              setAssets(assetAccounts);
+              setLiabilities(liabilityAccounts);
+              setEquities(equityAccounts); 
+            }
           } catch (error) {
             console.error("Error fetching accounts:", error);
           }
@@ -149,7 +151,7 @@ const BalanceSheet = () => {
 
   return (
     <div className="wrapper">
-      <CustomCalendar handleDateSelection={selectDate}/>
+      <CustomCalendar handleDateSelection={selectDate} isRange={true}/>
       <Help componentName="BalanceSheet" />
       <div id="capture">
         <h1>Balance Sheet</h1>
