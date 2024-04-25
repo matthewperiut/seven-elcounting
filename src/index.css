@@ -168,10 +168,6 @@ select {
 /* Input fields */
 
 /* Dashboard/Banner */
-.welcome-div {
-  text-align: center;
-}
-
 .banner {
   padding: 15px;
   display: flex;

@@ -13,7 +13,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "../../firebase-config";
 import { Context } from "../context/UserContext";
 import { reportError } from "../events/ErrorLogController";
-import CustomCalendar from "../layouts/CustomCalendar";
+import CustomCalendar from "../tools/CustomCalendar";
 import Help from "../layouts/Help";
 
 const Journalizing = ({ adjustingEntry, adjust, update }) => {

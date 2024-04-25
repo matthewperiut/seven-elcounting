@@ -21,7 +21,8 @@
     "react-currency-input-field": "^3.8.0",
     "react-dom": "^18.2.0",
     "react-password-checklist": "^1.5.0",
-    "react-router-dom": "^6.22.3"
+    "react-router-dom": "^6.22.3",
+    "recharts": "^2.12.6"
   },
   "devDependencies": {
     "@types/react": "^18.2.55",

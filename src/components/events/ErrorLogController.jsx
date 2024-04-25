@@ -1,6 +1,6 @@
 import { db } from "../../firebase-config";
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import React, { Component } from 'react';
+import { Component } from 'react';
 
 export async function reportError(errorStr) {
     // Use a simplified version of the error string as a document ID

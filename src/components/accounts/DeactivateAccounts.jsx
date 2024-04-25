@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { db } from '../../firebase-config';
-import CustomCalendar from '../layouts/CustomCalendar';
+import CustomCalendar from '../tools/CustomCalendar';
 import Help from '../layouts/Help';
 import {Context} from "../context/UserContext.jsx";
 import {logEventDeactivation} from "../events/EventLogController.jsx";

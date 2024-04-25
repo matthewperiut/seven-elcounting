@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import {db} from "../../firebase-config.js";
-import CustomCalendar from '../layouts/CustomCalendar.jsx';
+import CustomCalendar from '../tools/CustomCalendar.jsx';
 import Help from '../layouts/Help.jsx';
 
 function formatDate(timestamp) {

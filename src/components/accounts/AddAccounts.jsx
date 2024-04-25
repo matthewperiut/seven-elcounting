@@ -9,7 +9,7 @@ import {
   doc,
 } from "firebase/firestore";
 import CurrencyInput from "react-currency-input-field";
-import CustomCalendar from "../layouts/CustomCalendar";
+import CustomCalendar from "../tools/CustomCalendar";
 import Help from "../layouts/Help";
 import { reportError } from "../events/ErrorLogController.jsx";
 import { logEventCreation } from "../events/EventLogController.jsx";

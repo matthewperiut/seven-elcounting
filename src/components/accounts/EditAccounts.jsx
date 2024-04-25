@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase-config.js";
-import CustomCalendar from "../layouts/CustomCalendar.jsx";
+import CustomCalendar from "../tools/CustomCalendar.jsx";
 import CurrencyInput from "react-currency-input-field";
 import Help from "../layouts/Help";
 import { logEvent } from "../events/EventLogController.jsx";

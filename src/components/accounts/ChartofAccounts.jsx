@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase-config.js";
-import CustomCalendar from "../layouts/CustomCalendar.jsx";
+import CustomCalendar from "../tools/CustomCalendar.jsx";
 import Help from "../layouts/Help";
 import formatNumber from "../tools/formatNumber.jsx";
 
@@ -101,7 +101,7 @@ const Ledger = ({ isOpen, onClose, account }) => {
                         <td>{selectedPR.user}</td>
                         <td>{entry.account}</td>
                         <td>{entry.type}</td>
-                        <td>{entry.amount}</td>
+                        <td>{formatNumber(entry.amount)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -188,24 +188,26 @@ const Ledger = ({ isOpen, onClose, account }) => {
                                 ))}
                             </td>
                             <td>
-                              {formatNumber(entry.entries
-                                .filter(
-                                  (subEntry) =>
-                                    subEntry.account === account.accountName
-                                )
-                                .reduce((balance, subEntry) => {
-                                  let amount = parseFloat(subEntry.amount);
-                                  let addition =
-                                    subEntry.type === account.normalSide;
+                              {formatNumber(
+                                entry.entries
+                                  .filter(
+                                    (subEntry) =>
+                                      subEntry.account === account.accountName
+                                  )
+                                  .reduce((balance, subEntry) => {
+                                    let amount = parseFloat(subEntry.amount);
+                                    let addition =
+                                      subEntry.type === account.normalSide;
 
-                                  if (addition) {
-                                    balance += amount;
-                                  } else {
-                                    balance -= amount;
-                                  }
-                                  runningBalance = balance;
-                                  return balance;
-                                }, runningBalance))}
+                                    if (addition) {
+                                      balance += amount;
+                                    } else {
+                                      balance -= amount;
+                                    }
+                                    runningBalance = balance;
+                                    return balance;
+                                  }, runningBalance)
+                              )}
                             </td>
                             <td>
                               <span

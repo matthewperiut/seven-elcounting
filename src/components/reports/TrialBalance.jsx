@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase-config.js";
-import CustomCalendar from "../layouts/CustomCalendar";
+import CustomCalendar from "../tools/CustomCalendar.jsx";
 import ReportToolSuite from "../tools/ReportToolSuite";
 import formatNumber from "../tools/formatNumber";
 
@@ -53,7 +53,7 @@ const TrialBalance = () => {
             {accounts
               .sort((a, b) => a.accountNumber - b.accountNumber)
               .map((account) => (
-                <tr key={account.id}>
+                <tr key={account.accountID}>
                   <td>{account.accountName}</td>
                   <td>
                     {account.normalSide === "debit" &&

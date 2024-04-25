@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { doc, getDocs, collection, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import { Context } from "../context/UserContext";
-import CustomCalendar from "../layouts/CustomCalendar";
+import CustomCalendar from "../tools/CustomCalendar";
 import { logEvent } from "../events/EventLogController.jsx";
 import Help from "../layouts/Help";
 

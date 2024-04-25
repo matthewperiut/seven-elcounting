@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { db } from "../../firebase-config";
 import { Context } from "../context/UserContext";
-import CustomCalendar from "../layouts/CustomCalendar";
+import CustomCalendar from "../tools/CustomCalendar";
 import Help from "../layouts/Help";
 import Journalizing from "../accounts/Journalizing";
 import formatNumber from "../tools/formatNumber";
