@@ -20,7 +20,7 @@ const RetainedEarnings = () => {
             where("accountName", "==", "Retained Earnings")
           )
         );
-        const salesRevenueAccount = await getDocs(
+        const revenues = await getDocs(
           query(
             collection(db, "accounts"),
             where("accountCategory", "==", "revenues")
@@ -43,9 +43,11 @@ const RetainedEarnings = () => {
         expenses.forEach((doc) => {
           totalExpenses += doc.data().balance;
         });
-        setIncome(
-          (salesRevenueAccount.docs[0].data().balance - totalExpenses) * 0.8
-        );
+        let totalRevenues = 0;
+        revenues.forEach((doc) => {
+          totalRevenues += doc.data().balance;
+        });
+        setIncome((totalRevenues - totalExpenses) * 0.8);
         setDividends(dividendsAccount.docs[0].data().balance);
       } catch (error) {
         console.error(error.message);

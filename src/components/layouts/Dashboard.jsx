@@ -55,7 +55,7 @@ const Dashboard = () => {
       0
     );
 
-    const salesRevenueAccount = await getDocs(
+    const revenues = await getDocs(
       query(
         collection(db, "accounts"),
         where("accountCategory", "==", "revenues")
@@ -72,10 +72,12 @@ const Dashboard = () => {
     expenses.forEach((doc) => {
       totalExpenses += doc.data().balance;
     });
-    setIncome(
-      (salesRevenueAccount.docs[0].data().balance - totalExpenses) * 0.8
-    );
-    setSales(salesRevenueAccount.docs[0].data().balance);
+    let totalRevenues = 0;
+    revenues.forEach((doc) => {
+      totalRevenues += doc.data().balance;
+    });
+    setIncome((totalRevenues - totalExpenses) * 0.8);
+    setSales(totalRevenues);
     setpendingEntries(pendingSnapshot.size);
     setCurrentAssetsTotal(currentAssetsTotal);
     setCurrentLiabilitiesTotal(currentLiabilitiesTotal);
@@ -148,7 +150,7 @@ const Dashboard = () => {
                 : "error"
             }
           >
-            Current Ratio: {currentAssetsTotal / currentLiabilitiesTotal}
+            Current Ratio: {(currentAssetsTotal / currentLiabilitiesTotal).toFixed(2)}
           </p>
           <div className="dashboard-chart">
             <ResponsiveContainer>
@@ -189,7 +191,7 @@ const Dashboard = () => {
                 : "error"
             }
           >
-            Profit Margin: {income / sales}
+            Profit Margin: {(income / sales).toFixed(2)}
           </p>
           <div className="dashboard-chart">
             <ResponsiveContainer>

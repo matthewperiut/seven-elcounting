@@ -7,7 +7,7 @@ import formatNumber from "../tools/formatNumber";
 import Help from "../layouts/Help";
 
 const IncomeStatement = () => {
-  const [revenue, setRevenue] = useState([]);
+  const [revenues, setRevenues] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [costOfGoodsSold, setCostOfGoodsSold] = useState([]);
 
@@ -15,34 +15,43 @@ const IncomeStatement = () => {
     const fetchAccountsAndEntries = async () => {
       try {
         // Fetch accounts and classify them as revenues or expenses
-        const revenueAccount = await getDocs(
-          query(
-            collection(db, "accounts"),
-            where("isActivated", "==", true),
-            where("accountCategory", "==", "revenues")
-          )
-        );
-        const costOfGoodsSoldAccount = await getDocs(
+        const costOfGoodsSoldSnapshot = await getDocs(
           query(
             collection(db, "accounts"),
             where("isActivated", "==", true),
             where("accountName", "==", "Cost of Goods Sold")
           )
         );
-        const expenseAccounts = await getDocs(
+        const revenuesSnapshot = await getDocs(
+          query(
+            collection(db, "accounts"),
+            where("isActivated", "==", true),
+            where("accountCategory", "==", "revenues")
+          )
+        );
+        const revenuesData = revenuesSnapshot.docs.map((doc) => ({
+          ...doc.data(),
+        }));
+
+        const expensesSnapshot = await getDocs(
           query(
             collection(db, "accounts"),
             where("isActivated", "==", true),
             where("accountCategory", "==", "expenses")
           )
         );
-        const expensesData = expenseAccounts.docs
+        const expensesData = expensesSnapshot.docs
           .filter((doc) => doc.data().accountName !== "Cost of Goods Sold")
           .map((doc) => ({
             ...doc.data(),
           }));
-        setRevenue(revenueAccount.docs[0].data());
-        setCostOfGoodsSold(costOfGoodsSoldAccount.docs[0].data());
+
+        let totalRevenues = 0;
+        revenuesSnapshot.forEach((doc) => {
+          totalRevenues += doc.data().balance;
+        });
+        setRevenues(revenuesData);
+        setCostOfGoodsSold(costOfGoodsSoldSnapshot.docs[0].data());
         setExpenses(expensesData);
       } catch (error) {
         console.error("Error fetching accounts: ", error);
@@ -54,6 +63,10 @@ const IncomeStatement = () => {
 
   const totalExpenses = expenses.reduce(
     (total, expense) => total + expense.balance,
+    0
+  );
+  const totalRevenues = revenues.reduce(
+    (total, revenue) => total + revenue.balance,
     0
   );
 
@@ -71,9 +84,19 @@ const IncomeStatement = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>{revenue.accountName}</td>
-              <td>{formatNumber(parseFloat(revenue.balance))}</td>
+          <tr className="statement-category">
+              <td>Revenues</td>
+              <td></td>
+            </tr>
+          {revenues.map((revenue) => (
+              <tr key={revenue.accountID}>
+                <td>{revenue.accountName}</td>
+                <td>{formatNumber(parseFloat(revenue.balance))}</td>
+              </tr>
+            ))}
+            <tr className="statement-category">
+              <td>Cost of Goods Sold</td>
+              <td></td>
             </tr>
             <tr>
               <td>{costOfGoodsSold.accountName}</td>
@@ -81,7 +104,7 @@ const IncomeStatement = () => {
             </tr>
             <tr className="statement-total">
               <td>Gross Profit</td>
-              <td>{formatNumber(revenue.balance - costOfGoodsSold.balance)}</td>
+              <td>{formatNumber(totalRevenues - costOfGoodsSold.balance)}</td>
             </tr>
             <tr className="statement-category">
               <td>Expenses</td>
@@ -101,7 +124,7 @@ const IncomeStatement = () => {
               <td>Income Before Taxes</td>
               <td>
                 {formatNumber(
-                  revenue.balance - costOfGoodsSold.balance - totalExpenses
+                  totalRevenues - costOfGoodsSold.balance - totalExpenses
                 )}
               </td>
             </tr>
@@ -109,7 +132,7 @@ const IncomeStatement = () => {
               <td>Taxes</td>
               <td>
                 {formatNumber(
-                  (revenue.balance - costOfGoodsSold.balance - totalExpenses) *
+                  (totalRevenues - costOfGoodsSold.balance - totalExpenses) *
                     0.2
                 )}
               </td>
@@ -118,7 +141,7 @@ const IncomeStatement = () => {
               <td>Net Income</td>
               <td>
                 {formatNumber(
-                  (revenue.balance - costOfGoodsSold.balance - totalExpenses) *
+                  (totalRevenues - costOfGoodsSold.balance - totalExpenses) *
                     0.8
                 )}
               </td>
