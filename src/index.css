@@ -65,6 +65,42 @@ button:hover {
   color: white;
   white-space: nowrap;
 }
+.tooltip2 {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: block;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: white;
+  white-space: nowrap;
+}
+.tooltip_basic {
+  display: inline block;
+  position: absolute;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: white;
+  white-space: nowrap;
+}
+
+.tooltip-right {
+  background: rgba(0, 0, 0, 0.5);
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+}
+
+.tooltip-left {
+  background: rgba(0, 0, 0, 0.5);
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+}
 /* Tooltips */
 
 /* Calendar */

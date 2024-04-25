@@ -17,6 +17,8 @@ import CustomCalendar from "../tools/CustomCalendar";
 import Help from "../layouts/Help";
 
 const Journalizing = ({ adjustingEntry, adjust, update }) => {
+  const [showTooltip, setShowTooltipDebit] = useState(false);
+  const [showTooltipC, setShowTooltipCredit] = useState(false);
   const { user } = Context(); //pull user context for user ID
   const [accounts, setAccounts] = useState([]); //array to hold all active accounts
   const [debitsList, setDebitsList] = useState([{ account: "", amount: "" }]); //array of objects for creating new inputs and storing account and amount info
@@ -279,10 +281,18 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
             ))}
             <button
               type="button"
+              onMouseEnter={() => setShowTooltipDebit(true)}
+              onMouseLeave={() => setShowTooltipDebit(false)}
               onClick={handleDebitAdd}
               className="addtransaction-button"
+              style={{ position: 'relative' }} 
             >
               Add Entry
+              {showTooltip && (
+              <div className="tooltip" style={{ position: 'absolute', top: '15%', left: 100 }}>
+                New debit entry
+              </div>
+              )}
             </button>
           </div>
         </div>
@@ -329,10 +339,18 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
             ))}
             <button
               type="button"
+              onMouseEnter={() => setShowTooltipCredit(true)}
+              onMouseLeave={() => setShowTooltipCredit(false)}
               onClick={handleCreditAdd}
               className="addtransaction-button"
+              style={{ position: 'relative' }} 
             >
               Add Entry
+              {showTooltipC && (
+              <div className="tooltip" style={{ position: 'absolute', top: '15%', left: 100 }}>
+                New credit entry
+              </div>
+              )}
             </button>
           </div>
         </div>

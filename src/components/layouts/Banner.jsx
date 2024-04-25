@@ -3,12 +3,13 @@ import default_pfp from '../../assets/default_pfp.png';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { Context } from '../context/UserContext';
 import Reports from '../reports/Reports';
-import Accounts from '../accounts/Accounts'
-
+import Accounts from '../accounts/Accounts';
+import React, { useState } from 'react'; 
 
 export const Banner = () => {
   const { user, logout } = Context(); //pull user context and logout function
   const navigate = useNavigate();
+  const [showTooltip, setShowTooltip] = useState(false); 
 
   const backToHome = () => {
     navigate("/", { replace: true })
@@ -37,7 +38,21 @@ export const Banner = () => {
               )}
             </ul>
         )}
-          <img className='logo' onClick={backToHome} src={logo} alt="Logo" />
+        <div className="logo-container"
+          onMouseEnter={() => setShowTooltip(true)} 
+          onMouseLeave={() => setShowTooltip(false)}
+          style={{ position: 'relative' }}>
+            <img className='logo' 
+            onClick={backToHome} 
+            src={logo} 
+            alt="Logo" 
+          />
+          {showTooltip && (
+            <div className="tooltip" style={{ position: 'absolute', top: '75%', left: '35%'}}>
+              Dashboard
+            </div>
+          )}
+        </div>
       </div>
       <div><Outlet /></div>
     </>
