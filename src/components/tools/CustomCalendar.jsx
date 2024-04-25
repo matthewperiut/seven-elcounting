@@ -6,7 +6,7 @@ const CustomCalendar = () => {
   const [showCalendar, setShowCalendar] = useState(false);
   const toggleCalendar = () => setShowCalendar(!showCalendar);
 
-  const [showTooltip, setShowTooltip] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false); //For tooltip
 
   // Function to process dates further
   const processDates = (startDate, endDate) => {
