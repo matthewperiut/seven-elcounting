@@ -2,10 +2,10 @@ import { useState } from "react";
 import SendEmail from "./EmailHandler";
 import UserContextProvider, { Context } from "../context/UserContext";
 
-const EmailAdminsOrManagers = () => {
+const EmailUser = ({ in_email }) => {
     const { user } = Context();
     const [show, setShow] = useState(false);
-    const [issue, setIssue] = useState("");
+    const [title, setTitle] = useState("");
     const [message, setMessage] = useState("");
     const [submitted, setSubmitted] = useState(false);
 
@@ -14,8 +14,8 @@ const EmailAdminsOrManagers = () => {
         setSubmitted(false);
     };
 
-    const handleIssueChange = (event) => {
-        setIssue(event.target.value);
+    const handleTitleChange = (event) => {
+        setTitle(event.target.value);
     };
 
     const handleMessageChange = (event) => {
@@ -23,26 +23,25 @@ const EmailAdminsOrManagers = () => {
     };
 
     const handleSubmit = async () => {
-        console.log("Submitting Issue:", issue, "Message:", message);
-        await SendEmail("Issue Report: " + issue, "matthewperiut@gmail.com", user.email, "Manager", message);
-        setIssue("");
+        await SendEmail(title, in_email, user.email, "", message);
+        setTitle("");
         setMessage("");
         setShow(false);
         setSubmitted(true);
     };
 
     return (
-        <div>
-            <button onClick={toggleShow}>{show ? "Close Form" : "Email Managers for Assistance"}</button>
+        <>
+            <button onClick={toggleShow}>{show ? "Close" : "Email"}</button>
             {show && !submitted && (
                 <div>
                     <div style={{ margin: "10px 0" }}>
-                        <label htmlFor="issue">Issue:</label>
+                        <label htmlFor="title">Title:</label>
                         <input 
                             type="text" 
-                            id="issue" 
-                            value={issue}
-                            onChange={handleIssueChange} 
+                            id="title" 
+                            value={title}
+                            onChange={handleTitleChange} 
                             style={{ marginLeft: "10px" }} 
                         />
                     </div>
@@ -59,8 +58,8 @@ const EmailAdminsOrManagers = () => {
                 </div>
             )}
             {submitted && <div style={{ color: "green" }}>Email Successfully Sent!</div>}
-        </div>
+        </>
     );
 }
 
-export default EmailAdminsOrManagers;
+export default EmailUser;

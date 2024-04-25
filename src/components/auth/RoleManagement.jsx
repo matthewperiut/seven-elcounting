@@ -5,6 +5,7 @@ import { Context } from "../context/UserContext";
 import CustomCalendar from "../tools/CustomCalendar";
 import { logEvent } from "../events/EventLogController.jsx";
 import Help from "../layouts/Help";
+import EmailUser from "../tools/EmailUser.jsx";
 
 const Modal = ({ isOpen, onClose, user: edittingUser, updateUser }) => {
   const [localUser, setLocalUser] = useState(edittingUser);
@@ -131,12 +132,10 @@ export const RoleManagement = () => {
         {users.map((user) => (
           <div key={user.id} className="database-item">
             <p>{user.email}</p>
-            <button
-              onClick={() => handleOpenModal(user)}
-              className="button-edit"
-            >
-              Edit
-            </button>
+            <div>
+            <button onClick={() => handleOpenModal(user)}>Edit</button>
+            <EmailUser in_email={user.email} />
+            </div>
           </div>
         ))}
       </div>
