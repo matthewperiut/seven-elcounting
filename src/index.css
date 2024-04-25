@@ -67,6 +67,39 @@ button:hover {
 }
 /* Tooltips */
 
+/* Dark theme */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #121212; /* Dark background for dark theme */
+    color: #e0e0e0; /* Light text for dark theme */
+  }
+
+  .error {
+    color: #ff5555;
+  }
+
+  .success {
+    color: #55a630;
+  }
+
+  .warning {
+    color: #fbb034;
+  }
+
+  button {
+    background-color: #5058dd;
+  }
+
+  button:hover {
+    background-color: #4048c9;
+  }
+
+  .tooltip {
+    background: rgba(255, 255, 255, 0.9);
+    color: black;
+  }
+}
+
 /* Calendar */
 .calendar-container {
   position: absolute;
