@@ -342,6 +342,22 @@ const ChartOfAccounts = () => {
     }));
   };
 
+  // Reset columns to the original layout
+  const resetColumns = () => {
+    setVisibleColumns({
+      accountName: true,
+      accountNumber: true,
+      accountDescription: false,
+      normalSide: false,
+      category: true,
+      subcategory: true,
+      initialBalance: false,
+      date: false,
+      userID: false,
+      order: false,
+      financialStatement: true,
+    });
+  };
   const { user } = Context();
 
   return (
@@ -393,6 +409,7 @@ const ChartOfAccounts = () => {
                     <label htmlFor={columnName}>{columnName}</label>
                   </div>
                 ))}
+                <button onClick={resetColumns}>Reset</button>
               </div>
             )}
           </div>
