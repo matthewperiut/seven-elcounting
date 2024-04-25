@@ -29,7 +29,6 @@ const Ledger = ({ isOpen, onClose, account }) => {
   const [showPostRef, setShowPostRef] = useState(false);
   const [selectedPR, setSelectedPR] = useState(null);
 
-
   const handlePRClick = (pr) => {
     setSelectedPR(pr); // Set the selected PR
     setShowPostRef(true); // Open the PostRefModal
@@ -237,12 +236,10 @@ const Ledger = ({ isOpen, onClose, account }) => {
 
 const ChartOfAccounts = () => {
   const [accounts, setAccounts] = useState([]);
-  const [querySnapshot, setQuerySnapshot] = useState(null);
-  const [queryModalSnapshot, setQueryModalSnapshot] = useState(null);
+
   //used for searching account name or number
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredAccounts, setFilteredAccounts] = useState([]);
-  
 
   //setting the columns to show or not
   const [visibleColumns, setVisibleColumns] = useState({
@@ -263,22 +260,19 @@ const ChartOfAccounts = () => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
-    
     const fetchAccounts = async () => {
-      if (!querySnapshot) {
-        try {
-          const snapshot = await getDocs(
-            query(collection(db, "accounts"), where("isActivated", "==", true))
-          );
-          setQuerySnapshot(snapshot); //grabs all active accounts
-          const fetchedAccounts = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setAccounts(fetchedAccounts);
-        } catch (error) {
-          console.log(error.message);
-        }
+      try {
+        console.log("getDocs called");
+        const querySnapshot = await getDocs(
+          query(collection(db, "accounts"), where("isActivated", "==", true))
+        ); //grabs all active accounts
+        const fetchedAccounts = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setAccounts(fetchedAccounts);
+      } catch (error) {
+        console.log(error.message);
       }
     };
     fetchAccounts();
@@ -307,43 +301,33 @@ const ChartOfAccounts = () => {
   };
 
   const openModal = async (account) => {
-    if (!queryModalSnapshot) {
-      try {
-        const querySnapshot = await getDocs(
-          query(
-            collection(db, "journalEntries"),
-            where("isApproved", "==", true) // Ensure only fetching approved entries
-          )
-        );
-
-        setQueryModalSnapshot(querySnapshot);
-        
-      } catch (error) {
-        console.error("Error fetching ledger data:", error.message);
-      }
-    }
-
     try {
-      
-        const allEntries = queryModalSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        const relatedEntries = allEntries.filter(
-          (entry) =>
-            entry.entries &&
-            entry.entries.some(
-              (subEntry) => subEntry.account === account.accountName
-            )
-        );
-        // Pass dateAccountAdded to the Ledger
-        setSelectedAccount({
-          ...account,
-          ledgerData: relatedEntries,
-        });
-      } catch (error) {
-        console.error("Error fetching ledger data:", error.message);
-      }
+      console.log("getDocs called open Modal" );
+      const querySnapshot = await getDocs(
+        query(
+          collection(db, "journalEntries"),
+          where("isApproved", "==", true) // Ensure only fetching approved entries
+        )
+      );
+      const allEntries = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      const relatedEntries = allEntries.filter(
+        (entry) =>
+          entry.entries &&
+          entry.entries.some(
+            (subEntry) => subEntry.account === account.accountName
+          )
+      );
+      // Pass dateAccountAdded to the Ledger
+      setSelectedAccount({
+        ...account,
+        ledgerData: relatedEntries,
+      });
+    } catch (error) {
+      console.error("Error fetching ledger data:", error.message);
+    }
   };
 
   const onClose = () => {
