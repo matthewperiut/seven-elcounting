@@ -29,7 +29,7 @@ p {
 }
 
 .warning {
-  color: #f1ee0b;
+  color: #dad608;
   font-weight: bold;
   font-size: 20px;
 }
@@ -376,8 +376,7 @@ select {
 
 .viewDB-label {
   text-align: left;
-  margin: 10px;
-  margin-left: 470px; /* Center labels */
+  margin: 10px auto;
 }
 
 .viewDB-label label{

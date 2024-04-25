@@ -82,7 +82,7 @@ const Dashboard = () => {
 
     const currentRatio = currentAssetsTotal / currentLiabilitiesTotal;
     if (currentRatio >= 1.5) setLiquidityRatio(1);
-    else if (currentRatio < 1.5 && currentRatio > 1) setLiquidityRatio(2);
+    else if (currentRatio < 1.5 && currentRatio >= 1) setLiquidityRatio(2);
     else if (currentRatio < 1) setLiquidityRatio(3);
 
     const profitMargin = income / sales;
