@@ -216,6 +216,15 @@ const Entries = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [viewType, setViewType] = useState("3");
 
+  //allows user to select date(s)
+  const [selectedDate, setSelectedDate] = useState(null);
+    const handleDateSelection = (value) => {
+      setSelectedDate(value);
+    };
+    const handleResetDateFilter = () => {
+      setSelectedDate(null);
+    };
+
   const fetchEntries = async () => {
     //queries entries based off approval status
     const pendingSnapshot = await getDocs(
@@ -268,24 +277,43 @@ const Entries = () => {
   }, []);
 
   const getFilteredEntries = (entries) => {
-    if (!searchTerm) return entries;
-
-    return entries.filter((entry) => {
-      return entry.entries.some((subEntry) => {
-        return (
-          subEntry.account.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          subEntry.amount.toString().includes(searchTerm) ||
-          formatDate(entry.dateCreated)
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) 
-        );
+    let filteredEntries = entries;
+    
+    if (searchTerm) {
+      filteredEntries = filteredEntries.filter((entry) => {
+        return entry.entries.some((subEntry) => {
+          return (
+            subEntry.account.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            subEntry.amount.toString().includes(searchTerm) ||
+            formatDate(entry.dateCreated)
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          );
+        });
       });
-    });
+    }
+    // More filtering by the selected date(s) 
+    if (selectedDate) {
+      const [startDate, endDate] = selectedDate;
+      filteredEntries = filteredEntries.filter((entry) => {
+        const entryDate = entry.dateCreated.toDate();
+        // If user selects second dat, it assume range
+        if (endDate) {
+          return entryDate >= startDate && entryDate <= endDate;
+        }
+        // Otherwise, filter as single date
+        return entryDate.toDateString() === startDate.toDateString();
+      });
+    }
+    return filteredEntries;
   };
 
   return (
     <div className="wrapper">
-      <CustomCalendar />
+      <CustomCalendar
+        handleDateSelection={handleDateSelection}
+        handleResetDateFilter={handleResetDateFilter} 
+      />
       <Help componentName="JournalEntries" />
       <div>
         <input
