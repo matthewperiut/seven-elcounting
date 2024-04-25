@@ -145,19 +145,25 @@ const BalanceSheet = () => {
   const equityTotal = calculateTotal(equities);
   const liabilitiesPlusEquity = liabilitiesTotal + equityTotal;
 
-  function selectDate(dates) {
-    setDates(dates);
+  function selectDate(date) {
+    try {
+    const date2 = new Date('2023-12-17T03:24:00');
+    date.setHours(23, 59, 0, 0);
+    setDates([date2, date]);
+  } catch (e) {
+    setDates(null);
+  }
   }
 
   return (
     <div className="wrapper">
-      <CustomCalendar handleDateSelection={selectDate} isRange={true}/>
+      <CustomCalendar handleDateSelection={selectDate} isRange={false}/>
       <Help componentName="BalanceSheet" />
       <div id="capture">
         <h1>Balance Sheet</h1>
         {!dates ? "" : (
           <div>
-            <p>From {formatDate(dates[0])} to {formatDate(dates[1])}</p>
+            <p>On {formatDate(dates[1])}</p>
           </div>
         )}
         <p className={isBalanced ? "success" : "error"}>
