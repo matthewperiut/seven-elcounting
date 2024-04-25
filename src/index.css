@@ -130,8 +130,12 @@ button:hover {
 .help-content p {
   text-align: center;
 }
-/* Help Button */
 
+.emphasis {
+  font-size: 1.5em; 
+  font-weight: bold; 
+/* Help Button */
+}
 /* Input fields */
 .wrapper {
   position: relative;
