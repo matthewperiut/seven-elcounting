@@ -6,6 +6,11 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import Help from "../layouts/Help";
 
+function formatDate(date) {
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  return date.toLocaleDateString("en-US", options);
+}
+
 const RetainedEarnings = () => {
   const [retainedEarnings, setRetainedEarnings] = useState(null);
   const [income, setIncome] = useState(null);
@@ -66,7 +71,9 @@ const RetainedEarnings = () => {
         <table className="statement-table">
           <tbody>
             <tr>
-              <td>Retained earnings</td>
+              
+              {/* PUT START DATE HERE */}
+              <td>Retained earnings as of {formatDate(new Date())}</td>
               <td>{formatNumber(parseFloat(retainedEarnings))}</td>
             </tr>
             <tr>
@@ -82,7 +89,9 @@ const RetainedEarnings = () => {
               <td>{formatNumber(parseFloat(dividends))}</td>
             </tr>
             <tr className="statement-total">
-              <td></td>
+
+              {/* PUT END DATE HERE */}
+              <td>Retained earnings as of {formatDate(new Date())}</td>
               <td>{formatNumber(retainedEarnings + income - dividends)}</td>
             </tr>
           </tbody>

@@ -82,7 +82,7 @@ const TrialBalance = () => {
               .map((account) => (
                 <tr key={account.accountID}>
                   <td>{account.accountName}</td>
-                  <td>
+                  <td style={{textAlign: "center"}}>
                     {account.normalSide === "debit" &&
                       formatNumber(account.balance)}
                   </td>
@@ -94,7 +94,7 @@ const TrialBalance = () => {
               ))}
             <tr className="statement-total">
               <td>Total</td>
-              <td>{formatNumber(totalDebits)}</td>
+              <td style={{textAlign: "center"}}>{formatNumber(totalDebits)}</td>
               <td>{formatNumber(totalCredits)}</td>
             </tr>
           </tbody>
