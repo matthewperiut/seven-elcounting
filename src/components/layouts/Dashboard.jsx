@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Context } from "../context/UserContext";
+import EmailAdminsOrManagers from "../tools/EmailAdminsOrManagers";
 import CustomCalendar from "../tools/CustomCalendar";
 import Help from "./Help";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
+
 
 const Dashboard = () => {
   const { user } = Context(); // pull user context
@@ -101,8 +103,9 @@ const Dashboard = () => {
             <Tooltip />
             <Bar dataKey="value" fill="#8884d8" />
           </BarChart>
-        </ResponsiveContainer>
+        </ResponsiveContainer>        
       </div>
+      <EmailAdminsOrManagers />
     </div>
   );
 };
