@@ -87,7 +87,7 @@ const Dashboard = () => {
 
     const profitMargin = income / sales;
     if (profitMargin > 0.1) setProfitRatio(1);
-    else if (profitMargin > 0.05 && profitMargin < 0.1) setProfitRatio(2);
+    else if (profitMargin < 0.1 && profitMargin >= 0.05) setProfitRatio(2);
     else if (profitMargin < 0.05) setProfitRatio(3);
   };
 
@@ -131,9 +131,9 @@ const Dashboard = () => {
       <div className="dashboard">
         <div
           className={`dashboard-box ${
-            profitRatio === 1
+            liquidityRatio === 1
               ? "good-ratio"
-              : profitRatio === 2
+              : liquidityRatio === 2
               ? "warning-ratio"
               : "bad-ratio"
           }`}
@@ -141,9 +141,9 @@ const Dashboard = () => {
           <h1>Liquidity Dashboard</h1>
           <p
             className={
-              profitRatio === 1
+              liquidityRatio === 1
                 ? "success"
-                : profitRatio === 2
+                : liquidityRatio === 2
                 ? "warning"
                 : "error"
             }

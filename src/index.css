@@ -42,16 +42,16 @@ button {
   border-radius: 5px; /* rounded edges */
   padding: 10px 15px;
   margin: 5px;
-  background-color: #6a72ee;
+  background-color: #749ad6;
 }
 
 button:hover {
-  background-color: #5962e0;
+  background-color: #5687d6;
 }
 
 .disabled-button:hover {
   cursor: not-allowed; /* disables cursor on hover */
-  background-color: #6a72ee; /* resets to base background color */
+  background-color: #749ad6; /* resets to base background color */
 }
 /* Buttons */
 
@@ -66,39 +66,6 @@ button:hover {
   white-space: nowrap;
 }
 /* Tooltips */
-
-/* Dark theme */
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #121212; /* Dark background for dark theme */
-    color: #e0e0e0; /* Light text for dark theme */
-  }
-
-  .error {
-    color: #ff5555;
-  }
-
-  .success {
-    color: #55a630;
-  }
-
-  .warning {
-    color: #fbb034;
-  }
-
-  button {
-    background-color: #5058dd;
-  }
-
-  button:hover {
-    background-color: #4048c9;
-  }
-
-  .tooltip {
-    background: rgba(255, 255, 255, 0.9);
-    color: black;
-  }
-}
 
 /* Calendar */
 .calendar-container {
@@ -211,7 +178,7 @@ select {
   padding: 15px;
   display: flex;
   justify-content: space-between;
-  background-color: #6a72ee;
+  background-color: #749ad6;
 }
 
 .banner button {
@@ -239,7 +206,7 @@ select {
 
 .navbar-link:hover,
 .dropdown ul li:hover {
-  background-color: #5962e0;
+  background-color: #5687d6;
 }
 
 .dropdown-menu {
@@ -250,7 +217,7 @@ select {
   position: absolute;
   left: 10px;
   top: 30px;
-  background-color: #6a72ee;
+  background-color: #749ad6;
   width: 200px;
   z-index: 1;
 }
