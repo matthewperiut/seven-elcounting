@@ -5,17 +5,24 @@ import CustomCalendar from "../tools/CustomCalendar";
 import Help from "./Help";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase-config";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
-
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 const Dashboard = () => {
   const { user } = Context(); // pull user context
   const [pendingEntries, setpendingEntries] = useState(0);
-  const [currentLiabilities, setCurrentLiabilities] = useState(0);
-  const [currentAssets, setCurrentAssets] = useState(0);
-  const [ratio, setRatio] = useState({green: false, red: false});
-
-
+  const [currentLiabilitiesTotal, setCurrentLiabilitiesTotal] = useState(0);
+  const [currentAssetsTotal, setCurrentAssetsTotal] = useState(0);
+  const [income, setIncome] = useState(0);
+  const [sales, setSales] = useState(0);
+  const [liquidityRatio, setLiquidityRatio] = useState(0);
+  const [profitRatio, setProfitRatio] = useState(0);
 
   const fetch = async () => {
     const pendingSnapshot = await getDocs(
@@ -48,23 +55,53 @@ const Dashboard = () => {
       0
     );
 
+    const salesRevenueAccount = await getDocs(
+      query(
+        collection(db, "accounts"),
+        where("accountCategory", "==", "revenues")
+      )
+    );
+    const expenses = await getDocs(
+      query(
+        collection(db, "accounts"),
+        where("accountCategory", "==", "expenses")
+      )
+    );
+
+    let totalExpenses = 0;
+    expenses.forEach((doc) => {
+      totalExpenses += doc.data().balance;
+    });
+    setIncome(
+      (salesRevenueAccount.docs[0].data().balance - totalExpenses) * 0.8
+    );
+    setSales(salesRevenueAccount.docs[0].data().balance);
     setpendingEntries(pendingSnapshot.size);
-    setCurrentAssets(currentAssetsTotal);
-    setCurrentLiabilities(currentLiabilitiesTotal);
+    setCurrentAssetsTotal(currentAssetsTotal);
+    setCurrentLiabilitiesTotal(currentLiabilitiesTotal);
 
     const currentRatio = currentAssetsTotal / currentLiabilitiesTotal;
-    if ((currentRatio) >= 1.5) setRatio({ green: true, red: false });
-    else if ((currentRatio) < 1.5 && (currentRatio) > 1) setRatio({ green: false, red: false });
-    else if ((currentRatio) < 1) setRatio({ green: false, red: true });
-  }
+    if (currentRatio >= 1.5) setLiquidityRatio(1);
+    else if (currentRatio < 1.5 && currentRatio > 1) setLiquidityRatio(2);
+    else if (currentRatio < 1) setLiquidityRatio(3);
+
+    const profitMargin = income / sales;
+    if (profitMargin > 0.1) setProfitRatio(1);
+    else if (profitMargin > 0.05 && profitMargin < 0.1) setProfitRatio(2);
+    else if (profitMargin < 0.05) setProfitRatio(3);
+  };
 
   useEffect(() => {
     fetch();
   }, []);
 
-  const data = [
-    { name: "Current Assets", value: currentAssets },
-    { name: "Current Liabilities", value: currentLiabilities }
+  const liquidityData = [
+    { name: "Current Assets", value: currentAssetsTotal },
+    { name: "Current Liabilities", value: currentLiabilitiesTotal },
+  ];
+  const profitData = [
+    { name: "Net Income", value: income },
+    { name: "Net Sales", value: sales },
   ];
   const formatYAxis = (tickItem) => `$${tickItem}`;
 
@@ -91,21 +128,91 @@ const Dashboard = () => {
         </p>
       )}
 
-      <h1>Dashboard</h1>
-      <div className={ratio.green ? "success" : ratio.red ? "error" : "needs closer look"}>
-        Current Ratio: {currentAssets / currentLiabilities}
+      <div className="dashboard">
+        <div
+          className={`dashboard-box ${
+            profitRatio === 1
+              ? "good-ratio"
+              : profitRatio === 2
+              ? "warning-ratio"
+              : "bad-ratio"
+          }`}
+        >
+          <h1>Liquidity Dashboard</h1>
+          <p
+            className={
+              profitRatio === 1
+                ? "success"
+                : profitRatio === 2
+                ? "warning"
+                : "error"
+            }
+          >
+            Current Ratio: {currentAssetsTotal / currentLiabilitiesTotal}
+          </p>
+          <div className="dashboard-chart">
+            <ResponsiveContainer>
+              <BarChart data={liquidityData}>
+                <XAxis dataKey="name" />
+                <YAxis tickFormatter={formatYAxis} />
+                <Tooltip />
+                <Bar
+                  dataKey="value"
+                  fill={
+                    liquidityRatio === 1
+                      ? "#0fbe17"
+                      : liquidityRatio === 2
+                      ? "#f1ee0b"
+                      : "#dc3545"
+                  }
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div
+          className={`dashboard-box ${
+            profitRatio === 1
+              ? "good-ratio"
+              : profitRatio === 2
+              ? "warning-ratio"
+              : "bad-ratio"
+          }`}
+        >
+          <h1>Profitability Dashboard</h1>
+          <p
+            className={
+              profitRatio === 1
+                ? "success"
+                : profitRatio === 2
+                ? "warning"
+                : "error"
+            }
+          >
+            Profit Margin: {income / sales}
+          </p>
+          <div className="dashboard-chart">
+            <ResponsiveContainer>
+              <BarChart data={profitData}>
+                <XAxis dataKey="name" />
+                <YAxis tickFormatter={formatYAxis} />
+                <Tooltip />
+                <Bar
+                  dataKey="value"
+                  fill={
+                    profitRatio === 1
+                      ? "#0fbe17"
+                      : profitRatio === 2
+                      ? "#f1ee0b"
+                      : "#dc3545"
+                  }
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
-      <div style={{ width: '100%', height: 200 }}>
-        <ResponsiveContainer>
-          <BarChart data={data}>
-            <XAxis dataKey="name" />
-            <YAxis tickFormatter={formatYAxis} />
-            <Tooltip />
-            <Bar dataKey="value" fill="#8884d8" />
-          </BarChart>
-        </ResponsiveContainer>        
-      </div>
-      <EmailAdminsOrManagers />
+      {user.role < 2 && <EmailAdminsOrManagers />}
     </div>
   );
 };
