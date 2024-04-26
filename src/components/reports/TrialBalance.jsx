@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase-config.js";
 import CustomCalendar from "../tools/CustomCalendar.jsx";
 import ReportToolSuite from "../tools/ReportToolSuite";
@@ -10,10 +10,17 @@ const TrialBalance = () => {
   const [accounts, setAccounts] = useState([]);
   const [totalCredits, setTotalCredits] = useState(0);
   const [totalDebits, setTotalDebits] = useState(0);
-
+  
   const [selectedDate, setSelectedDate] = useState(null);
-  const handleDateSelection = (value) => {
-    setSelectedDate(value);
+
+  const handleDateSelection = (date) => {
+    try {
+    const date2 = new Date('2023-12-17T03:24:00');
+    date.setHours(23, 59, 0, 0);
+    setSelectedDate([date2, date]);
+    } catch (e) {
+      setSelectedDate(null);
+    }
   };
   const handleResetDateFilter = () => {
     setSelectedDate(null);
@@ -23,12 +30,9 @@ const TrialBalance = () => {
     let queryRef = collection(db, "accounts");
     if (selectedDate) {
       const [startDate, endDate] = selectedDate;
-      if (endDate) {
         queryRef = query(queryRef, where("dateCreated", ">=", startDate), where("dateCreated", "<=", endDate));
-      } else {
-      queryRef = query(queryRef, where("dateCreated", "==", startDate));
-    }
-  }
+      
+      }
     const querySnapshot = await getDocs(queryRef);
     const fetchedAccounts = querySnapshot.docs.map((doc) => ({
       ...doc.data(),
@@ -58,11 +62,14 @@ const TrialBalance = () => {
     fetchAllAccounts();
   }, [selectedDate])
 
+
+
   return (
     <div className="wrapper">
       <CustomCalendar 
         handleDateSelection={handleDateSelection}
         handleResetDateFilter={handleResetDateFilter} 
+
       />
       <Help componentName="TrialBalance" />
       <div id="capture">
