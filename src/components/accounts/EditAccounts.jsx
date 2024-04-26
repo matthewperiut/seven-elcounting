@@ -112,11 +112,11 @@ const Modal = ({ isOpen, account, closeModal, isEdit, updateAccount }) => {
                 ))}
             </>
           ) : (
-            <>
-              {Object.keys(currentAccount).map(
+            <div  className="viewDB-label">
+              {Object.keys(currentAccount).sort((a, b) => a.length - b.length).map(
                 (key) =>
                   key !== "isActivated" && (
-                    <div key={key} className="viewDB-label">
+                    <div key={key}>
                       <label>{key}: </label>
                       <span>
                         {typeof currentAccount[key]?.toDate === "function"
@@ -126,7 +126,7 @@ const Modal = ({ isOpen, account, closeModal, isEdit, updateAccount }) => {
                     </div>
                   )
               )}
-            </>
+            </div>
           )}
           <button onClick={saveChanges}>
             {isEdit ? "Save Changes" : "Close"}
@@ -137,7 +137,7 @@ const Modal = ({ isOpen, account, closeModal, isEdit, updateAccount }) => {
   );
 };
 
-const EditAccounts = (showEdit) => {
+const EditAccounts = () => {
   const [accounts, setAccounts] = useState([]);
   const [filteredAccounts, setFilteredAccounts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
