@@ -219,10 +219,10 @@ const Entries = () => {
   //allows user to select date(s)
   const [selectedDate, setSelectedDate] = useState(null);
     const handleDateSelection = (value) => {
-      setSelectedDate(value);
+      //setSelectedDate(value);
     };
     const handleResetDateFilter = () => {
-      setSelectedDate(null);
+      //setSelectedDate(null);
     };
 
   const fetchEntries = async () => {
