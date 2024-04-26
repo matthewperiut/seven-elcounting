@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Context } from "../context/UserContext";
 import EmailAdminsOrManagers from "../tools/EmailAdminsOrManagers";
 import CustomCalendar from "../tools/CustomCalendar";
-import Help from "./Help";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import {
@@ -115,7 +114,6 @@ const Dashboard = () => {
   return (
     <div className="wrapper">
       <CustomCalendar />
-      <Help />
       {user.role === 3 ? (
         <h1>Administrator {user && user.displayName}</h1>
       ) : user.role === 2 ? (
