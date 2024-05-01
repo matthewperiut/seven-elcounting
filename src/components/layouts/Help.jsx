@@ -77,7 +77,7 @@ const Help = ({ componentName }) => {
             </p>
           </div>
         );
-      case "TrialBalancee":
+      case "TrialBalance":
         return (
           <div className="help-content">
             <u>
