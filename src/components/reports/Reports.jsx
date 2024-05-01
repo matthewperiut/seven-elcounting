@@ -9,12 +9,8 @@ const Reports = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [pendingEntries, setpendingEntries] = useState(0);
 
-
-  const handleMenu = () => {
+  const handleMenu = async () => {
     setIsOpen(!isOpen);
-  };
-
-  const fetchPendingEntries = async () => {
     const pendingSnapshot = await getDocs(
       query(
         collection(db, "journalEntries"),
@@ -24,10 +20,6 @@ const Reports = () => {
     );
     setpendingEntries(pendingSnapshot.size);
   };
-
-  useEffect(() => {
-    fetchPendingEntries();
-  }, []);
 
   return (
     <div
@@ -56,7 +48,10 @@ const Reports = () => {
             </Link>
             <Link to="/journalentries">
               <li>
-                Journal Entries{user.role > 1 && <div className="entries-notification">{pendingEntries}</div>}
+                Journal Entries
+                {user.role > 1 && pendingEntries > 0 && (
+                  <div className="entries-notification">{pendingEntries}</div>
+                )}
               </li>
             </Link>
             {user && user.role === 3 && (
