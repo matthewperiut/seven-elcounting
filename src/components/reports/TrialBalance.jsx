@@ -64,7 +64,7 @@ const TrialBalance = () => {
 
     setTotalCredits(credits);
     setTotalDebits(debits);
-  }, [selectedDate]);
+  }, [selectedDate, accounts]);
 
   return (
     <div className="wrapper">

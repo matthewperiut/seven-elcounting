@@ -1,14 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../context/UserContext";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../firebase-config";
 
 const Reports = () => {
   const { user } = Context();
   const [isOpen, setIsOpen] = useState(false);
+  const [pendingEntries, setpendingEntries] = useState(0);
+
 
   const handleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const fetchPendingEntries = async () => {
+    const pendingSnapshot = await getDocs(
+      query(
+        collection(db, "journalEntries"),
+        where("isApproved", "==", false),
+        where("isRejected", "==", false)
+      )
+    );
+    setpendingEntries(pendingSnapshot.size);
+  };
+
+  useEffect(() => {
+    fetchPendingEntries();
+  }, []);
 
   return (
     <div
@@ -20,13 +39,31 @@ const Reports = () => {
       {isOpen && (
         <div className="dropdown">
           <ul>
-            <Link to="/generalLedger"><li>General Ledger</li></Link>
-            <Link to="/balancesheet"><li>Balance Sheet</li></Link>
-            <Link to="/trialbalance"><li>Trial Balance</li></Link>
-            <Link to="/incomestatement"><li>Income Statement</li></Link>
-            <Link to="/retainedearnings"><li>Retained Earnings Statement</li></Link>
-            <Link to="/journalentries"><li>Journal Entries</li></Link>
-            {(user && user.role === 3) && <Link to="/eventLog"><li>Event Log</li></Link>}
+            <Link to="/generalLedger">
+              <li>General Ledger</li>
+            </Link>
+            <Link to="/balancesheet">
+              <li>Balance Sheet</li>
+            </Link>
+            <Link to="/trialbalance">
+              <li>Trial Balance</li>
+            </Link>
+            <Link to="/incomestatement">
+              <li>Income Statement</li>
+            </Link>
+            <Link to="/retainedearnings">
+              <li>Retained Earnings Statement</li>
+            </Link>
+            <Link to="/journalentries">
+              <li>
+                Journal Entries{user.role > 1 && <div className="entries-notification">{pendingEntries}</div>}
+              </li>
+            </Link>
+            {user && user.role === 3 && (
+              <Link to="/eventLog">
+                <li>Event Log</li>
+              </Link>
+            )}
           </ul>
         </div>
       )}
