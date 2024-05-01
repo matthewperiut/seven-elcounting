@@ -5,6 +5,7 @@ import CustomCalendar from "../tools/CustomCalendar.jsx";
 import ReportToolSuite from "../tools/ReportToolSuite";
 import formatNumber from "../tools/formatNumber";
 import Help from "../layouts/Help";
+import QueryAccountsInDateRange from "../tools/QueryAccountsInDateRange.jsx";
 
 const TrialBalance = () => {
   const [accounts, setAccounts] = useState([]);
@@ -28,21 +29,28 @@ const TrialBalance = () => {
 
   const fetchAllAccounts = async () => {
     let queryRef = collection(db, "accounts");
-    if (selectedDate) {
-      const [startDate, endDate] = selectedDate;
-        queryRef = query(queryRef, where("dateCreated", ">=", startDate), where("dateCreated", "<=", endDate));
-      
-      }
     const querySnapshot = await getDocs(queryRef);
     const fetchedAccounts = querySnapshot.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id,
     }));
-    setAccounts(fetchedAccounts);
+
+    try {
+      if (selectedDate) {
+        const tempAccounts = await QueryAccountsInDateRange(fetchedAccounts, selectedDate[0], selectedDate[1])
+        setAccounts(tempAccounts);
+      } else {
+        setAccounts(fetchedAccounts);
+      }
+    } catch (e) {
+      setAccounts(fetchedAccounts);
+    }
+
   };
 
   useEffect(() => {
     fetchAllAccounts();
+    
     let credits = 0;
     let debits = 0;
 
@@ -56,13 +64,7 @@ const TrialBalance = () => {
 
     setTotalCredits(credits);
     setTotalDebits(debits);
-  }, [accounts]);
-  
-  useEffect(() => {
-    fetchAllAccounts();
-  }, [selectedDate])
-
-
+  }, [selectedDate]);
 
   return (
     <div className="wrapper">
@@ -74,7 +76,7 @@ const TrialBalance = () => {
       <Help componentName="TrialBalance" />
       <div id="capture">
         <h1>Trial Balance</h1>
-        <p>As of {selectedDate ? (selectedDate.length > 1 ? `${selectedDate[0].toLocaleDateString()} - ${selectedDate[1].toLocaleDateString()}` : selectedDate[0].toLocaleDateString()) : new Date().toLocaleDateString()}</p>
+        <p>As of {selectedDate ? (selectedDate[0].toLocaleDateString()) : new Date().toLocaleDateString()}</p>
         <table className="statement-table">
           <thead>
             <tr>
