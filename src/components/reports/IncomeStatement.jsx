@@ -5,74 +5,79 @@ import CustomCalendar from "../tools/CustomCalendar";
 import ReportToolSuite from "../tools/ReportToolSuite";
 import formatNumber from "../tools/formatNumber";
 import Help from "../layouts/Help";
+import QueryAccountsInDateRange from "../tools/QueryAccountsInDateRange";
 
 const IncomeStatement = () => {
   const [revenues, setRevenues] = useState([]);
   const [expenses, setExpenses] = useState([]);
+  const [totalExpenses, setTotalExpenses] = useState([]);
+  const [totalRevenues, setTotalRevenues] = useState([]);
   const [costOfGoodsSold, setCostOfGoodsSold] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [accounts, setAccounts] = useState(null);
+
+  const handleDateSelection = (dates) => {
+    try {
+    setSelectedDate([dates[0], dates[1]]);
+    } catch (e) {
+      setSelectedDate(null);
+    }
+  };
+  const handleResetDateFilter = () => {
+    setSelectedDate(null);
+  };
 
   useEffect(() => {
     const fetchAccountsAndEntries = async () => {
-      try {
-        // Fetch accounts and classify them as revenues or expenses
-        const costOfGoodsSoldSnapshot = await getDocs(
-          query(
-            collection(db, "accounts"),
-            where("isActivated", "==", true),
-            where("accountName", "==", "Cost of Goods Sold")
-          )
-        );
-        const revenuesSnapshot = await getDocs(
-          query(
-            collection(db, "accounts"),
-            where("isActivated", "==", true),
-            where("accountCategory", "==", "revenues")
-          )
-        );
-        const revenuesData = revenuesSnapshot.docs.map((doc) => ({
+      let fetchedAccounts = accounts;
+      if (!accounts) {  // Check if accounts are already loaded
+        let queryRef = collection(db, "accounts");
+        const querySnapshot = await getDocs(queryRef);
+        fetchedAccounts = querySnapshot.docs.map((doc) => ({
           ...doc.data(),
+          id: doc.id,
         }));
-
-        const expensesSnapshot = await getDocs(
-          query(
-            collection(db, "accounts"),
-            where("isActivated", "==", true),
-            where("accountCategory", "==", "expenses")
-          )
-        );
-        const expensesData = expensesSnapshot.docs
-          .filter((doc) => doc.data().accountName !== "Cost of Goods Sold")
-          .map((doc) => ({
-            ...doc.data(),
-          }));
-
-        let totalRevenues = 0;
-        revenuesSnapshot.forEach((doc) => {
-          totalRevenues += doc.data().balance;
-        });
-        setRevenues(revenuesData);
-        setCostOfGoodsSold(costOfGoodsSoldSnapshot.docs[0].data());
-        setExpenses(expensesData);
-      } catch (error) {
-        console.error("Error fetching accounts: ", error);
+        setAccounts(fetchedAccounts);  // This updates the state but doesn't update the variable in this closure
       }
+  
+      let tempAccounts = fetchedAccounts || [];  // Use fetchedAccounts directly if loaded, default to an empty array
+      if (selectedDate) {
+        tempAccounts = await QueryAccountsInDateRange(fetchedAccounts, selectedDate[0], selectedDate[1]);
+      }
+      console.log(tempAccounts);  // Check the tempAccounts content
+  
+      let revenue_accounts = [];
+      let expense_accounts = [];
+      tempAccounts.forEach((account) => {
+        if (account.isActivated === true) {
+          if (account.accountName === "Cost of Goods Sold") {
+            setCostOfGoodsSold(account);
+          }
+          else if (account.accountCategory === "revenues") {
+            revenue_accounts.push(account);
+          }
+          else if (account.accountCategory === "expenses") {
+            expense_accounts.push(account);
+          }
+        }
+      });
+      setRevenues(revenue_accounts);
+      setExpenses(expense_accounts);
+      setTotalRevenues(revenue_accounts.reduce((total, revenue) => total + revenue.balance, 0));
+      setTotalExpenses(expense_accounts.reduce((total, expense) => total + expense.balance, 0));
     };
-
+  
     fetchAccountsAndEntries();
-  }, []);
-
-  const totalExpenses = expenses.reduce(
-    (total, expense) => total + expense.balance,
-    0
-  );
-  const totalRevenues = revenues.reduce(
-    (total, revenue) => total + revenue.balance,
-    0
-  );
+  }, [selectedDate, accounts]);  // Add accounts to the dependency array to re-run when accounts are set
+  
 
   return (
     <div className="wrapper">
-      <CustomCalendar />
+      <CustomCalendar 
+        handleDateSelection={handleDateSelection}
+        handleResetDateFilter={handleResetDateFilter} 
+        isRange={true}
+      />
       <Help componentName="IncomeStatement" />
       <div id="capture">
         <h1>Income Statement</h1>
