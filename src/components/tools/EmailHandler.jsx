@@ -15,12 +15,7 @@ const SendEmail = (title, to_email, from_name, to_name, message) => {
   };
 
   return emailjs.send(serviceId, templateId, templateParams)
-    .then(response => {
-      console.log('Email successfully sent!', response);
-      return true;  // Indicating that the email was successfully sent
-    })
     .catch(err => {
-      console.error('Failed to send email:', err);
       throw new Error('Failed to send email: ' + err.message);  // Throwing an error to be caught by the calling function
     });
 }

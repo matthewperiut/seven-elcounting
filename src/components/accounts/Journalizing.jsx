@@ -179,7 +179,6 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
       setDebitsList([{ account: "", amount: "" }]); //reset array with empty objects
       setCreditsList([{ account: "", amount: "" }]);
     } catch (error) {
-      console.log(error.message);
       reportError(error.message);
     }
   };

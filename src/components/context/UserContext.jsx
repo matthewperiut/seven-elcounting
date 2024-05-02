@@ -25,7 +25,6 @@ const UserContextProvider = ({ children }) => {
                 role: userData.role
               });
             } else {
-              console.log("No user document!");
               setUser({
                 uid: authUser.uid,
                 email: authUser.email,

@@ -24,7 +24,6 @@ const Login = () => {
           alert("Your account is deactivated. Please contact support.");
           return; // Exit the function to prevent further execution
         }
-        console.log(userCredential.user);
         navigate("/", { replace: true });
       })
       .catch((error) => {

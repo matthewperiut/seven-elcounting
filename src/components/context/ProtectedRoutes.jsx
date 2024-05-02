@@ -20,7 +20,6 @@ export const RequireUser = ({ children }) => {
 
 export const RequireManager = ({ children }) => {
   const { user } = Context(); //access imported user context
-  console.log(user.role)
     if(user.role < 2) {
       return <Navigate to="/"/> //user not manager, nav to dashboard
     }

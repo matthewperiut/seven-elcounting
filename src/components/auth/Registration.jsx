@@ -98,7 +98,6 @@ const Registration = () => {
           securityQuestion1: securityQuestion1,
           securityQuestion2: securityQuestion2,
         });
-        console.log(userCredential.user);
         confirm(
           "Access request submitted, please wait and check your email for approval!"
         );

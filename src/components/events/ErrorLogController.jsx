@@ -44,7 +44,6 @@ class ErrorBoundary extends Component {
       errorInfo: errorInfo
     });
     reportError(error + " " + errorInfo);
-    console.log(error + " " + errorInfo);
   }
 
   render() {

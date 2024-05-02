@@ -9,7 +9,7 @@ import { Context } from "../context/UserContext.jsx";
 
 function formatDate(timestamp) {
   if (!timestamp) return "";
-  
+
   const date = timestamp.toDate();
   const options = { year: "numeric", month: "long", day: "numeric" };
   return date.toLocaleDateString("en-US", options);
@@ -23,9 +23,6 @@ const Ledger = ({ isOpen, onClose, account }) => {
   let entryNo = 0; // Initialize entry no.
 
   const [filteredEntries, setFilteredEntries] = useState(account.ledgerData);
-  const [searchAmount, setSearchAmount] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [showPostRef, setShowPostRef] = useState(false);
   const [selectedPR, setSelectedPR] = useState(null);
 
@@ -34,36 +31,18 @@ const Ledger = ({ isOpen, onClose, account }) => {
     setShowPostRef(true); // Open the PostRefModal
   };
 
-  const handleSearchAmountChange = (event) => {
-    setSearchAmount(event.target.value);
-    filterEntries(startDate, endDate, event.target.value);
-  };
+  const filterEntries = (searchTerm) => {
+    const filtered = account.ledgerData.filter((entry) => {
+      const dateCreated = formatDate(entry.dateCreated);
 
-  const handleStartDateChange = (event) => {
-    setStartDate(event.target.value);
-    filterEntries(event.target.value, endDate, searchAmount);
-  };
-
-  const handleEndDateChange = (event) => {
-    setEndDate(event.target.value);
-    filterEntries(startDate, event.target.value, searchAmount);
-  };
-
-  const filterEntries = (start, end, amount) => {
-    let filtered = account.ledgerData.filter((entry) => {
-      const date = new Date(entry.dateCreated);
       return (
-        (!start || date >= new Date(start)) && (!end || date <= new Date(end))
+        dateCreated.includes(searchTerm) ||
+        entry.entries
+          .filter((subEntry) => subEntry.account === account.accountName)
+          .some((subEntry) => subEntry.amount.toString().includes(searchTerm))
       );
     });
 
-    if (amount) {
-      filtered = filtered.filter((entry) =>
-        entry.entries.some((subEntry) =>
-          subEntry.amount.toString().includes(amount)
-        )
-      );
-    }
     setFilteredEntries(filtered);
   };
 
@@ -115,23 +94,8 @@ const Ledger = ({ isOpen, onClose, account }) => {
               <input
                 type="text"
                 placeholder="Search..."
-                value={searchAmount}
-                onChange={handleSearchAmountChange}
+                onChange={(e) => filterEntries(e.target.value)}
               />
-              <div>
-                <input
-                  type="text"
-                  placeholder="Start Date..."
-                  value={startDate}
-                  onChange={handleStartDateChange}
-                />
-                <input
-                  type="text"
-                  placeholder="End Date..."
-                  value={endDate}
-                  onChange={handleEndDateChange}
-                />
-              </div>
               {filteredEntries && filteredEntries.length > 0 ? (
                 <div className="accountledger-table">
                   <table>
@@ -262,7 +226,6 @@ const ChartOfAccounts = () => {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        console.log("getDocs called");
         const querySnapshot = await getDocs(
           query(collection(db, "accounts"), where("isActivated", "==", true))
         ); //grabs all active accounts
@@ -302,7 +265,6 @@ const ChartOfAccounts = () => {
 
   const openModal = async (account) => {
     try {
-      console.log("getDocs called open Modal" );
       const querySnapshot = await getDocs(
         query(
           collection(db, "journalEntries"),

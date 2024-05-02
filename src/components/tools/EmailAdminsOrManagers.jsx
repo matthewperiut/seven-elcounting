@@ -23,7 +23,6 @@ const EmailAdminsOrManagers = () => {
   };
 
   const handleSubmit = async () => {
-    console.log("Submitting Issue:", issue, "Message:", message);
       await SendEmail("Issue Report: " + issue, "matthewperiut@gmail.com", user.email, "Manager", message);
       setIssue("");
       setMessage("");

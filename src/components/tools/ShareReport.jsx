@@ -40,8 +40,7 @@ const ShareReport = (reportName) => {
     };
     try {
       emailjs.send(serviceId, templateId, templateParams)
-      .then(response => console.log('Email successfully sent!', response))
-      .catch(err => (console.error('Failed to send email:', err) && setError('Failed to send email:' + err)));
+      .catch(err => (setError('Failed to send email:' + err)));
       } catch (e) {
         if (e.includes("user ID is required")) {
           setError(e + "\n **Developer Note: Update your .env file, see #resources in discord");
