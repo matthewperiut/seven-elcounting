@@ -148,93 +148,94 @@ const Dashboard = () => {
           {pendingEntries === 1 ? "entry" : "entries"} pending for approval...
         </p>
       )}
-
-      <div className="dashboard">
-        <div
-          className={`dashboard-box ${
-            liquidityRatio === 1
-              ? "good-ratio"
-              : liquidityRatio === 2
-              ? "warning-ratio"
-              : "bad-ratio"
-          }`}
-        >
-          <h1>Liquidity Dashboard</h1>
-          <p
-            className={
+      {user.role > 0 && (
+        <div className="dashboard">
+          <div
+            className={`dashboard-box ${
               liquidityRatio === 1
-                ? "success"
+                ? "good-ratio"
                 : liquidityRatio === 2
-                ? "warning"
-                : "error"
-            }
+                ? "warning-ratio"
+                : "bad-ratio"
+            }`}
           >
-            Current Ratio:{" "}
-            {(currentAssetsTotal / currentLiabilitiesTotal).toFixed(2)}
-          </p>
-          <div className="dashboard-chart">
-            <ResponsiveContainer>
-              <BarChart data={ratioData}>
-                <XAxis dataKey="name" />
-                <YAxis tickFormatter={formatYAxis} />
-                <Tooltip />
-                <Bar
-                  dataKey="value"
-                  fill={
-                    liquidityRatio === 1
-                      ? "#0fbe17"
-                      : liquidityRatio === 2
-                      ? "#f1ee0b"
-                      : "#dc3545"
-                  }
-                />
-              </BarChart>
-            </ResponsiveContainer>
+            <h1>Liquidity Dashboard</h1>
+            <p
+              className={
+                liquidityRatio === 1
+                  ? "success"
+                  : liquidityRatio === 2
+                  ? "warning"
+                  : "error"
+              }
+            >
+              Current Ratio:{" "}
+              {(currentAssetsTotal / currentLiabilitiesTotal).toFixed(2)}
+            </p>
+            <div className="dashboard-chart">
+              <ResponsiveContainer>
+                <BarChart data={ratioData}>
+                  <XAxis dataKey="name" />
+                  <YAxis tickFormatter={formatYAxis} />
+                  <Tooltip />
+                  <Bar
+                    dataKey="value"
+                    fill={
+                      liquidityRatio === 1
+                        ? "#0fbe17"
+                        : liquidityRatio === 2
+                        ? "#f1ee0b"
+                        : "#dc3545"
+                    }
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
-        <div
-          className={`dashboard-box ${
-            profitRatio === 1
-              ? "good-ratio"
-              : profitRatio === 2
-              ? "warning-ratio"
-              : "bad-ratio"
-          }`}
-        >
-          <h1>Profitability Dashboard</h1>
-          <p
-            className={
+          <div
+            className={`dashboard-box ${
               profitRatio === 1
-                ? "success"
+                ? "good-ratio"
                 : profitRatio === 2
-                ? "warning"
-                : "error"
-            }
+                ? "warning-ratio"
+                : "bad-ratio"
+            }`}
           >
-            Profit Margin: {(income / sales).toFixed(2)}
-          </p>
-          <div className="dashboard-chart">
-            <ResponsiveContainer>
-              <BarChart data={profitData}>
-                <XAxis dataKey="name" />
-                <YAxis tickFormatter={formatYAxis} />
-                <Tooltip />
-                <Bar
-                  dataKey="value"
-                  fill={
-                    profitRatio === 1
-                      ? "#0fbe17"
-                      : profitRatio === 2
-                      ? "#f1ee0b"
-                      : "#dc3545"
-                  }
-                />
-              </BarChart>
-            </ResponsiveContainer>
+            <h1>Profitability Dashboard</h1>
+            <p
+              className={
+                profitRatio === 1
+                  ? "success"
+                  : profitRatio === 2
+                  ? "warning"
+                  : "error"
+              }
+            >
+              Profit Margin: {(income / sales).toFixed(2)}
+            </p>
+            <div className="dashboard-chart">
+              <ResponsiveContainer>
+                <BarChart data={profitData}>
+                  <XAxis dataKey="name" />
+                  <YAxis tickFormatter={formatYAxis} />
+                  <Tooltip />
+                  <Bar
+                    dataKey="value"
+                    fill={
+                      profitRatio === 1
+                        ? "#0fbe17"
+                        : profitRatio === 2
+                        ? "#f1ee0b"
+                        : "#dc3545"
+                    }
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
-      </div>
-      {user.role < 2 && <EmailAdminsOrManagers />}
+      )}
+      {user.role > 0 && user.role < 2 && <EmailAdminsOrManagers />}
     </div>
   );
 };
