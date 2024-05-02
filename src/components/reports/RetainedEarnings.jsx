@@ -104,14 +104,14 @@ const RetainedEarnings = () => {
           <tbody>
             <tr>
               {(selectedDate ? (
-                <td>Retained earnings between {formatDate(selectedDate[0])} and {formatDate(selectedDate[1])}</td>
+                <td>Retained earnings - {formatDate(selectedDate[0])}</td>
               ) : (
                 <td>Retained earnings as of {formatDate(new Date())}</td>
               ))}
               <td>{formatNumber(parseFloat(retainedEarnings))}</td>
             </tr>
             <tr>
-              <td>Net income</td>
+              <td>Plus: Net income</td>
               <td>{formatNumber(parseFloat(income))}</td>
             </tr>
             <tr className="statement-total">
@@ -119,13 +119,13 @@ const RetainedEarnings = () => {
               <td>{formatNumber(retainedEarnings + income)}</td>
             </tr>
             <tr>
-              <td>Dividends</td>
+              <td>Less: Dividends</td>
               <td>{formatNumber(parseFloat(dividends))}</td>
             </tr>
             <tr className="statement-total">
 
               {(selectedDate ? (
-                <td>Retained earnings between {formatDate(selectedDate[0])} and {formatDate(selectedDate[1])}</td>
+                <td>Retained earnings - {formatDate(selectedDate[1])}</td>
               ) : (
                 <td>Retained earnings as of {formatDate(new Date())}</td>
               ))}
