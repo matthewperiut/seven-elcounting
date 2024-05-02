@@ -55,11 +55,9 @@ const Reports = () => {
                 )}
               </li>
             </Link>
-            {user && user.role === 3 && (
-              <Link to="/eventLog">
-                <li>Event Log</li>
-              </Link>
-            )}
+            <Link to="/eventLog">
+              <li>Event Log</li>
+            </Link>
           </ul>
         </div>
       )}
