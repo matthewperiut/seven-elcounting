@@ -88,13 +88,12 @@ export const AddAccounts = () => {
   };
 
   const handleValueChange = (value) => {
-    if (!isNaN(value)) {
-      setAccountInfo((prev) => ({
-        ...prev,
-        initialBalance: value,
-        balance: value,
-      }));
-    }
+    const balance = value || "";
+    setAccountInfo((prev) => ({
+      ...prev,
+      initialBalance: balance,
+      balance: balance,
+    }));
   };
 
   return (
