@@ -24,6 +24,7 @@ const Dashboard = () => {
   const [profitRatio, setProfitRatio] = useState(undefined);
 
   const fetch = async () => {
+    //gets pending journal entries
     const pendingSnapshot = await getDocs(
       query(
         collection(db, "journalEntries"),
@@ -32,34 +33,42 @@ const Dashboard = () => {
       )
     );
 
+    //gets all current liability accounts
     const currentLiabilitiesSnapshot = await getDocs(
       query(
         collection(db, "accounts"),
         where("accountSubcategory", "==", "current liabilities")
       )
     );
+
+    //calculates current liabilities total value
     const currentLiabilitiesTotal = currentLiabilitiesSnapshot.docs.reduce(
       (total, doc) => total + doc.data().balance,
       0
     );
 
+    //gets all current asset accounts
     const currentAssetsSnapshot = await getDocs(
       query(
         collection(db, "accounts"),
         where("accountSubcategory", "==", "current assets")
       )
     );
+    //calculates current assets total value
     const currentAssetsTotal = currentAssetsSnapshot.docs.reduce(
       (total, doc) => total + doc.data().balance,
       0
     );
 
+    //gets all revenue accounts
     const revenues = await getDocs(
       query(
         collection(db, "accounts"),
         where("accountCategory", "==", "revenues")
       )
     );
+
+    //gets all expense accounts
     const expenses = await getDocs(
       query(
         collection(db, "accounts"),
@@ -67,6 +76,7 @@ const Dashboard = () => {
       )
     );
 
+    //sums expenses and revenues for financial ratios
     let totalExpenses = 0;
     expenses.forEach((doc) => {
       totalExpenses += doc.data().balance;
@@ -75,41 +85,47 @@ const Dashboard = () => {
     revenues.forEach((doc) => {
       totalRevenues += doc.data().balance;
     });
-    setIncome((totalRevenues - totalExpenses) * 0.8);
+
+    setIncome((totalRevenues - totalExpenses) * 0.8); //calculates income
     setSales(totalRevenues);
     setpendingEntries(pendingSnapshot.size);
     setCurrentAssetsTotal(currentAssetsTotal);
     setCurrentLiabilitiesTotal(currentLiabilitiesTotal);
-
-    
   };
 
   useEffect(() => {
-    const currentRatio = currentAssetsTotal / currentLiabilitiesTotal;
+    const currentRatio = currentAssetsTotal / currentLiabilitiesTotal; //calculates current ratio(Current Assets / Current Liabilities)
+
+    //sets color of dashboard based off normal ranges of current ratio
     if (currentRatio >= 1.5) setLiquidityRatio(1);
     else if (currentRatio < 1.5 && currentRatio >= 1) setLiquidityRatio(2);
     else if (currentRatio < 1) setLiquidityRatio(3);
 
-    const profitMargin = parseFloat(income / sales);
+    const profitMargin = parseFloat(income / sales); //calculates profit margin(Net Income / Net Sales)
+
+    //sets color of dashboard based off normal ranges of profit margin
     if (profitMargin >= 0.1) setProfitRatio(1);
     else if (profitMargin >= 0.05 && profitMargin < 0.1) setProfitRatio(2);
     else setProfitRatio(3);
-
   }, [income, sales, currentAssetsTotal, currentLiabilitiesTotal]);
 
   useEffect(() => {
-    fetch();
+    fetch(); //fetches all accounts related to financial ratios
   }, []);
 
-  const liquidityData = [
+  //data for current ratio bar chart
+  const ratioData = [
     { name: "Current Assets", value: currentAssetsTotal.toFixed(2) },
     { name: "Current Liabilities", value: currentLiabilitiesTotal.toFixed(2) },
   ];
+
+  //data for profit margin bar chart
   const profitData = [
     { name: "Net Income", value: income.toFixed(2) },
     { name: "Net Sales", value: sales.toFixed(2) },
   ];
-  const formatYAxis = (tickItem) => `$${tickItem}`;
+
+  const formatYAxis = (tickItem) => `$${tickItem}`; //adds $ sign to y axis labels
 
   return (
     <div className="wrapper">
@@ -158,7 +174,7 @@ const Dashboard = () => {
           </p>
           <div className="dashboard-chart">
             <ResponsiveContainer>
-              <BarChart data={liquidityData}>
+              <BarChart data={ratioData}>
                 <XAxis dataKey="name" />
                 <YAxis tickFormatter={formatYAxis} />
                 <Tooltip />

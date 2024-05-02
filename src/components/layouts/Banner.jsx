@@ -4,7 +4,7 @@ import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { Context } from '../context/UserContext';
 import Reports from '../reports/Reports';
 import Accounts from '../accounts/Accounts';
-import React, { useState } from 'react'; 
+import { useState } from 'react'; 
 
 export const Banner = () => {
   const { user, logout } = Context(); //pull user context and logout function
@@ -12,7 +12,7 @@ export const Banner = () => {
   const [showTooltip, setShowTooltip] = useState(false); 
 
   const backToHome = () => {
-    navigate("/", { replace: true })
+    navigate("/", { replace: true }) //navigates back to dashboard
   }
 
   return (

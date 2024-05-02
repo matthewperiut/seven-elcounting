@@ -24,6 +24,7 @@ const GeneralLedger = () => {
     const fetchApprovedEntries = async () => {
       setLoading(true);
 
+      //gets all approved journal entries
       const querySnapshot = await getDocs(
         query(
           collection(db, "journalEntries"),
@@ -44,6 +45,7 @@ const GeneralLedger = () => {
     fetchApprovedEntries();
   }, []);
 
+  //anytime the search query or entries change, filter entries by search term
   useEffect(() => {
     const filtered = approvedEntries.filter((entry) => {
       const formattedDate = formatDate(entry.dateCreated).toLowerCase();
