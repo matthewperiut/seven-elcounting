@@ -13,14 +13,28 @@ function formatDate(timestamp) {
 }
 
 
-const ChangeEventLog = () => {
+const ChangeEventLog = ({adjustingEntry, accountName}) => {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
       const fetchEvents = async () => {
           const querySnapshot = await getDocs(collection(db, "eventLog"));
           const eventsArray = querySnapshot.docs
-              .filter(doc => doc.id !== "idCounter")
+              .filter(doc => {
+                let condition1 = doc.id !== "idCounter"
+                if (accountName) {
+                  try {
+                    let condition2 = doc.data().type === "account";
+                    //console.log(doc.data().type)
+                    console.log(accountName.toLowerCase() + " = " + doc.data().after.accountName.toLowerCase())
+                    let condition3 = doc.data().after.accountName.toLowerCase() === accountName.toLowerCase();
+                    return condition1 && condition2 && condition3;
+                  } catch (e) {
+                    return false;
+                  }
+                }
+                return condition1;
+                })
               .map(doc => ({
                   id: doc.id,
                   ...doc.data(),
@@ -54,9 +68,15 @@ const ChangeEventLog = () => {
 
   return (
       <div className='wrapper'>
-        <CustomCalendar />
-        <Help componentName="EventLog" />
-        <h1>Event Log</h1>
+      {!adjustingEntry && (
+        <>
+          <CustomCalendar />
+          <Help componentName="EventLog" />
+          <h1>Event Log</h1>
+
+        </>
+      )}
+        
         <table className="event-log-table">
           <thead>
           <tr>

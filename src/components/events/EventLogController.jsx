@@ -94,3 +94,19 @@ export async function logEventActivation(type, accountName, account, user) {
     timestamp: new Date()
   });
 }
+
+export async function logEventNewJournalEntry(type, accountName, amount, account, user) {
+  if (!(type === "account")) return;
+  let uniqueId = await genEventUID();
+  if (uniqueId < 0) return;
+  const beforeAccount = { ...account, isActivated: false };
+  const docEvent = doc(db, "eventLog", `${uniqueId}`);
+  await setDoc(docEvent, {
+    type: type,
+    diff: ["Journal Entry for " + accountName + " adding " + amount],
+    before: beforeAccount,
+    after: account,
+    author: user ? user.displayName : "Unknown",
+    timestamp: new Date()
+  });
+}

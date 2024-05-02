@@ -4,6 +4,7 @@ import {
   getDocs,
   query,
   setDoc,
+  getDoc,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -15,6 +16,7 @@ import { Context } from "../context/UserContext";
 import { reportError } from "../events/ErrorLogController";
 import CustomCalendar from "../tools/CustomCalendar";
 import Help from "../layouts/Help";
+import { logEventNewJournalEntry } from "../events/EventLogController";
 
 const Journalizing = ({ adjustingEntry, adjust, update }) => {
   const [showTooltip, setShowTooltipDebit] = useState(false);
@@ -172,8 +174,15 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
           isRejected: false,
         });
         update();
-      } else await setDoc(doc(collection(db, "journalEntries")), entry); //creates document with entry data
-
+      } else {
+        for (const item of entry.entries) {
+          const accountDocSnap = await getDoc(doc(db, "accounts", item.accountID));
+          const accountData = accountDocSnap.data();
+          await logEventNewJournalEntry("account", item.account, item.amount, accountData, user);
+        }        
+        await setDoc(doc(collection(db, "journalEntries")), entry); //creates document with entry data
+      }
+      
       setStatus((prev) => ({ ...prev, success: true, submit: false })); //update state to display success message
       e.target.reset(); //reset uncontrolled input fields
       setDebitsList([{ account: "", amount: "" }]); //reset array with empty objects

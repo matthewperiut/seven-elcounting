@@ -18,7 +18,7 @@ const IncomeStatement = () => {
 
   const handleDateSelection = (dates) => {
     try {
-    setSelectedDate([dates[0], dates[1]]);
+      setSelectedDate([dates[0], dates[1]]);
     } catch (e) {
       setSelectedDate(null);
     }
@@ -39,12 +39,12 @@ const IncomeStatement = () => {
         }));
         setAccounts(fetchedAccounts);
       }
-  
+
       let tempAccounts = fetchedAccounts || [];
       if (selectedDate) {
         tempAccounts = await QueryAccountsInDateRange(fetchedAccounts, selectedDate[0], selectedDate[1]);
       }
-  
+
       let revenue_accounts = [];
       let expense_accounts = [];
       tempAccounts.forEach((account) => {
@@ -65,16 +65,16 @@ const IncomeStatement = () => {
       setTotalRevenues(revenue_accounts.reduce((total, revenue) => total + revenue.balance, 0));
       setTotalExpenses(expense_accounts.reduce((total, expense) => total + expense.balance, 0));
     };
-  
+
     fetchAccountsAndEntries();
   }, [selectedDate, accounts]);  // Add accounts to the dependency array to re-run when accounts are set
-  
+
 
   return (
     <div className="wrapper">
-      <CustomCalendar 
+      <CustomCalendar
         handleDateSelection={handleDateSelection}
-        handleResetDateFilter={handleResetDateFilter} 
+        handleResetDateFilter={handleResetDateFilter}
         isRange={true}
       />
       <Help componentName="IncomeStatement" />
@@ -88,11 +88,11 @@ const IncomeStatement = () => {
             </tr>
           </thead>
           <tbody>
-          <tr className="statement-category">
+            <tr className="statement-category">
               <td>Revenues</td>
               <td></td>
             </tr>
-          {revenues.map((revenue) => (
+            {revenues.map((revenue) => (
               <tr key={revenue.accountID}>
                 <td>{revenue.accountName}</td>
                 <td>{formatNumber(parseFloat(revenue.balance))}</td>
@@ -137,7 +137,7 @@ const IncomeStatement = () => {
               <td>
                 {formatNumber(
                   (totalRevenues - costOfGoodsSold.balance - totalExpenses) *
-                    0.2
+                  0.2
                 )}
               </td>
             </tr>
@@ -146,7 +146,7 @@ const IncomeStatement = () => {
               <td>
                 {formatNumber(
                   (totalRevenues - costOfGoodsSold.balance - totalExpenses) *
-                    0.8
+                  0.8
                 )}
               </td>
             </tr>

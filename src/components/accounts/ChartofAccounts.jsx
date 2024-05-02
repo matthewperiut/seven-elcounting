@@ -6,6 +6,7 @@ import Help from "../layouts/Help";
 import formatNumber from "../tools/formatNumber.jsx";
 import EmailAdminsOrManagers from "../tools/EmailAdminsOrManagers.jsx";
 import { Context } from "../context/UserContext.jsx";
+import ChangeEventLog from "../events/ChangeEventLog.jsx";
 
 function formatDate(timestamp) {
   if (!timestamp) return "";
@@ -24,6 +25,7 @@ const Ledger = ({ isOpen, onClose, account }) => {
 
   const [filteredEntries, setFilteredEntries] = useState(account.ledgerData);
   const [showPostRef, setShowPostRef] = useState(false);
+  const [showEventLog, setShowEventLog] = useState(false);
   const [selectedPR, setSelectedPR] = useState(null);
 
   const handlePRClick = (pr) => {
@@ -45,6 +47,35 @@ const Ledger = ({ isOpen, onClose, account }) => {
 
     setFilteredEntries(filtered);
   };
+
+  if (showEventLog) {
+    return (
+      <>
+      <div onClick={onClose} className="modal-background">
+        <div onClick={(e) => e.stopPropagation()} className="modal">
+            
+            <p onClick={onClose} className="closeButton">
+              &times;
+            </p>
+            <>
+            <p
+                  onClick={() => setShowEventLog(false)}
+                  className="closeButton"
+                  style={{ float: "left" }}
+                >
+                  &larr;
+                </p>
+      <h2>Event Log for {account.accountName}</h2>
+
+                <ChangeEventLog 
+                adjustingEntry={true}
+                accountName={account.accountName} />
+            </>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -96,6 +127,8 @@ const Ledger = ({ isOpen, onClose, account }) => {
                 placeholder="Search..."
                 onChange={(e) => filterEntries(e.target.value)}
               />
+                  <button className="accountledger-button" onClick={() => setShowEventLog(true)}>Event Log</button>
+
               {filteredEntries && filteredEntries.length > 0 ? (
                 <div className="accountledger-table">
                   <table>

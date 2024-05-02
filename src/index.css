@@ -585,6 +585,10 @@ select {
   cursor: pointer;
   font-weight: bold;
 }
+
+.accountledger-button {
+  padding: 5
+}
 /* Ledgers */
 
 /* Statement Tables (Balance Sheet, Trial Balance, Income Statement) */
