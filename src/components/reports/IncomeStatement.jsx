@@ -37,14 +37,13 @@ const IncomeStatement = () => {
           ...doc.data(),
           id: doc.id,
         }));
-        setAccounts(fetchedAccounts);  // This updates the state but doesn't update the variable in this closure
+        setAccounts(fetchedAccounts);
       }
   
-      let tempAccounts = fetchedAccounts || [];  // Use fetchedAccounts directly if loaded, default to an empty array
+      let tempAccounts = fetchedAccounts || [];
       if (selectedDate) {
         tempAccounts = await QueryAccountsInDateRange(fetchedAccounts, selectedDate[0], selectedDate[1]);
       }
-      console.log(tempAccounts);  // Check the tempAccounts content
   
       let revenue_accounts = [];
       let expense_accounts = [];

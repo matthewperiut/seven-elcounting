@@ -5,6 +5,7 @@ import CustomCalendar from "../tools/CustomCalendar";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import Help from "../layouts/Help";
+import QueryAccountsInDateRange from "../tools/QueryAccountsInDateRange";
 
 function formatDate(date) {
   const options = { year: "numeric", month: "long", day: "numeric" };
@@ -13,67 +14,100 @@ function formatDate(date) {
 
 const RetainedEarnings = () => {
   const [retainedEarnings, setRetainedEarnings] = useState(null);
-  const [income, setIncome] = useState(null);
   const [dividends, setDividends] = useState(null);
+  const [income, setIncome] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [accounts, setAccounts] = useState(null);
+
+  const handleDateSelection = (dates) => {
+    try {
+    setSelectedDate([dates[0], dates[1]]);
+    } catch (e) {
+      setSelectedDate(null);
+    }
+  };
+  const handleResetDateFilter = () => {
+    setSelectedDate(null);
+  };
 
   useEffect(() => {
     const fetchRetainedEarnings = async () => {
       try {
-        const retainedEarningsAccount = await getDocs(
-          query(
-            collection(db, "accounts"),
-            where("accountName", "==", "Retained Earnings")
-          )
-        );
-        const revenues = await getDocs(
-          query(
-            collection(db, "accounts"),
-            where("accountCategory", "==", "revenues")
-          )
-        );
-        const expenses = await getDocs(
-          query(
-            collection(db, "accounts"),
-            where("accountCategory", "==", "expenses")
-          )
-        );
+        let fetchedAccounts = accounts;
+        if (!accounts) {
+          let queryRef = collection(db, "accounts");
+          const querySnapshot = await getDocs(queryRef);
+          fetchedAccounts = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
+          setAccounts(fetchedAccounts)
+        }
+        console.log(fetchedAccounts);
+        let tempAccounts = fetchedAccounts || [];
+        if (selectedDate) {
+          tempAccounts = await QueryAccountsInDateRange(fetchedAccounts, selectedDate[0], selectedDate[1]);
+        }
+        let revenue_accounts = [];
+        let expense_accounts = [];
+        tempAccounts.forEach((account) => {
+          if (account.isActivated === true) {
+            if (account.accountName === "Retained Earnings") {
+              setRetainedEarnings(account.balance);
+            }
+             if (account.accountName === "Dividends") {
+              setDividends(account.balance);
+            }
+             if (account.accountCategory === "revenues") {
+              revenue_accounts.push(account);
+            }
+             if (account.accountCategory === "expenses") {
+              expense_accounts.push(account);
+            }
+          }
+        });
         const dividendsAccount = await getDocs(
           query(
             collection(db, "accounts"),
             where("accountName", "==", "Dividends")
           )
         );
-        setRetainedEarnings(retainedEarningsAccount.docs[0].data().balance);
-        let totalExpenses = 0;
-        expenses.forEach((doc) => {
-          totalExpenses += doc.data().balance;
-        });
         let totalRevenues = 0;
-        revenues.forEach((doc) => {
-          totalRevenues += doc.data().balance;
+        revenue_accounts.forEach((account) => {
+          totalRevenues += account.balance;
+        });
+        let totalExpenses = 0;
+        expense_accounts.forEach((account) => {
+          totalExpenses += account.balance;
         });
         setIncome((totalRevenues - totalExpenses) * 0.8);
-        setDividends(dividendsAccount.docs[0].data().balance);
+        
       } catch (error) {
         console.error(error.message);
       }
     };
 
     fetchRetainedEarnings();
-  }, []);
+  }, [accounts, selectedDate]);
 
   return (
     <div className="wrapper">
-      <CustomCalendar />
+      <CustomCalendar 
+        handleDateSelection={handleDateSelection}
+        handleResetDateFilter={handleResetDateFilter} 
+        isRange={true}
+      />
       <Help componentName="RetainedEarnings" />
       <div id="capture">
         <h1>Retained Earnings Statement</h1>
         <table className="statement-table">
           <tbody>
             <tr>
-              
-              {/* PUT START DATE HERE */}
-              <td>Retained earnings as of {formatDate(new Date())}</td>
+              {(selectedDate ? (
+                <td>Retained earnings between {formatDate(selectedDate[0])} and {formatDate(selectedDate[1])}</td>
+              ) : (
+                <td>Retained earnings as of {formatDate(new Date())}</td>
+              ))}
               <td>{formatNumber(parseFloat(retainedEarnings))}</td>
             </tr>
             <tr>
@@ -90,8 +124,12 @@ const RetainedEarnings = () => {
             </tr>
             <tr className="statement-total">
 
-              {/* PUT END DATE HERE */}
-              <td>Retained earnings as of {formatDate(new Date())}</td>
+              {(selectedDate ? (
+                <td>Retained earnings between {formatDate(selectedDate[0])} and {formatDate(selectedDate[1])}</td>
+              ) : (
+                <td>Retained earnings as of {formatDate(new Date())}</td>
+              ))}
+              
               <td>{formatNumber(retainedEarnings + income - dividends)}</td>
             </tr>
           </tbody>
