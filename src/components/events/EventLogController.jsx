@@ -1,21 +1,21 @@
-import {doc, getDoc, setDoc, updateDoc} from "firebase/firestore";
-import {db} from "../../firebase-config.js";
-import {reportError} from "./ErrorLogController.jsx";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../firebase-config.js";
+import { reportError } from "./ErrorLogController.jsx";
 
 async function genEventUID() {
-  // generate uid
+  //generate uid
   const counterRef = doc(db, "eventLog", "idCounter");
   const docSnap = await getDoc(counterRef);
 
   if (docSnap.exists()) {
     let uniqueId = docSnap.data().count;
-      await updateDoc(counterRef, {
-        count: uniqueId + 1
-      });
+    await updateDoc(counterRef, {
+      count: uniqueId + 1,
+    });
     return uniqueId;
   } else {
     console.error("Counter document does not exist.");
-      await reportError("Counter document does not exist.");
+    await reportError("Counter document does not exist.");
     return -1;
   }
 }
@@ -26,40 +26,39 @@ export async function logEvent(type, before, after, user) {
   let uniqueId = await genEventUID();
   if (uniqueId < 0) return;
 
-  // Generate the difference array
+  //Generate the difference array
   const differences = Object.keys(before).reduce((acc, key) => {
     if (before[key] !== after[key]) {
       acc.push(`${key} changed from ${before[key]} to ${after[key]}`);
-      }
+    }
     return acc;
   }, []);
 
-  // Create a new event document with the generated unique ID
+  //Create a new event document with the generated unique ID
   const docEvent = doc(db, "eventLog", `${uniqueId}`);
-    await setDoc(docEvent, {
-      type: type,
-      diff: differences.length > 0 ? differences : ["No changes detected"],
-      before: before,
-      after: after,
-      author: user ? user.displayName : "Unknown",
-      timestamp: new Date()
-    }
-  );
+  await setDoc(docEvent, {
+    type: type,
+    diff: differences.length > 0 ? differences : ["No changes detected"],
+    before: before,
+    after: after,
+    author: user ? user.displayName : "Unknown",
+    timestamp: new Date(),
+  });
 }
 
 export async function logEventCreation(type, accountName, account, user) {
-    if (!(type === "account" || type === "user" || type === "journal")) return;
-    let uniqueId = await genEventUID();
-    if (uniqueId < 0) return;
-    const docEvent = doc(db, "eventLog", `${uniqueId}`);
-    await setDoc(docEvent, {
-        type: type,
-        diff: ["Created " + type + ", " + accountName],
-        before: {},
-        after: account,
-        author: user ? user.displayName : "Unknown",
-        timestamp: new Date()
-    });
+  if (!(type === "account" || type === "user" || type === "journal")) return;
+  let uniqueId = await genEventUID();
+  if (uniqueId < 0) return;
+  const docEvent = doc(db, "eventLog", `${uniqueId}`);
+  await setDoc(docEvent, {
+    type: type,
+    diff: ["Created " + type + ", " + accountName],
+    before: {},
+    after: account,
+    author: user ? user.displayName : "Unknown",
+    timestamp: new Date(),
+  });
 }
 
 export async function logEventDeactivation(type, accountName, account, user) {
@@ -74,7 +73,7 @@ export async function logEventDeactivation(type, accountName, account, user) {
     before: beforeAccount,
     after: account,
     author: user ? user.displayName : "Unknown",
-    timestamp: new Date()
+    timestamp: new Date(),
   });
 }
 
@@ -91,11 +90,17 @@ export async function logEventActivation(type, accountName, account, user) {
     before: beforeAccount,
     after: account,
     author: user ? user.displayName : "Unknown",
-    timestamp: new Date()
+    timestamp: new Date(),
   });
 }
 
-export async function logEventNewJournalEntry(type, accountName, amount, account, user) {
+export async function logEventNewJournalEntry(
+  type,
+  accountName,
+  amount,
+  account,
+  user
+) {
   if (!(type === "account")) return;
   let uniqueId = await genEventUID();
   if (uniqueId < 0) return;
@@ -107,6 +112,6 @@ export async function logEventNewJournalEntry(type, accountName, amount, account
     before: beforeAccount,
     after: account,
     author: user ? user.displayName : "Unknown",
-    timestamp: new Date()
+    timestamp: new Date(),
   });
 }

@@ -53,14 +53,18 @@ export const AddAccounts = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setSuccess(false);
     setErrorMessage("");
 
+    //Checking if the account name already exists
     try {
       if (await checkExistingAccount("accountName", accountInfo.accountName)) {
         setErrorMessage("Account name already exists.");
         return;
       }
+
+      //Checking if the account number already exists
       if (
         await checkExistingAccount("accountNumber", accountInfo.accountNumber)
       ) {
@@ -68,12 +72,14 @@ export const AddAccounts = () => {
         return;
       }
 
+      //Once checks are done, continues to create the account
       await createAccount();
       setSuccess(true);
       e.target.reset();
       setAccountInfo({});
     } catch (error) {
       console.error(error.message);
+
       setErrorMessage(
         error.message.includes("undefined")
           ? "Missing critical field!"

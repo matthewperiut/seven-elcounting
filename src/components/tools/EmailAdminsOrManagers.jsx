@@ -1,6 +1,5 @@
 import { useState } from "react";
 import SendEmail from "./EmailHandler";
-import UserContextProvider, { Context } from "../context/UserContext";
 
 const EmailAdminsOrManagers = () => {
   const { user } = Context();
@@ -23,43 +22,58 @@ const EmailAdminsOrManagers = () => {
   };
 
   const handleSubmit = async () => {
-      await SendEmail("Issue Report: " + issue, "matthewperiut@gmail.com", user.email, "Manager", message);
-      setIssue("");
-      setMessage("");
-      setShow(false);
-      setSubmitted(true);
+    await SendEmail(
+      "Issue Report: " + issue,
+      "matthewperiut@gmail.com",
+      user.email,
+      "Manager",
+      message
+    );
+    setIssue("");
+    setMessage("");
+    setShow(false);
+    setSubmitted(true);
   };
 
   return (
     <div>
-      <button onClick={toggleShow}>{show ? "Close Form" : "Email Managers for Assistance"}</button>
+      <button onClick={toggleShow}>
+        {show ? "Close Form" : "Email Managers for Assistance"}
+      </button>
       {show && !submitted && (
         <div>
           <div style={{ margin: "10px 0" }}>
             <label htmlFor="issue">Issue:</label>
-            <input 
-              type="text" 
-              id="issue" 
+            <input
+              type="text"
+              id="issue"
               value={issue}
-              onChange={handleIssueChange} 
-              style={{ marginLeft: "10px" }} 
+              onChange={handleIssueChange}
+              style={{ marginLeft: "10px" }}
             />
           </div>
           <div style={{ margin: "10px 0" }}>
             <label htmlFor="message">Message:</label>
-              <textarea 
-                id="message" 
-                value={message}
-                onChange={handleMessageChange}
-                style={{ marginLeft: "10px", resize: "both", width: "300px", height: "100px" }}
-              />
+            <textarea
+              id="message"
+              value={message}
+              onChange={handleMessageChange}
+              style={{
+                marginLeft: "10px",
+                resize: "both",
+                width: "300px",
+                height: "100px",
+              }}
+            />
           </div>
-            <button onClick={handleSubmit}>Submit</button>
-          </div>
+          <button onClick={handleSubmit}>Submit</button>
+        </div>
       )}
-    {submitted && <div style={{ color: "green" }}>Email Successfully Sent!</div>}
-  </div>
-    );
-}
+      {submitted && (
+        <div style={{ color: "green" }}>Email Successfully Sent!</div>
+      )}
+    </div>
+  );
+};
 
 export default EmailAdminsOrManagers;

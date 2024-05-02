@@ -12,17 +12,17 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent the form from causing a page reload
+    e.preventDefault(); //Prevent the form from causing a page reload
     if (failedAttempts > 2) return; //prevents login after 3 failed attempts
     signInWithEmailAndPassword(auth, email, password)
       .then(async (userCredential) => {
         const userDocRef = doc(db, "users", userCredential.user.uid);
         const docSnap = await getDoc(userDocRef);
         if (docSnap.exists() && docSnap.data().isActivated === false) {
-          // If user is deactivated, sign them out and prevent login
+          //If user is deactivated, sign them out and prevent login
           signOut(auth);
           alert("Your account is deactivated. Please contact support.");
-          return; // Exit the function to prevent further execution
+          return; //Exit the function to prevent further execution
         }
         navigate("/", { replace: true });
       })

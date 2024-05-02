@@ -24,7 +24,7 @@ const Registration = () => {
     startsWithLetter: false,
   });
 
-  // Validate password function
+  //Validate password function
   const validatePassword = (password) => {
     const results = {
       minLength: password.length >= 8,
@@ -36,12 +36,12 @@ const Registration = () => {
     setValidationResults(results);
   };
 
-  // Call validatePassword every time the password changes
+  //Call validatePassword every time the password changes
   useEffect(() => {
     validatePassword(password);
   }, [password]);
 
-  // Check if all validation results are true
+  //Check if all validation results are true
   const isPasswordValid = Object.values(validationResults).every(Boolean);
 
   const renderValidationMessage = (isValid, message) => (
@@ -72,7 +72,7 @@ const Registration = () => {
   );
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent the form from causing a page reload
+    e.preventDefault(); //Prevent the form from causing a page reload
     setErrorMessage("");
     if (!isPasswordValid) {
       setErrorMessage("Invalid Password");
@@ -197,7 +197,9 @@ const Registration = () => {
         {errorMessage && <p className="error">{errorMessage}</p>}
         <div>
           <button type="submit">Register</button>
-          <div className="register-login-link">Already have an account? <Link to="/login"> Login</Link></div>
+          <div className="register-login-link">
+            Already have an account? <Link to="/login"> Login</Link>
+          </div>
         </div>
       </form>
     </div>

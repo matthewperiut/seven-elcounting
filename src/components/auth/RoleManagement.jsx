@@ -22,7 +22,7 @@ const Modal = ({ isOpen, onClose, user: edittingUser, updateUser }) => {
   if (!isOpen || !localUser) return null;
 
   const handleValueChange = (field, value) => {
-    // Attempt to cast numeric values, fallback to string if NaN
+    //Attempt to cast numeric values, fallback to string if NaN
     const parsedValue = isNaN(Number(value)) ? value : Number(value);
     setLocalUser({ ...localUser, [field]: parsedValue });
   };
@@ -31,16 +31,16 @@ const Modal = ({ isOpen, onClose, user: edittingUser, updateUser }) => {
     const updatedStatus = !localUser.isActivated;
     const userDocRef = doc(db, "users", localUser.id);
     await updateDoc(userDocRef, { isActivated: updatedStatus });
-    setLocalUser({ ...localUser, isActivated: updatedStatus }); // Update local state
-    updateUser({ ...localUser, isActivated: updatedStatus }); // Update parent component state
+    setLocalUser({ ...localUser, isActivated: updatedStatus }); //Update local state
+    updateUser({ ...localUser, isActivated: updatedStatus }); //Update parent component state
   };
 
   const saveChanges = async () => {
     const userDocRef = doc(db, "users", localUser.id);
     await updateDoc(userDocRef, localUser);
-    updateUser(localUser); // Update user in the parent component state
+    updateUser(localUser); //Update user in the parent component state
     logEvent("user", originalLocalUser, localUser, user);
-    onClose(); // Close modal after saving changes
+    onClose(); //Close modal after saving changes
   };
 
   return (
@@ -133,8 +133,8 @@ export const RoleManagement = () => {
           <div key={user.id} className="database-item">
             <p>{user.email}</p>
             <div>
-            <button onClick={() => handleOpenModal(user)}>Edit</button>
-            <EmailUser in_email={user.email} />
+              <button onClick={() => handleOpenModal(user)}>Edit</button>
+              <EmailUser in_email={user.email} />
             </div>
           </div>
         ))}

@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../firebase-config";
-import { collection, getDocs, getDoc, doc, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  getDoc,
+  doc,
+  query,
+  where,
+} from "firebase/firestore";
 import CustomCalendar from "../tools/CustomCalendar";
 import ReportToolSuite from "../tools/ReportToolSuite";
 import formatNumber from "../tools/formatNumber";
@@ -21,15 +28,50 @@ const BalanceSheet = () => {
   const [accounts, setAccounts] = useState(null);
 
   useEffect(() => {
-    const fetchAccounts = async() => {
-        if (dates != null) {
-          try {
-            
-            const accountsTemp = await QueryAccountsInDateRange(accounts, dates[0], dates[1]);
+    const fetchAccounts = async () => {
+      if (dates != null) {
+        try {
+          const accountsTemp = await QueryAccountsInDateRange(
+            accounts,
+            dates[0],
+            dates[1]
+          );
 
+          const assetAccounts = [];
+          const liabilityAccounts = [];
+          const equityAccounts = [];
+          accountsTemp.forEach((account) => {
+            if (account.accountCategory === "assets") {
+              assetAccounts.push(account);
+            } else if (account.accountCategory === "liabilities") {
+              liabilityAccounts.push(account);
+            } else if (account.accountCategory === "equity") {
+              equityAccounts.push(account);
+            }
+          });
+
+          setAssets(assetAccounts);
+          setLiabilities(liabilityAccounts);
+          setEquities(equityAccounts);
+        } catch (error) {
+          console.error("Error fetching accounts:", error);
+        }
+      } else {
+        try {
+          if (!accounts) {
+            const snapshot = await getDocs(collection(db, "accounts"));
+            let accountsTemp = [];
             const assetAccounts = [];
             const liabilityAccounts = [];
             const equityAccounts = [];
+
+            snapshot.forEach((doc) => {
+              const account = doc.data();
+              accountsTemp.push(account);
+            });
+
+            setAccounts(accountsTemp);
+
             accountsTemp.forEach((account) => {
               if (account.accountCategory === "assets") {
                 assetAccounts.push(account);
@@ -39,52 +81,17 @@ const BalanceSheet = () => {
                 equityAccounts.push(account);
               }
             });
-  
+
             setAssets(assetAccounts);
             setLiabilities(liabilityAccounts);
             setEquities(equityAccounts);
-
           }
-          catch (error) {
-            console.error("Error fetching accounts:", error);
-          }
-          
-        } else {
-          try {
-            if (!accounts) {
-              const snapshot = await getDocs(collection(db, "accounts"));
-              let accountsTemp = [];
-              const assetAccounts = [];
-              const liabilityAccounts = [];
-              const equityAccounts = [];
-    
-              snapshot.forEach((doc) => {
-                const account = doc.data();
-                accountsTemp.push(account);
-              });
-
-              setAccounts(accountsTemp);
-
-              accountsTemp.forEach((account) => {
-                if (account.accountCategory === "assets") {
-                  assetAccounts.push(account);
-                } else if (account.accountCategory === "liabilities") {
-                  liabilityAccounts.push(account);
-                } else if (account.accountCategory === "equity") {
-                  equityAccounts.push(account);
-                }
-              })
-    
-              setAssets(assetAccounts);
-              setLiabilities(liabilityAccounts);
-              setEquities(equityAccounts); 
-            }
-          } catch (error) {
-            console.error("Error fetching accounts:", error);
-          }
+        } catch (error) {
+          console.error("Error fetching accounts:", error);
         }
       }
-        fetchAccounts();  
+    };
+    fetchAccounts();
   }, [dates]);
 
   useEffect(() => {
@@ -105,21 +112,23 @@ const BalanceSheet = () => {
 
   function selectDate(date) {
     try {
-    const date2 = new Date('2023-12-17T03:24:00');
-    date.setHours(23, 59, 0, 0);
-    setDates([date2, date]);
-  } catch (e) {
-    setDates(null);
-  }
+      const date2 = new Date("2023-12-17T03:24:00");
+      date.setHours(23, 59, 0, 0);
+      setDates([date2, date]);
+    } catch (e) {
+      setDates(null);
+    }
   }
 
   return (
     <div className="wrapper">
-      <CustomCalendar handleDateSelection={selectDate} isRange={false}/>
+      <CustomCalendar handleDateSelection={selectDate} isRange={false} />
       <Help componentName="BalanceSheet" />
       <div id="capture">
         <h1>Balance Sheet</h1>
-        {!dates ? "" : (
+        {!dates ? (
+          ""
+        ) : (
           <div>
             <p>On {formatDate(dates[1])}</p>
           </div>

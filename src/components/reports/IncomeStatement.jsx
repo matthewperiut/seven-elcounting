@@ -67,7 +67,7 @@ const IncomeStatement = () => {
     };
 
     fetchAccountsAndEntries();
-  }, [selectedDate, accounts]);  // Add accounts to the dependency array to re-run when accounts are set
+  }, [selectedDate, accounts]);  //Add accounts to the dependency array to re-run when accounts are set
 
 
   return (

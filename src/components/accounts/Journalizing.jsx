@@ -176,13 +176,21 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
         update();
       } else {
         for (const item of entry.entries) {
-          const accountDocSnap = await getDoc(doc(db, "accounts", item.accountID));
+          const accountDocSnap = await getDoc(
+            doc(db, "accounts", item.accountID)
+          );
           const accountData = accountDocSnap.data();
-          await logEventNewJournalEntry("account", item.account, item.amount, accountData, user);
-        }        
+          await logEventNewJournalEntry(
+            "account",
+            item.account,
+            item.amount,
+            accountData,
+            user
+          );
+        }
         await setDoc(doc(collection(db, "journalEntries")), entry); //creates document with entry data
       }
-      
+
       setStatus((prev) => ({ ...prev, success: true, submit: false })); //update state to display success message
       e.target.reset(); //reset uncontrolled input fields
       setDebitsList([{ account: "", amount: "" }]); //reset array with empty objects
@@ -223,9 +231,9 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
   };
 
   const handleCreditChange = (index, field, value) => {
-    const updatedEntry = [...creditsList];
-    updatedEntry[index][field] = value || "";
-    setCreditsList(updatedEntry);
+    const updatedEntry = [...creditsList]; //stores array in local updatedEntry array
+    updatedEntry[index][field] = value || ""; //sets field the specified index to the value brought in
+    setCreditsList(updatedEntry); //sets list with new value
   };
 
   const findAccountID = (accountName) => {
@@ -293,13 +301,16 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
               onMouseLeave={() => setShowTooltipDebit(false)}
               onClick={handleDebitAdd}
               className="addtransaction-button"
-              style={{ position: 'relative' }} 
+              style={{ position: "relative" }}
             >
               Add Entry
               {showTooltip && (
-              <div className="tooltip" style={{ position: 'absolute', top: '15%', left: 90 }}>
-                New debit entry
-              </div>
+                <div
+                  className="tooltip"
+                  style={{ position: "absolute", top: "15%", left: 90 }}
+                >
+                  New debit entry
+                </div>
               )}
             </button>
           </div>
@@ -351,13 +362,16 @@ const Journalizing = ({ adjustingEntry, adjust, update }) => {
               onMouseLeave={() => setShowTooltipCredit(false)}
               onClick={handleCreditAdd}
               className="addtransaction-button"
-              style={{ position: 'relative' }} 
+              style={{ position: "relative" }}
             >
               Add Entry
               {showTooltipC && (
-              <div className="tooltip" style={{ position: 'absolute', top: '15%', left: 90 }}>
-                New credit entry
-              </div>
+                <div
+                  className="tooltip"
+                  style={{ position: "absolute", top: "15%", left: 90 }}
+                >
+                  New credit entry
+                </div>
               )}
             </button>
           </div>

@@ -37,9 +37,9 @@ p {
 
 /* Buttons */
 button {
-  cursor: pointer; /* pointer on hover */
-  justify-self: start; /* Aligns the button to the start of its grid cell */
-  border-radius: 5px; /* rounded edges */
+  cursor: pointer;
+  justify-self: start;
+  border-radius: 5px;
   padding: 10px 15px;
   margin: 5px;
   background-color: #749ad6;
@@ -133,9 +133,9 @@ button:hover {
 }
 
 .emphasis {
-  font-size: 1.5em; 
-  font-weight: bold; 
-/* Help Button */
+  font-size: 1.5em;
+  font-weight: bold;
+  /* Help Button */
 }
 /* Input fields */
 .wrapper {
@@ -234,13 +234,13 @@ select {
 }
 
 .navbar-item {
-  float: left; /* turn navbar items into row */
+  float: left;
 }
 
 .navbar-link {
   margin-left: 10px;
   padding: 10px;
-  text-decoration: none; /* remove link underline and color */
+  text-decoration: none;
   font-size: 20px;
   color: #000;
 }
@@ -299,7 +299,7 @@ select {
 }
 
 .logo:hover {
-  cursor: pointer; /* pointer on hover */
+  cursor: pointer;
 }
 
 .user-info {
@@ -389,13 +389,13 @@ select {
 
 /* Modal */
 .modal-background {
-  position: fixed; /* Stay in place */
+  position: fixed;
   text-align: center;
-  z-index: 2; /* Sit on top */
+  z-index: 2;
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
 }
 
@@ -452,7 +452,7 @@ select {
 .viewonlyaccount-div,
 .accounts-table th,
 .accounts-table td {
-  text-align: center; /* Center Text */
+  text-align: center;
 }
 
 .accounts-table {
@@ -469,12 +469,12 @@ select {
 
 .accounts-table table td,
 .accounts-table table th {
-    padding: 15px;
+  padding: 15px;
 }
 
 .clickableAccount:hover {
-    font-weight: bold;
-    cursor: pointer;
+  font-weight: bold;
+  cursor: pointer;
 }
 /* Chart of Accounts */
 
@@ -486,7 +486,7 @@ select {
 }
 
 .credit-entry {
-  margin-left: 20%; /* Indent credit entries */
+  margin-left: 20%;
 }
 
 .debit-entry {
@@ -506,11 +506,11 @@ select {
   border-radius: 50%;
 
   /* Color and center the + and - buttons*/
-  background-color: #dc3545; /* make - button red */
+  background-color: #dc3545;
   color: white;
   font-size: 25px;
   text-align: center;
-  line-height: 0; /* center - */
+  line-height: 0;
 }
 /* Journalizing */
 
@@ -585,20 +585,16 @@ select {
   cursor: pointer;
   font-weight: bold;
 }
-
-.accountledger-button {
-  padding: 5
-}
 /* Ledgers */
 
 /* Statement Tables (Balance Sheet, Trial Balance, Income Statement) */
 .statement-table {
   width: 70%;
-  max-width: 700px; 
-  margin: 50px auto; 
-  border-collapse: collapse; 
+  max-width: 700px;
+  margin: 50px auto;
+  border-collapse: collapse;
   background-color: #f0e6e68e;
-  box-shadow: 0 5px 40px rgba(0, 0, 0, 0.2); 
+  box-shadow: 0 5px 40px rgba(0, 0, 0, 0.2);
 }
 
 .statement-table th {
@@ -606,25 +602,27 @@ select {
   font-size: 20px;
 }
 
-.statement-table th, td {
-  text-align: left; 
+.statement-table th,
+td {
+  text-align: left;
   padding-left: 15px;
   padding: 12px;
 }
 
 .statement-table td:last-child,
 .statement-table th:last-child {
-    text-align: center;
+  text-align: center;
 }
 
-.statement-table td + td, .statement-table th + th {
+.statement-table td + td,
+.statement-table th + th {
   border-left: 2px solid #000;
 }
 
 .statement-total td {
   font-weight: bold;
   color: #423b3b;
-  border-top: 1px solid black; 
+  border-top: 1px solid black;
 }
 
 .statement-category {

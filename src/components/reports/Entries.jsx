@@ -218,12 +218,12 @@ const Entries = () => {
 
   //allows user to select date(s)
   const [selectedDate, setSelectedDate] = useState(null);
-    const handleDateSelection = (value) => {
-      //setSelectedDate(value);
-    };
-    const handleResetDateFilter = () => {
-      //setSelectedDate(null);
-    };
+  const handleDateSelection = (value) => {
+    //setSelectedDate(value);
+  };
+  const handleResetDateFilter = () => {
+    //setSelectedDate(null);
+  };
 
   const fetchEntries = async () => {
     //queries entries based off approval status
@@ -278,7 +278,7 @@ const Entries = () => {
 
   const getFilteredEntries = (entries) => {
     let filteredEntries = entries;
-    
+
     if (searchTerm) {
       filteredEntries = filteredEntries.filter((entry) => {
         return entry.entries.some((subEntry) => {
@@ -292,7 +292,7 @@ const Entries = () => {
         });
       });
     }
-    // More filtering by the selected date(s) 
+    // More filtering by the selected date(s)
     if (selectedDate) {
       const [startDate, endDate] = selectedDate;
       filteredEntries = filteredEntries.filter((entry) => {
@@ -312,7 +312,7 @@ const Entries = () => {
     <div className="wrapper">
       <CustomCalendar
         handleDateSelection={handleDateSelection}
-        handleResetDateFilter={handleResetDateFilter} 
+        handleResetDateFilter={handleResetDateFilter}
       />
       <Help componentName="JournalEntries" />
       <div>

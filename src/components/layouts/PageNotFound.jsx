@@ -4,6 +4,4 @@ const PageNotFound = () => {
 
 export default PageNotFound;
 
-{
-  /* File for 404 error, page not found */
-}
+

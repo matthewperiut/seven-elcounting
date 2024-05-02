@@ -14,9 +14,10 @@ const ForgotPassword = () => {
   });
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent the form from causing a page reload
+    e.preventDefault();
     setErrorMessage(""); //reset error message
 
+    //Checking if the email is in the Firebase database
     try {
       const userDoc = await getDocs(
         query(
@@ -30,6 +31,7 @@ const ForgotPassword = () => {
         return;
       }
 
+      //Password Reset process
       const userData = userDoc.docs[0].data();
       if (
         securityQuestionAnswers.answer1.trim() !== userData.securityQuestion1 ||
