@@ -11,6 +11,7 @@ const Reports = () => {
 
   const handleMenu = async () => {
     setIsOpen(!isOpen);
+    //queries pending journal entries for manager notification
     const pendingSnapshot = await getDocs(
       query(
         collection(db, "journalEntries"),

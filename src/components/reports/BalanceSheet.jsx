@@ -24,22 +24,30 @@ const BalanceSheet = () => {
     const fetchAccounts = async () => {
       if (dates != null) {
         try {
+          //queries accounts in particular date range
           const accountsTemp = await QueryAccountsInDateRange(
             accounts,
             dates[0],
             dates[1]
           );
 
-          const assetAccounts = [];
-          const liabilityAccounts = [];
-          const equityAccounts = [];
+          const assetAccounts = []; //array to hold all asset accounts
+          const liabilityAccounts = []; //array to hold all liability accounts
+          const equityAccounts = []; //array to hold all equity accounts
           accountsTemp.forEach((account) => {
-            if (account.accountCategory === "assets") {
-              assetAccounts.push(account);
-            } else if (account.accountCategory === "liabilities") {
-              liabilityAccounts.push(account);
-            } else if (account.accountCategory === "equity") {
-              equityAccounts.push(account);
+            if (account.isActivated === true) {
+              //pushes asset accounts into array
+              if (account.accountCategory === "assets") {
+                assetAccounts.push(account);
+              }
+              //pushes liability accounts into array
+              if (account.accountCategory === "liabilities") {
+                liabilityAccounts.push(account);
+              }
+              //pushes equity accounts into array
+              if (account.accountCategory === "equity") {
+                equityAccounts.push(account);
+              }
             }
           });
 
@@ -52,9 +60,9 @@ const BalanceSheet = () => {
       } else {
         try {
           if (!accounts) {
-            const snapshot = await getDocs(collection(db, "accounts"));
+            const snapshot = await getDocs(collection(db, "accounts")); //gets snapshot of all accounts
             let accountsTemp = [];
-            const assetAccounts = [];
+            const assetAccounts = []; 
             const liabilityAccounts = [];
             const equityAccounts = [];
 
@@ -66,12 +74,17 @@ const BalanceSheet = () => {
             setAccounts(accountsTemp);
 
             accountsTemp.forEach((account) => {
-              if (account.accountCategory === "assets") {
-                assetAccounts.push(account);
-              } else if (account.accountCategory === "liabilities") {
-                liabilityAccounts.push(account);
-              } else if (account.accountCategory === "equity") {
-                equityAccounts.push(account);
+              if (account.isActivated === true) {
+                //pushes assets accounts into array
+                if (account.accountCategory === "assets") {
+                  assetAccounts.push(account);
+                  //pushes liabilities accounts into array
+                } else if (account.accountCategory === "liabilities") {
+                  liabilityAccounts.push(account);
+                  //pushes equity accounts into array
+                } else if (account.accountCategory === "equity") {
+                  equityAccounts.push(account);
+                }
               }
             });
 
@@ -87,6 +100,7 @@ const BalanceSheet = () => {
     fetchAccounts();
   }, [dates]);
 
+  //recalculates total balances each time component renders
   useEffect(() => {
     const totalAssets = calculateTotal(assets);
     const totalLiabilities = calculateTotal(liabilities);
@@ -94,15 +108,17 @@ const BalanceSheet = () => {
     setIsBalanced(totalAssets === totalLiabilities + totalEquity);
   }, [assets, liabilities, equities]);
 
+  //function to calculate account totals
   const calculateTotal = (accounts) => {
     return accounts.reduce((total, account) => total + account.balance, 0);
   };
 
-  const assetsTotal = calculateTotal(assets);
-  const liabilitiesTotal = calculateTotal(liabilities);
-  const equityTotal = calculateTotal(equities);
-  const liabilitiesPlusEquity = liabilitiesTotal + equityTotal;
+  const assetsTotal = calculateTotal(assets); //calculates assets total
+  const liabilitiesTotal = calculateTotal(liabilities); //calculates liabilities total
+  const equityTotal = calculateTotal(equities); //calculates equities total
+  const liabilitiesPlusEquity = liabilitiesTotal + equityTotal; //calculates total liabilities plus total equity
 
+  //sets selected dates from calendar
   function selectDate(date) {
     try {
       const date2 = new Date("2023-12-17T03:24:00");

@@ -45,16 +45,19 @@ const IncomeStatement = () => {
         tempAccounts = await QueryAccountsInDateRange(fetchedAccounts, selectedDate[0], selectedDate[1]);
       }
 
-      let revenue_accounts = [];
-      let expense_accounts = [];
+      let revenue_accounts = []; //array to hold all revnues
+      let expense_accounts = []; //array to hold all expenses
       tempAccounts.forEach((account) => {
         if (account.isActivated === true) {
+          //sets COGS account
           if (account.accountName === "Cost of Goods Sold") {
             setCostOfGoodsSold(account);
           }
+          //pushes revenue accounts into array
           else if (account.accountCategory === "revenues") {
             revenue_accounts.push(account);
           }
+          //pushes expense accounts into array
           else if (account.accountCategory === "expenses") {
             expense_accounts.push(account);
           }
@@ -62,8 +65,8 @@ const IncomeStatement = () => {
       });
       setRevenues(revenue_accounts);
       setExpenses(expense_accounts);
-      setTotalRevenues(revenue_accounts.reduce((total, revenue) => total + revenue.balance, 0));
-      setTotalExpenses(expense_accounts.reduce((total, expense) => total + expense.balance, 0));
+      setTotalRevenues(revenue_accounts.reduce((total, revenue) => total + revenue.balance, 0)); //calculates total revenues
+      setTotalExpenses(expense_accounts.reduce((total, expense) => total + expense.balance, 0)); //calculates total expenses
     };
 
     fetchAccountsAndEntries();

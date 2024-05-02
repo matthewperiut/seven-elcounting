@@ -19,6 +19,7 @@ const RetainedEarnings = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [accounts, setAccounts] = useState(null);
 
+  //handles date range selection when user uses calendar
   const handleDateSelection = (dates) => {
     try {
     setSelectedDate([dates[0], dates[1]]);
@@ -34,6 +35,8 @@ const RetainedEarnings = () => {
     const fetchRetainedEarnings = async () => {
       try {
         let fetchedAccounts = accounts;
+
+        //queries accounts if they have not already been queried
         if (!accounts) {
           let queryRef = collection(db, "accounts");
           const querySnapshot = await getDocs(queryRef);
@@ -44,42 +47,46 @@ const RetainedEarnings = () => {
           setAccounts(fetchedAccounts)
         }
         let tempAccounts = fetchedAccounts || [];
+
+        //queries accounts in selected date range
         if (selectedDate) {
           tempAccounts = await QueryAccountsInDateRange(fetchedAccounts, selectedDate[0], selectedDate[1]);
         }
-        let revenue_accounts = [];
-        let expense_accounts = [];
+        let revenue_accounts = []; //array to hold all revenues
+        let expense_accounts = []; //array to hold all expenses
         tempAccounts.forEach((account) => {
           if (account.isActivated === true) {
+            //sets retained earnings account
             if (account.accountName === "Retained Earnings") {
               setRetainedEarnings(account.balance);
             }
+            //sets dividends account
              if (account.accountName === "Dividends") {
               setDividends(account.balance);
             }
+            //pushes revenue accounts into array
              if (account.accountCategory === "revenues") {
               revenue_accounts.push(account);
             }
+            //pushes expense accounts into array
              if (account.accountCategory === "expenses") {
               expense_accounts.push(account);
             }
           }
         });
-        const dividendsAccount = await getDocs(
-          query(
-            collection(db, "accounts"),
-            where("accountName", "==", "Dividends")
-          )
-        );
+
+        //calculates total revenues
         let totalRevenues = 0;
         revenue_accounts.forEach((account) => {
           totalRevenues += account.balance;
         });
+
+        //calculates total expenses
         let totalExpenses = 0;
         expense_accounts.forEach((account) => {
           totalExpenses += account.balance;
         });
-        setIncome((totalRevenues - totalExpenses) * 0.8);
+        setIncome((totalRevenues - totalExpenses) * 0.8); //sets income based on revenues, expenses, and tax
         
       } catch (error) {
         console.error(error.message);
