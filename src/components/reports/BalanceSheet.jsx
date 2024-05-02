@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../firebase-config";
-import {
-  collection,
-  getDocs,
-  getDoc,
-  doc,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import CustomCalendar from "../tools/CustomCalendar";
 import ReportToolSuite from "../tools/ReportToolSuite";
 import formatNumber from "../tools/formatNumber";

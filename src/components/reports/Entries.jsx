@@ -20,6 +20,7 @@ import formatNumber from "../tools/formatNumber";
  * @param {firebase.firestore.Timestamp} timestamp - The Firestore timestamp to format.
  * @returns {string} The formatted date string.
  */
+
 function formatDate(timestamp) {
   if (!timestamp) return "";
 

@@ -1,69 +1,164 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from "react-router-dom";
 
-import { 
-Login,
-Registration,
-ForgotPassword, 
-RequireAccount, 
-RequireUser,
-RequireAdmin, 
-Banner, 
-PageNotFound, 
-Dashboard, 
-AddAccounts, 
-ChartofAccounts, 
-EditAccounts, 
-DeactivateAccounts,
-RoleManagement, 
-UserContextProvider, 
-Journalizing,
-Entries,
-GeneralLedger,
-ChangeEventLog,
-BalanceSheet,
-IncomeStatement, 
-TrialBalance,
-RetainedEarnings
-} from "./components"
-
+import {
+  Login,
+  Registration,
+  ForgotPassword,
+  RequireAccount,
+  RequireUser,
+  RequireAdmin,
+  Banner,
+  PageNotFound,
+  Dashboard,
+  AddAccounts,
+  ChartofAccounts,
+  EditAccounts,
+  DeactivateAccounts,
+  RoleManagement,
+  UserContextProvider,
+  Journalizing,
+  Entries,
+  GeneralLedger,
+  ChangeEventLog,
+  BalanceSheet,
+  IncomeStatement,
+  TrialBalance,
+  RetainedEarnings,
+} from "./components";
 
 function App() {
   return (
-    <UserContextProvider> 
+    <UserContextProvider>
       <Routes>
-          
         {/* public routes */}
-        <Route path="/" element={<Banner />} >
-        <Route path="login" element={<Login />} />
-        <Route path="registration" element={<Registration />} />
-        <Route path="forgotpassword" element={<ForgotPassword />} />
+        <Route path="/" element={<Banner />}>
+          <Route path="login" element={<Login />} />
+          <Route path="registration" element={<Registration />} />
+          <Route path="forgotpassword" element={<ForgotPassword />} />
 
-        {/* private routes */}
-        <Route path="/" element={<RequireAccount><Dashboard/></RequireAccount>} />
-        {/* admin routes */}
-        <Route path="users" element={<RequireAdmin>< RoleManagement/></RequireAdmin>} />
-        <Route path="addaccounts" element={<RequireAdmin><AddAccounts /></RequireAdmin>} />
-        <Route path="editaccounts" element={<RequireAdmin><EditAccounts/></RequireAdmin>} />
-        <Route path="deactivateaccounts" element={<RequireAdmin><DeactivateAccounts/></RequireAdmin>} />
+          {/* private routes */}
+          <Route
+            path="/"
+            element={
+              <RequireAccount>
+                <Dashboard />
+              </RequireAccount>
+            }
+          />
+          {/* admin routes */}
+          <Route
+            path="users"
+            element={
+              <RequireAdmin>
+                <RoleManagement />
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="addaccounts"
+            element={
+              <RequireAdmin>
+                <AddAccounts />
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="editaccounts"
+            element={
+              <RequireAdmin>
+                <EditAccounts />
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="deactivateaccounts"
+            element={
+              <RequireAdmin>
+                <DeactivateAccounts />
+              </RequireAdmin>
+            }
+          />
 
-        {/* accountant routes */}
-        <Route path="chartofaccounts" element={<RequireUser><ChartofAccounts/></RequireUser>} />
-        <Route path="journalizing" element={<RequireUser><Journalizing/></RequireUser>} />
-        <Route path="journalentries" element={<RequireUser><Entries/></RequireUser>} />
-        <Route path="generalLedger" element={<RequireUser><GeneralLedger/></RequireUser>} />
-        <Route path="eventLog" element={<RequireUser><ChangeEventLog /></RequireUser>} />
-        <Route path="balancesheet" element={<RequireUser><BalanceSheet/></RequireUser>} />
-        <Route path="incomestatement" element={<RequireUser><IncomeStatement/></RequireUser>} />
-        <Route path="trialbalance" element={<RequireUser><TrialBalance/></RequireUser>} />
-        <Route path="retainedearnings" element={<RequireUser><RetainedEarnings/></RequireUser>} />
+          {/* accountant routes */}
+          <Route
+            path="chartofaccounts"
+            element={
+              <RequireUser>
+                <ChartofAccounts />
+              </RequireUser>
+            }
+          />
+          <Route
+            path="journalizing"
+            element={
+              <RequireUser>
+                <Journalizing />
+              </RequireUser>
+            }
+          />
+          <Route
+            path="journalentries"
+            element={
+              <RequireUser>
+                <Entries />
+              </RequireUser>
+            }
+          />
+          <Route
+            path="generalLedger"
+            element={
+              <RequireUser>
+                <GeneralLedger />
+              </RequireUser>
+            }
+          />
+          <Route
+            path="eventLog"
+            element={
+              <RequireUser>
+                <ChangeEventLog />
+              </RequireUser>
+            }
+          />
+          <Route
+            path="balancesheet"
+            element={
+              <RequireUser>
+                <BalanceSheet />
+              </RequireUser>
+            }
+          />
+          <Route
+            path="incomestatement"
+            element={
+              <RequireUser>
+                <IncomeStatement />
+              </RequireUser>
+            }
+          />
+          <Route
+            path="trialbalance"
+            element={
+              <RequireUser>
+                <TrialBalance />
+              </RequireUser>
+            }
+          />
+          <Route
+            path="retainedearnings"
+            element={
+              <RequireUser>
+                <RetainedEarnings />
+              </RequireUser>
+            }
+          />
 
-        {/* page not found */}
-        <Route path="*" element={<PageNotFound />} />
-
+          {/* page not found */}
+          <Route path="*" element={<PageNotFound />} />
         </Route>
-      </Routes>    
+      </Routes>
     </UserContextProvider>
-  )
+  );
 }
 
 export default App;

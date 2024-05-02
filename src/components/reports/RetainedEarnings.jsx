@@ -43,7 +43,6 @@ const RetainedEarnings = () => {
           }));
           setAccounts(fetchedAccounts)
         }
-        console.log(fetchedAccounts);
         let tempAccounts = fetchedAccounts || [];
         if (selectedDate) {
           tempAccounts = await QueryAccountsInDateRange(fetchedAccounts, selectedDate[0], selectedDate[1]);

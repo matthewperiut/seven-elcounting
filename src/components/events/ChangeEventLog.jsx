@@ -31,11 +31,6 @@ const ChangeEventLog = ({ adjustingEntry, accountName }) => {
           if (accountName) {
             try {
               let condition2 = doc.data().type === "account";
-              console.log(
-                accountName.toLowerCase() +
-                  " = " +
-                  doc.data().after.accountName.toLowerCase()
-              );
               let condition3 =
                 doc.data().after.accountName.toLowerCase() ===
                 accountName.toLowerCase();

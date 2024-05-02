@@ -16,12 +16,12 @@ function formatDate(timestamp) {
   return date.toLocaleDateString("en-US", options);
 }
 
-// Ledger component
+//Ledger component
 const Ledger = ({ isOpen, onClose, account }) => {
   if (!isOpen) return null;
 
   let runningBalance = account.initialBalance;
-  let entryNo = 0; // Initialize entry no.
+  let entryNo = 0; //Initialize entry no.
 
   const [filteredEntries, setFilteredEntries] = useState(account.ledgerData);
   const [showPostRef, setShowPostRef] = useState(false);
@@ -29,8 +29,8 @@ const Ledger = ({ isOpen, onClose, account }) => {
   const [selectedPR, setSelectedPR] = useState(null);
 
   const handlePRClick = (pr) => {
-    setSelectedPR(pr); // Set the selected PR
-    setShowPostRef(true); // Open the PostRefModal
+    setSelectedPR(pr); //Set the selected PR
+    setShowPostRef(true); //Open the PostRefModal
   };
 
   const filterEntries = (searchTerm) => {
@@ -51,25 +51,25 @@ const Ledger = ({ isOpen, onClose, account }) => {
   if (showEventLog) {
     return (
       <>
-      <div onClick={onClose} className="modal-background">
-        <div onClick={(e) => e.stopPropagation()} className="modal">
-            
+        <div onClick={onClose} className="modal-background">
+          <div onClick={(e) => e.stopPropagation()} className="modal">
             <p onClick={onClose} className="closeButton">
               &times;
             </p>
             <>
-            <p
-                  onClick={() => setShowEventLog(false)}
-                  className="closeButton"
-                  style={{ float: "left" }}
-                >
-                  &larr;
-                </p>
-      <h2>Event Log for {account.accountName}</h2>
+              <p
+                onClick={() => setShowEventLog(false)}
+                className="closeButton"
+                style={{ float: "left" }}
+              >
+                &larr;
+              </p>
+              <h2>Event Log for {account.accountName}</h2>
 
-                <ChangeEventLog 
+              <ChangeEventLog
                 adjustingEntry={true}
-                accountName={account.accountName} />
+                accountName={account.accountName}
+              />
             </>
           </div>
         </div>
@@ -127,7 +127,12 @@ const Ledger = ({ isOpen, onClose, account }) => {
                 placeholder="Search..."
                 onChange={(e) => filterEntries(e.target.value)}
               />
-                  <button className="accountledger-button" onClick={() => setShowEventLog(true)}>Event Log</button>
+              <button
+                className="accountledger-button"
+                onClick={() => setShowEventLog(true)}
+              >
+                Event Log
+              </button>
 
               {filteredEntries && filteredEntries.length > 0 ? (
                 <div className="accountledger-table">
