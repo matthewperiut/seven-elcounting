@@ -1,5 +1,6 @@
 import { useState } from "react";
 import SendEmail from "./EmailHandler";
+import { Context } from "../context/UserContext";
 
 
 const EmailUser = ({ in_email }) => {
