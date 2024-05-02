@@ -61,6 +61,18 @@ const Modal = ({ isOpen, onClose, user: edittingUser, updateUser }) => {
             <option value="2">Management</option>
             <option value="3">Administrator</option>
           </select>
+          
+        </div>
+        <div className="editDB-form">
+          <label className="editDB-label">Approved: </label>
+          <select
+            value={localUser.Approved}
+            onChange={(e) => handleValueChange("Approved", e.target.value)}
+          >
+            <option value={true}>Yes</option>
+            <option value={false}>No</option>
+          </select>
+          
         </div>
 
         {Object.keys(localUser)
@@ -69,7 +81,8 @@ const Modal = ({ isOpen, onClose, user: edittingUser, updateUser }) => {
               key !== "id" &&
               key !== "email" &&
               key !== "role" &&
-              key !== "isActivated"
+              key !== "isActivated" &&
+              key !== "Approved"
           )
           .map((key) => (
             <div className="editDB-form" key={key}>
