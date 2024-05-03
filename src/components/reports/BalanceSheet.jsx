@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../firebase-config";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import CustomCalendar from "../tools/CustomCalendar";
 import ReportToolSuite from "../tools/ReportToolSuite";
 import formatNumber from "../tools/formatNumber";
@@ -60,13 +60,18 @@ const BalanceSheet = () => {
       } else {
         try {
           if (!accounts) {
-            const snapshot = await getDocs(collection(db, "accounts")); //gets snapshot of all accounts
+            const querySnapshot = await getDocs(
+              query(
+                collection(db, "accounts"),
+                where("isActivated", "==", true)
+              )
+            ); //grabs all active accounts
             let accountsTemp = [];
-            const assetAccounts = []; 
+            const assetAccounts = [];
             const liabilityAccounts = [];
             const equityAccounts = [];
 
-            snapshot.forEach((doc) => {
+            querySnapshot.forEach((doc) => {
               const account = doc.data();
               accountsTemp.push(account);
             });

@@ -22,7 +22,7 @@ const RetainedEarnings = () => {
   //handles date range selection when user uses calendar
   const handleDateSelection = (dates) => {
     try {
-    setSelectedDate([dates[0], dates[1]]);
+      setSelectedDate([dates[0], dates[1]]);
     } catch (e) {
       setSelectedDate(null);
     }
@@ -38,19 +38,24 @@ const RetainedEarnings = () => {
 
         //queries accounts if they have not already been queried
         if (!accounts) {
-          let queryRef = collection(db, "accounts");
-          const querySnapshot = await getDocs(queryRef);
+          const querySnapshot = await getDocs(
+            query(collection(db, "accounts"), where("isActivated", "==", true))
+          ); //grabs all active accounts
           fetchedAccounts = querySnapshot.docs.map((doc) => ({
             ...doc.data(),
             id: doc.id,
           }));
-          setAccounts(fetchedAccounts)
+          setAccounts(fetchedAccounts);
         }
         let tempAccounts = fetchedAccounts || [];
 
         //queries accounts in selected date range
         if (selectedDate) {
-          tempAccounts = await QueryAccountsInDateRange(fetchedAccounts, selectedDate[0], selectedDate[1]);
+          tempAccounts = await QueryAccountsInDateRange(
+            fetchedAccounts,
+            selectedDate[0],
+            selectedDate[1]
+          );
         }
         let revenue_accounts = []; //array to hold all revenues
         let expense_accounts = []; //array to hold all expenses
@@ -61,15 +66,15 @@ const RetainedEarnings = () => {
               setRetainedEarnings(account.balance);
             }
             //sets dividends account
-             if (account.accountName === "Dividends") {
+            if (account.accountName === "Dividends") {
               setDividends(account.balance);
             }
             //pushes revenue accounts into array
-             if (account.accountCategory === "revenues") {
+            if (account.accountCategory === "revenues") {
               revenue_accounts.push(account);
             }
             //pushes expense accounts into array
-             if (account.accountCategory === "expenses") {
+            if (account.accountCategory === "expenses") {
               expense_accounts.push(account);
             }
           }
@@ -87,7 +92,6 @@ const RetainedEarnings = () => {
           totalExpenses += account.balance;
         });
         setIncome((totalRevenues - totalExpenses) * 0.8); //sets income based on revenues, expenses, and tax
-        
       } catch (error) {
         console.error(error.message);
       }
@@ -98,9 +102,9 @@ const RetainedEarnings = () => {
 
   return (
     <div className="wrapper">
-      <CustomCalendar 
+      <CustomCalendar
         handleDateSelection={handleDateSelection}
-        handleResetDateFilter={handleResetDateFilter} 
+        handleResetDateFilter={handleResetDateFilter}
         isRange={true}
       />
       <Help componentName="RetainedEarnings" />
@@ -109,11 +113,11 @@ const RetainedEarnings = () => {
         <table className="statement-table">
           <tbody>
             <tr>
-              {(selectedDate ? (
+              {selectedDate ? (
                 <td>Retained earnings - {formatDate(selectedDate[0])}</td>
               ) : (
                 <td>Retained earnings as of {formatDate(new Date())}</td>
-              ))}
+              )}
               <td>{formatNumber(parseFloat(retainedEarnings))}</td>
             </tr>
             <tr>
@@ -129,13 +133,12 @@ const RetainedEarnings = () => {
               <td>{formatNumber(parseFloat(dividends))}</td>
             </tr>
             <tr className="statement-total">
-
-              {(selectedDate ? (
+              {selectedDate ? (
                 <td>Retained earnings - {formatDate(selectedDate[1])}</td>
               ) : (
                 <td>Retained earnings as of {formatDate(new Date())}</td>
-              ))}
-              
+              )}
+
               <td>{formatNumber(retainedEarnings + income - dividends)}</td>
             </tr>
           </tbody>

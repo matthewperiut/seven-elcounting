@@ -30,9 +30,11 @@ const IncomeStatement = () => {
   useEffect(() => {
     const fetchAccountsAndEntries = async () => {
       let fetchedAccounts = accounts;
-      if (!accounts) {  // Check if accounts are already loaded
-        let queryRef = collection(db, "accounts");
-        const querySnapshot = await getDocs(queryRef);
+      // Check if accounts are already loaded
+      if (!accounts) {
+        const querySnapshot = await getDocs(
+          query(collection(db, "accounts"), where("isActivated", "==", true))
+        ); //grabs all active accounts
         fetchedAccounts = querySnapshot.docs.map((doc) => ({
           ...doc.data(),
           id: doc.id,
@@ -42,7 +44,11 @@ const IncomeStatement = () => {
 
       let tempAccounts = fetchedAccounts || [];
       if (selectedDate) {
-        tempAccounts = await QueryAccountsInDateRange(fetchedAccounts, selectedDate[0], selectedDate[1]);
+        tempAccounts = await QueryAccountsInDateRange(
+          fetchedAccounts,
+          selectedDate[0],
+          selectedDate[1]
+        );
       }
 
       let revenue_accounts = []; //array to hold all revnues
@@ -65,13 +71,16 @@ const IncomeStatement = () => {
       });
       setRevenues(revenue_accounts);
       setExpenses(expense_accounts);
-      setTotalRevenues(revenue_accounts.reduce((total, revenue) => total + revenue.balance, 0)); //calculates total revenues
-      setTotalExpenses(expense_accounts.reduce((total, expense) => total + expense.balance, 0)); //calculates total expenses
+      setTotalRevenues(
+        revenue_accounts.reduce((total, revenue) => total + revenue.balance, 0)
+      ); //calculates total revenues
+      setTotalExpenses(
+        expense_accounts.reduce((total, expense) => total + expense.balance, 0)
+      ); //calculates total expenses
     };
 
     fetchAccountsAndEntries();
-  }, [selectedDate, accounts]);  //Add accounts to the dependency array to re-run when accounts are set
-
+  }, [selectedDate, accounts]); //Add accounts to the dependency array to re-run when accounts are set
 
   return (
     <div className="wrapper">
@@ -140,7 +149,7 @@ const IncomeStatement = () => {
               <td>
                 {formatNumber(
                   (totalRevenues - costOfGoodsSold.balance - totalExpenses) *
-                  0.2
+                    0.2
                 )}
               </td>
             </tr>
@@ -149,7 +158,7 @@ const IncomeStatement = () => {
               <td>
                 {formatNumber(
                   (totalRevenues - costOfGoodsSold.balance - totalExpenses) *
-                  0.8
+                    0.8
                 )}
               </td>
             </tr>
